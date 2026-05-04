@@ -1,0 +1,48 @@
+import { createBrowserRouter } from "react-router-dom";
+import { lazy } from "react";
+
+// Lazy load all components for better performance
+const Layout = lazy(() => import("../components/layout/Layout"));
+const Home = lazy(() => import("../pages/Home/Home"));
+const About = lazy(() => import("../pages/About/About"));
+const Laddus = lazy(() => import("../pages/Laddus/Laddus"));
+const Testimonials = lazy(() => import("../pages/Testimonials/Testimonials"));
+const Contact = lazy(() => import("../pages/Contact/Contact"));
+const NotFound = lazy(() => import("../pages/NotFound/NotFound"));
+const FaqPage = lazy(() => import("../pages/Faq/FaqPage"));
+const ProductDetail = lazy(() => import("../pages/ProductDetail/ProductDetail"));
+const Login = lazy(() => import("../pages/auth/Login"));
+const Registration = lazy(() => import("../pages/auth/Registration"));
+const Profile = lazy(() => import("../pages/auth/Profile"));
+const Shop = lazy(() => import("../pages/Shop/Shop"));
+const Orders = lazy(() => import("../pages/Orders/Orders"));
+const ReturnPolicy = lazy(() => import("../pages/Policies/ReturnPolicy"));
+const ShippingPolicy = lazy(() => import("../pages/Policies/ShippingPolicy"));
+const TermsOfService = lazy(() => import("../pages/Policies/TermsOfService"));
+const ErrorPage = lazy(() => import("../components/common/ErrorPage"));
+
+export const router = createBrowserRouter([
+  { path: "/login", element: <Login /> },
+  { path: "/register", element: <Registration /> },
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "shop", element: <Shop /> },
+      { path: "orders", element: <Orders /> },
+      { path: "about", element: <About /> },
+      { path: "laddus", element: <Laddus /> },
+      { path: "faqs", element: <FaqPage /> },
+      { path: "product/:id", element: <ProductDetail /> },
+      { path: "testimonials", element: <Testimonials /> },
+      { path: "contact", element: <Contact /> },
+      { path: "profile", element: <Profile /> },
+      { path: "return-policy", element: <ReturnPolicy /> },
+      { path: "shipping-policy", element: <ShippingPolicy /> },
+      { path: "terms-of-service", element: <TermsOfService /> },
+      { path: "*", element: <NotFound /> },
+    ],
+  },
+]);

@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #FAFAF7;
+  --color-secondary: #F2B705;
+  --color-accent: #FFF0C2;
+  --color-text: #2E2E2E;
+  --color-text-muted: #6B7280;
+  --color-muted: #EAE6D8;
+  --color-surface: #FFFFFF;
+  --color-dark: #1A1A1A;
+  --color-border: rgba(242, 183, 5, 0.15);
+  --color-shadow: rgba(0, 0, 0, 0.08);
+
+  /* Fonts */
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-accent: 'Poppins', sans-serif;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-muted);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: var(--color-text);
+}
+
+.font-accent {
+  font-family: var(--font-accent);
+}
+
+/* Scroll Animation Logic */
+.scroll-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section bottom gold shadow */
+section {
+  box-shadow: 0 8px 6px -6px rgba(242, 183, 5, 0.18);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+
+  /* Smaller text for mobile */
+  h1 {
+    font-size: 2.25rem;
+  }
+
+  /* text-4xl */
+  h2 {
+    font-size: 1.875rem;
+  }
+
+  /* text-3xl */
+  p,
+  li {
+    font-size: 0.875rem;
+  }
+
+  /* text-sm */
+
+  /* Smaller buttons for mobile */
+  button,
+  .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .hero-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
