@@ -12,7 +12,7 @@ const AppLoader = () => (
   <div className="min-h-screen bg-[var(--color-primary)] flex items-center justify-center">
     <div className="text-center">
       <div className="w-16 h-16 border-4 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p className="text-[var(--color-text)] font-medium">Loading SKS Laddu...</p>
+      <p className="text-[var(--color-text)] font-medium">Loading KashtKart Mango...</p>
     </div>
   </div>
 );
