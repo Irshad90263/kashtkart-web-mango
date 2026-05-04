@@ -15,8 +15,8 @@ const SkeletonCard = () => (
 );
 
 const SkeletonSection = () => (
-  <section className="py-12 px-8 md:px-24 bg-[var(--color-primary)]">
-    <div className="max-w-7xl mx-auto">
+  <section className="py-12 px-8 md:px-24 2xl:px-32 3xl:px-48 bg-[var(--color-primary)]">
+    <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto">
       <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-10"></div>
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
         {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
@@ -65,9 +65,9 @@ const CategoryProducts = memo(({ addToRefs }) => {
           <section
             key={cat._id}
             ref={addToRefs}
-            className={`scroll-section py-12 px-8 md:px-24 ${idx % 2 === 0 ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-surface)]'}`}
+            className={`scroll-section py-12 px-8 md:px-24 2xl:px-32 3xl:px-48 ${idx % 2 === 0 ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-surface)]'}`}
           >
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto">
               {/* Category Heading */}
               <div className="text-center mb-10">
                 <h2 className="inline-block text-2xl md:text-4xl font-black text-[var(--color-dark)] font-[var(--font-heading)] pb-2 border-b-4 border-[var(--color-secondary)]">

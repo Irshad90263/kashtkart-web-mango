@@ -147,110 +147,91 @@ const Laddus = () => {
                 </p>
             </section>
 
-            {/* Filters Section - Static for stability */}
-            <section className={`py-8 px-6 md:px-8 flex flex-col items-center gap-6 md:gap-10 relative ${isDropdownOpen ? 'z-50' : 'z-10'}`}>
+           {/* MAIN SECTION AFTER HEADER */}
+<section className="px-4 md:px-12 mb-20">
 
-                {/* Mobile View: Premium Custom Dropdown Filter */}
-                <div
-                    ref={dropdownRef}
-                    className={`md:hidden w-full max-w-[280px] relative ${isDropdownOpen ? 'z-[60]' : 'z-20'}`}
-                >
-                    <div className="flex items-center gap-2 mb-3 text-[var(--color-secondary)] font-bold text-[10px] uppercase tracking-[0.2em] pl-2 opacity-80">
-                        <Filter size={12} />
-                        <span>Filter by Category</span>
-                    </div>
+  <div className="grid grid-cols-12 gap-6">
 
-                    <button
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className={`w-full bg-[var(--color-surface)] flex items-center justify-between px-6 py-4 rounded-[22px] shadow-lg border border-[var(--color-secondary)]/20 transition-all active:scale-[0.98] ${isDropdownOpen ? 'ring-2 ring-[var(--color-secondary)]/30' : ''}`}
-                    >
-                        <span className="font-bold text-[var(--color-text)] text-base">{activeCategory.name}</span>
-                        <ChevronDown className={`text-[var(--color-secondary)] transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} size={20} />
-                    </button>
+    {/* SIDEBAR */}
+    <div className="hidden md:block col-span-3">
+      <div className="sticky top-24 bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
+        
+        <h3 className="text-sm font-bold mb-4 text-[var(--color-secondary)] uppercase">
+          Categories
+        </h3>
 
-                    {/* Animated Dropdown Menu - Glassmorphism */}
-                    <div className={`absolute top-full left-0 w-full mt-3 bg-[var(--color-muted)] backdrop-blur-xl rounded-[25px] shadow-2xl border border-[var(--color-secondary)]/20 overflow-hidden transition-all duration-300 origin-top ${isDropdownOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
-                        <div className="p-2 py-3 flex flex-col">
-                            {categories.map((cat, idx) => (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => {
-                                        setActiveCategory(cat);
-                                        setIsDropdownOpen(false);
-                                    }}
-                                    className={`w-full text-left px-5 py-3.5 rounded-2xl text-sm font-bold transition-all ${activeCategory.id === cat.id ? 'bg-[var(--color-secondary)] text-[var(--color-primary)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)]'}`}
-                                >
-                                    {cat.name}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+        <div className="flex flex-col gap-2">
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat)}
+              className={`text-left px-3 py-2 rounded-lg text-sm transition ${
+                activeCategory.id === cat.id
+                  ? 'bg-[var(--color-secondary)] text-[var(--color-primary)]'
+                  : 'text-[var(--color-text-muted)] hover:bg-[var(--color-secondary)]/10'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
 
-                {/* Laptop View: Row-based Filter */}
-                <div className="hidden md:flex flex-wrap justify-center gap-3">
-                    {categories.map(cat => (
-                        <button
-                            key={cat.id}
-                            onClick={() => setActiveCategory(cat)}
-                            className={`px-6 py-2 rounded-full font-bold text-sm transition-all duration-300 border-2 ${activeCategory.id === cat.id
-                                ? 'bg-[var(--color-secondary)] text-[var(--color-primary)] border-[var(--color-secondary)] shadow-[0_0_15px_rgba(255,212,0,0.3)] scale-105'
-                                : 'bg-transparent text-[var(--color-secondary)] border-[var(--color-secondary)]/30 hover:border-[var(--color-secondary)] hover:bg-[var(--color-secondary)]/10'
-                                }`}
-                        >
-                            {cat.name}
-                        </button>
-                    ))}
-                </div>
+      </div>
+    </div>
 
+    {/* PRODUCTS */}
+    <div className="col-span-12 md:col-span-9">
 
-            </section>
+      {/* MOBILE DROPDOWN */}
+      <div className="md:hidden mb-4">
+        <select
+          value={activeCategory.id}
+          onChange={(e) =>
+            setActiveCategory(categories.find(c => c.id === e.target.value))
+          }
+          className="w-full p-3 border rounded-lg"
+        >
+          {categories.map(cat => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-            {/* Laddu Grid */}
-            <section ref={addToRefs} className="px-6 md:px-24 relative z-0 mb-20">
-                <div className="text-center mb-6 text-[var(--color-text-muted)] text-sm">
-                    Showing {filteredLaddus.length} delicious laddus
-                </div>
+      {/* PRODUCTS GRID */}
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="bg-gray-200 animate-pulse">
+              <div className="w-full aspect-square bg-gray-300"></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredLaddus.map((laddu) => (
+            <LadduCard
+              key={laddu._id}
+              product={{
+                id: laddu._id,
+                name: laddu.name,
+                img: laddu.mainImage?.url || besanLaddu,
+                price: laddu.price,
+                finalPrice: laddu.finalPrice,
+                discountPercent: laddu.discountPercent,
+                description: laddu.description,
+                category: laddu.category?.name || 'Special'
+              }}
+            />
+          ))}
+        </div>
+      )}
 
-                {loading ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                        {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="bg-gray-200 rounded-xl animate-pulse">
-                                <div className="w-full aspect-square bg-gray-300 rounded-t-xl"></div>
-                                <div className="p-3">
-                                    <div className="h-4 bg-gray-300 rounded mb-2 w-3/4"></div>
-                                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                        {filteredLaddus.map((laddu) => (
-                            <LadduCard
-                                key={laddu._id}
-                                product={{
-                                    id: laddu._id,
-                                    name: laddu.name,
-                                    img: laddu.mainImage?.url || besanLaddu,
-                                    price: laddu.price,
-                                    finalPrice: laddu.finalPrice,
-                                    discountPercent: laddu.discountPercent,
-                                    priceStr: `₹${laddu.finalPrice} / kg`,
-                                    description: laddu.description,
-                                    category: laddu.category?.name || 'Special'
-                                }}
-                            />
-                        ))}
-                    </div>
-                )}
+    </div>
 
-                {!loading && filteredLaddus.length === 0 && (
-                    <div className="text-center py-20">
-                        <p className="text-xl md:text-2xl text-gray-500 italic">No laddus found in this selection. Try adjusting your filters!</p>
-                    </div>
-                )}
-            </section>
+  </div>
+</section>
 
             {/* Quality Promise */}
             <section ref={addToRefs} className="mt-16 md:mt-24 mx-6 md:mx-24 p-8 md:p-12 bg-[var(--color-muted)] rounded-[40px] md:rounded-[50px] shadow-lg text-center relative overflow-hidden border border-[var(--color-secondary)]/10 ">

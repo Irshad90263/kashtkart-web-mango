@@ -15,10 +15,10 @@ const FAQ = ({ addToRefs }) => {
   return (
     <section
       ref={addToRefs || null}
-      className={`${addToRefs ? 'scroll-section' : ''} bg-[var(--color-surface)] py-16 px-8 md:px-24`}
+      className={`${addToRefs ? 'scroll-section' : ''} bg-[var(--color-surface)] py-16 px-8 md:px-24 2xl:px-32 3xl:px-48`}
       id="faq"
     >
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto">
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-[1px] w-8 bg-[var(--color-secondary)] opacity-60"></div>

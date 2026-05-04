@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-[var(--color-dark)] text-gray-300 pt-12 pb-4 px-8 md:px-24 relative overflow-hidden">
+    <footer className="bg-[var(--color-dark)] text-gray-300 pt-12 pb-4 px-8 md:px-24 2xl:px-32 3xl:px-48 relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--color-secondary)] to-transparent opacity-50"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">

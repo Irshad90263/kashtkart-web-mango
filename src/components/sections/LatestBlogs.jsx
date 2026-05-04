@@ -87,7 +87,7 @@ const LatestBlogs = memo(({ addToRefs }) => {
   return (
     <section
       ref={addToRefs}
-      className="scroll-section py-16 px-8 md:px-24 bg-[var(--color-surface)] overflow-hidden"
+      className="scroll-section py-16 px-8 md:px-24 2xl:px-32 3xl:px-48 bg-[var(--color-surface)] overflow-hidden"
       id="blogs"
     >
       <div className="text-center mb-10">
