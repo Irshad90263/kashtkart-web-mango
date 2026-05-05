@@ -70,7 +70,7 @@ const OurCategories = memo(({ addToRefs }) => {
   return (
     <section
       ref={addToRefs}
-      className="scroll-section py-14 px-8 md:px-24 2xl:px-32 3xl:px-48 bg-[var(--color-surface)] overflow-hidden"
+      className="scroll-section py-14 px-2 md:px-4 2xl:px-8 3xl:px-48 bg-[var(--color-secondary)]/20 overflow-hidden"
       id="our-categories"
     >
       {/* Header */}

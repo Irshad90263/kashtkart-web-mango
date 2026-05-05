@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, lazy, Suspense, memo } from 'react';
+import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import { listProductsApi } from '../../api/product';
 import { listCategoriesApi } from '../../api/categories';
 
@@ -15,17 +15,17 @@ const SkeletonCard = () => (
 );
 
 const SkeletonSection = () => (
-  <section className="py-12 px-8 md:px-24 2xl:px-32 3xl:px-48 bg-[var(--color-primary)]">
+  <section className="py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 bg-[var(--color-primary)]">
     <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto">
       <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-10"></div>
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
       </div>
     </div>
   </section>
 );
 
-const CategoryProducts = memo(({ addToRefs }) => {
+const CategoryProducts = ({ addToRefs }) => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +56,13 @@ const CategoryProducts = memo(({ addToRefs }) => {
     </>
   );
 
+  // Function to get background class based on index
+  const getBgClass = (idx) => {
+    if (idx === 0) return 'bg-[var(--color-primary)]'; // First section - White
+    if (idx % 2 === 1) return 'bg-[var(--color-secondary)]/15'; // Second, fourth, sixth - Light yellow (5% opacity)
+    return 'bg-[var(--color-primary)]'; // Third, fifth, seventh - White
+  };
+
   return (
     <>
       {categories.map((cat, idx) => {
@@ -65,37 +72,68 @@ const CategoryProducts = memo(({ addToRefs }) => {
           <section
             key={cat._id}
             ref={addToRefs}
-            className={`scroll-section py-12 px-8 md:px-24 2xl:px-32 3xl:px-48 ${idx % 2 === 0 ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-surface)]'}`}
+            className={`scroll-section pt-4 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 transition-all duration-300 ${getBgClass(idx)}`}
           >
             <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto">
               {/* Category Heading */}
-              <div className="text-center mb-10">
+              <div className="text-left mb-4">
                 <h2 className="inline-block text-2xl md:text-4xl font-black text-[var(--color-dark)] font-[var(--font-heading)] pb-2 border-b-4 border-[var(--color-secondary)]">
                   {cat.name}
                 </h2>
               </div>
 
-              {/* Products */}
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                {catProducts.map(item => (
-                  <div key={item._id} className="sm:hover:-translate-y-2 transition-transform duration-300">
-                    <Suspense fallback={<div className="h-80 bg-gray-200 rounded-xl animate-pulse"></div>}>
-                      <LadduCard
-                        product={{
-                          id: item._id,
-                          name: item.name,
-                          img: item.mainImage?.url || '/src/assets/images/besan-laddu.png',
-                          price: item.price,
-                          finalPrice: item.finalPrice,
-                          discountPercent: item.discountPercent,
-                          priceStr: `₹${item.finalPrice} / kg`,
-                          description: item.description,
-                          category: item.category?.name || cat.name,
-                        }}
-                      />
-                    </Suspense>
+              {/* Products - Horizontal Scrollable Container */}
+              <div className="relative pl-8">
+                <div className="overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 pb-4">
+                  <div className="flex gap-3 sm:gap-4 md:gap-5 lg:gap-6 min-w-max">
+                    {catProducts.map(item => (
+                      <div
+                        key={item._id}
+                        className="w-[260px] sm:w-[280px] md:w[280px] lg:w-[300px] flex-shrink-0 sm:hover:-translate-y-2 transition-transform duration-300"
+                      >
+                        <Suspense fallback={<div className="h-80 bg-gray-200 rounded-xl animate-pulse"></div>}>
+                          <LadduCard
+                            product={{
+                              id: item._id,
+                              name: item.name,
+                              img: item.mainImage?.url || '/src/assets/images/besan-laddu.png',
+                              price: item.price,
+                              finalPrice: item.finalPrice,
+                              discountPercent: item.discountPercent,
+                              priceStr: `₹${item.finalPrice} / kg`,
+                              description: item.description,
+                              category: item.category?.name || cat.name,
+                            }}
+                          />
+                        </Suspense>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                {/* Scroll Buttons - Hide on mobile, show on desktop when needed */}
+                {catProducts.length > 4 && (
+                  <>
+                    <button
+                      className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg z-10 transition-all hover:scale-110"
+                      onClick={(e) => {
+                        const container = e.currentTarget.parentElement.querySelector('.overflow-x-auto');
+                        container.scrollBy({ left: -280, behavior: 'smooth' });
+                      }}
+                    >
+                      ←
+                    </button>
+                    <button
+                      className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg z-10 transition-all hover:scale-110"
+                      onClick={(e) => {
+                        const container = e.currentTarget.parentElement.querySelector('.overflow-x-auto');
+                        container.scrollBy({ left: 280, behavior: 'smooth' });
+                      }}
+                    >
+                      →
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </section>
@@ -103,7 +141,6 @@ const CategoryProducts = memo(({ addToRefs }) => {
       })}
     </>
   );
-});
+};
 
-CategoryProducts.displayName = 'CategoryProducts';
-export default CategoryProducts;
+export default React.memo(CategoryProducts);

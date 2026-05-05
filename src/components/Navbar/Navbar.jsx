@@ -1,13 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { getCartApi } from '../../api/cart';
-import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, ChevronDown } from 'lucide-react';
+import { listCategoriesApi } from '../../api/categories';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [cartCount, setCartCount] = useState(0);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const [categories, setCategories] = useState([]);
+    const dropdownRef = useRef(null);
+    const dropdownTimeoutRef = useRef(null);
+
+    // Fetch categories for dropdown
+    useEffect(() => {
+        listCategoriesApi()
+            .then(data => {
+                const cats = data.categories || (Array.isArray(data) ? data : []);
+                setCategories(cats);
+            })
+            .catch(err => console.error("Failed to fetch categories for navbar", err));
+    }, []);
 
     // Fetch cart count
     useEffect(() => {
@@ -27,7 +42,6 @@ const Navbar = () => {
 
         fetchCartCount();
 
-        // Listen for global cart update events
         window.addEventListener('cart-updated', fetchCartCount);
 
         return () => {
@@ -35,22 +49,54 @@ const Navbar = () => {
         };
     }, [location.pathname]);
 
-    // Close menu when route changes
+    // Close menu and dropdown when route changes
     useEffect(() => {
         setIsMenuOpen(false);
+        setIsDropdownOpen(false);
     }, [location.pathname]);
+
+    // Handle click outside dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const activeLink = "no-underline text-[var(--color-secondary)] font-semibold text-base transition-all duration-300 border-b-2 border-[var(--color-secondary)] pb-1";
     const normalLink = "no-underline text-[var(--color-text)] font-semibold text-base transition-all duration-300 hover:text-[var(--color-secondary)] border-b-2 border-transparent hover:border-[var(--color-secondary)] pb-1";
 
+    const handleMouseEnter = () => {
+        if (dropdownTimeoutRef.current) {
+            clearTimeout(dropdownTimeoutRef.current);
+        }
+        setIsDropdownOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+        dropdownTimeoutRef.current = setTimeout(() => {
+            setIsDropdownOpen(false);
+        }, 200);
+    };
+
+    const handleCategoryClick = (categoryId) => {
+        setIsDropdownOpen(false);
+        navigate('/laddus', { state: { categoryId: categoryId } });
+    };
+
     const navLinks = [
         { to: "/", label: "Home" },
-        { to: "/laddus", label: "Our Mangoes" },
-        { to: "/orders", label: "My Orders" },
-        { to: "/about", label: "About Us" },
-        { to: "/faqs", label: "FAQ's" },
-        { to: "/testimonials", label: "Testimonials" },
-        { to: "/contact", label: "Contact" },
+        { to: "/about", label: "Our Legacy" },
+        { to: "/laddus", label: "Order Now" },
+        { to: "/faqs", label: "Corporate Gifting" },
+        { to: "/faqs", label: "Blogs" },
+        { to: "/contact", label: "Reach Out Us" },
     ];
 
     return (
@@ -62,13 +108,57 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
             <ul className="hidden lg:flex list-none gap-8 m-0 p-0">
-                {navLinks.map(link => (
-                    <li key={link.to}>
-                        <NavLink to={link.to} className={({ isActive }) => isActive ? activeLink : normalLink}>
-                            {link.label}
-                        </NavLink>
-                    </li>
-                ))}
+                {navLinks.map(link => {
+                    if (link.to === '/laddus') {
+                        return (
+                            <li
+                                key={link.to}
+                                className="relative group"
+                                ref={dropdownRef}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                            >
+                                <NavLink
+                                    to={link.to}
+                                    state={{ categoryId: 'all' }}
+                                    className={({ isActive }) => isActive ? activeLink + " flex items-center gap-1" : normalLink + " flex items-center gap-1"}
+                                    onClick={() => setIsDropdownOpen(false)}
+                                >
+                                    {link.label} <ChevronDown size={14} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                                </NavLink>
+
+                                {/* Dropdown */}
+                                <div className={`absolute left-0 mt-2 w-48 bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 overflow-hidden ${isDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                                    <div className="py-2 flex flex-col">
+                                        <div
+                                            className="px-4 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium"
+                                            onClick={() => handleCategoryClick('all')}
+                                        >
+                                            All Products
+                                        </div>
+                                        {categories.map(cat => (
+                                            <div
+                                                key={cat._id}
+                                                className="px-4 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium"
+                                                onClick={() => handleCategoryClick(cat._id)}
+                                            >
+                                                {cat.name}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </li>
+                        );
+                    }
+
+                    return (
+                        <li key={link.to}>
+                            <NavLink to={link.to} className={({ isActive }) => isActive ? activeLink : normalLink}>
+                                {link.label}
+                            </NavLink>
+                        </li>
+                    );
+                })}
             </ul>
 
             {/* Actions & Mobile Toggle */}
@@ -118,7 +208,10 @@ const Navbar = () => {
                         <NavLink
                             key={link.to}
                             to={link.to}
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                setIsDropdownOpen(false);
+                            }}
                             className={({ isActive }) => `text-base font-bold no-underline py-3 px-6 rounded-2xl transition-all duration-300 ${isActive ? 'bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] shadow-sm' : 'text-[var(--color-text)] hover:bg-[var(--color-secondary)]/5'}`}
                             style={{ transitionDelay: `${idx * 40}ms` }}
                         >
@@ -128,7 +221,10 @@ const Navbar = () => {
 
                     <div className="mt-auto pt-6 border-t border-[var(--color-secondary)]/10 flex items-center justify-between">
                         <div
-                            onClick={() => navigate('/profile')}
+                            onClick={() => {
+                                navigate('/profile');
+                                setIsMenuOpen(false);
+                            }}
                             className="flex items-center gap-3 text-[var(--color-secondary)] font-bold cursor-pointer hover:bg-[var(--color-secondary)]/10 p-2 rounded-xl transition-all duration-300"
                         >
                             <User size={18} />
