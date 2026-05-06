@@ -1,27 +1,43 @@
-import React, { useState, useEffect, useRef, useTransition } from 'react';
+import React, { useState, useEffect, useRef, useTransition, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Shield, Truck, Package, Heart, Clock, Sparkles } from 'lucide-react';
+import { Shield, Truck, Package, Heart, Clock, Sparkles, Filter, X } from 'lucide-react';
 import LadduCard from '../../components/cards/LadduCard';
 import Footer from '../../components/layout/Footer';
-import besanLaddu from '../../assets/images/besan-laddu.png';
 
 import { listCategoriesApi } from '../../api/categories';
 import { listProductsApi, listProductsByCategoryApi } from '../../api/product';
 
 const Laddus = () => {
-  const [activeCategory, setActiveCategory] = useState({ name: 'All', id: 'all' });
-  const [categories, setCategories] = useState([{ name: 'All', id: 'all' }]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [sortBy, setSortBy] = useState('');
   const location = useLocation();
+
+  // Mobile filter modal states
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [mobileSelectedTab, setMobileSelectedTab] = useState('categories');
+  const [tempSelectedCategories, setTempSelectedCategories] = useState([]);
+  const [tempSortBy, setTempSortBy] = useState('');
+
+  // Products section end detect
+  const productsEndRef = useRef(null);
+  const [isProductsEndReached, setIsProductsEndReached] = useState(false);
+
+  // Clear all filters function
+  const clearAllFilters = () => {
+    setSelectedCategories([]);
+    setSortBy('');
+  };
 
   // Fetch categories on mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await listCategoriesApi();
-        setCategories([{ name: 'All', id: 'all' }, ...data.categories.map(c => ({ ...c, id: c._id || c.id }))]);
+        setCategories(data.categories.map(c => ({ ...c, id: c._id || c.id })));
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }
@@ -29,55 +45,103 @@ const Laddus = () => {
     fetchCategories();
   }, []);
 
-  // Listen to location state changes
+  // Detect when products section end is reached
   useEffect(() => {
-    if (location.state?.categoryId && categories.length > 1) {
-      const targetCat = categories.find(c => c.id === location.state.categoryId);
-      if (targetCat && targetCat.id !== activeCategory.id) {
-        setActiveCategory(targetCat);
-      }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsProductsEndReached(entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: '0px' }
+    );
+    
+    if (productsEndRef.current) {
+      observer.observe(productsEndRef.current);
     }
-  }, [location.state, categories]);
+    
+    return () => observer.disconnect();
+  }, []);
 
-  // Fetch products when activeCategory changes - with smooth transition
-  useEffect(() => {
-    startTransition(async () => {
-      setLoading(true);
-      try {
-        let data;
-        if (activeCategory.id === 'all') {
-          data = await listProductsApi();
-          setProducts(data.products || (Array.isArray(data) ? data : []));
-        } else {
-          data = await listProductsByCategoryApi(activeCategory.id);
-          setProducts(data.products || (Array.isArray(data) ? data : []));
-        }
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
+  // Handle category checkbox change
+  const handleCategoryToggle = (categoryId) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(categoryId)) {
+        return prev.filter(id => id !== categoryId);
+      } else {
+        return [...prev, categoryId];
       }
     });
-  }, [activeCategory]);
+  };
 
-  const handleCategoryChange = (category) => {
-    if (category.id === activeCategory.id) return;
-    setActiveCategory(category);
+  // Fetch products with filters
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    try {
+      let data;
+
+      if (selectedCategories.length === 0) {
+        data = await listProductsApi(sortBy);
+        setProducts(data.products || (Array.isArray(data) ? data : []));
+      } else if (selectedCategories.length === 1) {
+        data = await listProductsByCategoryApi(selectedCategories[0], sortBy);
+        setProducts(data.products || (Array.isArray(data) ? data : []));
+      } else {
+        const categoryIds = selectedCategories.join(',');
+        data = await listProductsByCategoryApi(categoryIds, sortBy);
+        setProducts(data.products || (Array.isArray(data) ? data : []));
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedCategories, sortBy]);
+
+  // Fetch products when selectedCategories or sortBy changes
+  useEffect(() => {
+    startTransition(() => {
+      fetchProducts();
+    });
+  }, [fetchProducts]);
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
+
+  // Mobile filter handlers
+  const openFilterModal = () => {
+    setTempSelectedCategories([...selectedCategories]);
+    setTempSortBy(sortBy);
+    setIsFilterModalOpen(true);
+  };
+
+  const closeFilterModal = () => {
+    setIsFilterModalOpen(false);
+  };
+
+  const applyFilters = () => {
+    setSelectedCategories(tempSelectedCategories);
+    setSortBy(tempSortBy);
+    setIsFilterModalOpen(false);
+  };
+
+  const handleTempCategoryToggle = (categoryId) => {
+    setTempSelectedCategories(prev => {
+      if (prev.includes(categoryId)) {
+        return prev.filter(id => id !== categoryId);
+      } else {
+        return [...prev, categoryId];
+      }
+    });
   };
 
   return (
     <div className="bg-[var(--color-primary)] text-[var(--color-text)] font-[var(--font-body)] min-h-screen overflow-x-hidden -mt-4">
-      {/* Header with Yellow Overlay */}
+      {/* Header Section */}
       <section className="relative py-10 md:py-12 px-8 text-center rounded-b-[40px] md:rounded-b-[50px] overflow-hidden mb-12">
-
-        {/* Yellow Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-yellow-400/20 via-amber-400/10 to-transparent"></div>
-
-        {/* Original Gradient Background */}
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(158, 133, 8, 0.92)_0%,transparent_70%)]"></div>
 
-        {/* Bubbles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="laddus-bubble laddus-bubble-1"></div>
           <div className="laddus-bubble laddus-bubble-2"></div>
@@ -115,48 +179,94 @@ const Laddus = () => {
       {/* Main Section */}
       <section className="px-4 md:px-12 mb-4">
         <div className="grid grid-cols-12 gap-6">
-          {/* Sidebar */}
+          {/* Sidebar - Desktop only */}
           <div className="hidden md:block col-span-2">
+            {/* Categories Section */}
+            <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4 mb-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-base font-bold text-[var(--color-secondary)] uppercase">
+                  Categories
+                </h3>
+                {(selectedCategories.length > 0 || sortBy) && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+                {categories.map(cat => (
+                  <label key={cat.id} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10 transition-all">
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(cat.id)}
+                      onChange={() => handleCategoryToggle(cat.id)}
+                      className="w-4 h-4 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                    />
+                    <span className="text-sm text-[var(--color-text-muted)]">{cat.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Sort Section - Desktop */}
             <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
-              <h3 className="text-base font-bold mb-4 text-[var(--color-secondary)] uppercase text-center">
-                Categories
+              <h3 className="text-sm font-bold text-[var(--color-secondary)] uppercase mb-3">
+                Price
               </h3>
               <div className="flex flex-col gap-2">
-                {categories.map(cat => (
-                  <button
-                    key={cat.id}
-                    onClick={() => handleCategoryChange(cat)}
-                    className={`text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${activeCategory.id === cat.id
-                      ? 'bg-[var(--color-secondary)] text-[var(--color-primary)]'
-                      : 'text-[var(--color-text-muted)] hover:bg-[var(--color-secondary)]/10'
-                      }`}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
+                  <input
+                    type="radio"
+                    name="sort"
+                    value="price_asc"
+                    checked={sortBy === 'price_asc'}
+                    onChange={handleSortChange}
+                    className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                  />
+                  <span className="text-sm text-[var(--color-text-muted)]">Low to High</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
+                  <input
+                    type="radio"
+                    name="sort"
+                    value="price_desc"
+                    checked={sortBy === 'price_desc'}
+                    onChange={handleSortChange}
+                    className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                  />
+                  <span className="text-sm text-[var(--color-text-muted)]">High to Low</span>
+                </label>
               </div>
             </div>
           </div>
 
           {/* Products */}
           <div className="col-span-12 md:col-span-10">
-            {/* Mobile Dropdown */}
-            <div className="md:hidden mb-4">
-              <select
-                value={activeCategory.id}
-                onChange={(e) => handleCategoryChange(categories.find(c => c.id === e.target.value))}
-                className="w-full p-3 border rounded-lg transition-all duration-200"
-              >
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
-            </div>
+            {/* Mobile Filter Button - Only visible in products section */}
+            {!isProductsEndReached && (
+              <div className="md:hidden mb-4">
+                <button
+                  onClick={openFilterModal}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-[var(--color-secondary)]/30 bg-[var(--color-surface)] text-[var(--color-secondary)] font-semibold"
+                >
+                  <Filter className="w-5 h-5" />
+                  Filters
+                  {(selectedCategories.length > 0 || sortBy) && (
+                    <span className="ml-1 px-2 py-0.5 text-xs bg-[var(--color-secondary)] text-[var(--color-primary)] rounded-full">
+                      {selectedCategories.length + (sortBy ? 1 : 0)}
+                    </span>
+                  )}
+                </button>
+              </div>
+            )}
 
-            {/* Loading Skeleton with fade animation */}
+            {/* Loading Skeleton */}
             {(loading || isPending) ? (
               <div className="animate-fadeIn">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div key={i} className="bg-gray-200 animate-pulse rounded-xl">
                       <div className="w-full aspect-square bg-gray-300 rounded-t-xl"></div>
@@ -170,7 +280,7 @@ const Laddus = () => {
               </div>
             ) : (
               <div className="animate-fadeIn">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                   {products.map((laddu) => (
                     <LadduCard
                       key={laddu._id}
@@ -189,12 +299,130 @@ const Laddus = () => {
                 </div>
               </div>
             )}
+
+            {/* Products section end detector */}
+            <div ref={productsEndRef} className="h-1"></div>
           </div>
         </div>
       </section>
 
-      {/* Quality Promise */}
-      <section className="relative mx-6 md:mx-24 overflow-hidden">
+      {/* Mobile Filter Modal */}
+      {isFilterModalOpen && (
+        <div className="fixed inset-0 z-50 md:hidden bg-black/50 flex items-end justify-center">
+          <div className="bg-[var(--color-primary)] w-full h-[90vh] rounded-t-2xl flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-4 border-b border-[var(--color-secondary)]/20">
+              <h3 className="text-lg font-bold text-[var(--color-secondary)]">Filters</h3>
+              <div className="flex gap-3">
+                {(tempSelectedCategories.length > 0 || tempSortBy) && (
+                  <button
+                    onClick={() => {
+                      setTempSelectedCategories([]);
+                      setTempSortBy('');
+                    }}
+                    className="text-sm text-red-500"
+                  >
+                    Clear All
+                  </button>
+                )}
+                <button onClick={closeFilterModal} className="p-1">
+                  <X className="w-6 h-6 text-[var(--color-text-muted)]" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content Area - Split View */}
+            <div className="flex flex-1 overflow-hidden">
+              {/* Left Sidebar Tabs */}
+              <div className="w-1/3 bg-[var(--color-surface)] border-r border-[var(--color-secondary)]/10">
+                <button
+                  onClick={() => setMobileSelectedTab('categories')}
+                  className={`w-full p-4 text-left font-medium transition-all ${mobileSelectedTab === 'categories'
+                    ? 'bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]'
+                    : 'text-[var(--color-text-muted)]'
+                    }`}
+                >
+                  Categories
+                </button>
+                <button
+                  onClick={() => setMobileSelectedTab('price')}
+                  className={`w-full p-4 text-left font-medium transition-all ${mobileSelectedTab === 'price'
+                    ? 'bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]'
+                    : 'text-[var(--color-text-muted)]'
+                    }`}
+                >
+                  Price
+                </button>
+              </div>
+
+              {/* Right Side Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                {mobileSelectedTab === 'categories' && (
+                  <div>
+                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">Select Categories</span>
+                    <div className="space-y-3">
+                      {categories.map(cat => (
+                        <label key={cat.id} className="flex items-center gap-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={tempSelectedCategories.includes(cat.id)}
+                            onChange={() => handleTempCategoryToggle(cat.id)}
+                            className="w-5 h-5 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                          />
+                          <span className="text-sm text-[var(--color-text)]">{cat.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {mobileSelectedTab === 'price' && (
+                  <div>
+                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">Sort by Price</span>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="mobileSort"
+                          value="price_asc"
+                          checked={tempSortBy === 'price_asc'}
+                          onChange={(e) => setTempSortBy(e.target.value)}
+                          className="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                        />
+                        <span className="text-sm text-[var(--color-text)]">Low to High</span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="mobileSort"
+                          value="price_desc"
+                          checked={tempSortBy === 'price_desc'}
+                          onChange={(e) => setTempSortBy(e.target.value)}
+                          className="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                        />
+                        <span className="text-sm text-[var(--color-text)]">High to Low</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Apply Button */}
+            <div className="p-4 border-t border-[var(--color-secondary)]/20">
+              <button
+                onClick={applyFilters}
+                className="w-full py-3 rounded-xl bg-[var(--color-secondary)] text-[var(--color-primary)] font-semibold"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quality Promise Section */}
+      <section className="relative mx-6 md:mx-24 overflow-hidden bg-[var(--color-primary)]">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-yellow-50/30 rounded-3xl"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-secondary)]/5 rounded-full -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--color-secondary)]/5 rounded-full -ml-32 -mb-32"></div>
@@ -257,7 +485,6 @@ const Laddus = () => {
         <Footer />
       </div>
 
-      {/* Add fade-in animation CSS */}
       <style dangerouslySetInnerHTML={{
         __html: `
           @keyframes fadeIn {

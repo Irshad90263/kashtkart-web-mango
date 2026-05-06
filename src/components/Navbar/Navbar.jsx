@@ -128,7 +128,7 @@ const Navbar = () => {
                                 </NavLink>
 
                                 {/* Dropdown */}
-                                <div className={`absolute left-0 mt-2 w-48 bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 overflow-hidden ${isDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                                <div className={`absolute left-0 mt-2 w-56 bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 overflow-hidden ${isDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                                     <div className="py-2 flex flex-col">
                                         <div
                                             className="px-4 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium"
@@ -139,10 +139,11 @@ const Navbar = () => {
                                         {categories.map(cat => (
                                             <div
                                                 key={cat._id}
-                                                className="px-4 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium"
+                                                className="px-2 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium flex gap-2"
                                                 onClick={() => handleCategoryClick(cat._id)}
                                             >
-                                                {cat.name}
+                                                <img className='h-6 w-6' src={cat.image?.url || "KK"}/>
+                                                <div>{cat.name}</div>
                                             </div>
                                         ))}
                                     </div>

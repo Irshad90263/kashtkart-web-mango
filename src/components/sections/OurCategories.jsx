@@ -17,11 +17,10 @@ const OurCategories = memo(({ addToRefs }) => {
       const prods = prodData.products || (Array.isArray(prodData) ? prodData : []);
 
       const catsWithImage = cats
-        .filter(cat => prods.some(p => (p.category?._id || p.category) === cat._id))
-        .map(cat => {
-          const firstProduct = prods.find(p => (p.category?._id || p.category) === cat._id);
-          return { ...cat, image: firstProduct?.mainImage?.url || null };
-        });
+  .map(cat => ({
+    ...cat,
+    image: cat.image?.url || null  // Category ki image URL direct use
+  }));
 
       setCategories(catsWithImage);
     } catch (err) {
@@ -113,7 +112,7 @@ const OurCategories = memo(({ addToRefs }) => {
                     loading="lazy"
                   />
                 ) : (
-                  <span className="text-3xl">🥭</span>
+                  <span className="text-1xl">KashtKart</span>
                 )}
               </div>
               {/* Name */}
