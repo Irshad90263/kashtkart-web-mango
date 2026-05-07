@@ -264,7 +264,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, ArrowLeft, Star, Package, Truck, Shield, ChevronRight, Minus, Plus, Heart } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Star, Package, Truck, Shield, ChevronRight, Minus, Plus, Heart, Smile } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { getProductApi } from '../../api/product';
@@ -463,19 +463,6 @@ const ProductDetail = () => {
                             </div>
 
                             <div className="py-2 border-b border-gray-100">
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-xl font-bold text-gray-900">₹{product.finalPrice}</span>
-                                    {product.discountPercent > 0 && (
-                                        <>
-                                            <span className="text-base text-gray-400 line-through">₹{product.price}</span>
-                                            <span className="text-green-600 text-[10px] font-medium">(Save ₹{product.price - product.finalPrice})</span>
-                                        </>
-                                    )}
-                                </div>
-                                <p className="text-gray-400 text-[10px] mt-0">Inclusive of all taxes</p>
-                            </div>
-
-                            <div className="py-2 border-b border-gray-100">
                                 <h3 className="text-[10px] font-bold text-gray-900 uppercase tracking-wider mb-1">Description</h3>
                                 <div className="max-h-[60px] overflow-y-auto pr-2 custom-scrollbar">
                                     <p className="text-gray-600 text-[12px] leading-snug italic">
@@ -484,11 +471,43 @@ const ProductDetail = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-2 py-3">
-                                <div className="bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                    <p className="text-[8px] text-gray-400 uppercase font-bold mb-0">Weight</p>
-                                    <p className="text-[12px] font-semibold text-gray-800">{product.netWeight}</p>
+                            {/* Feature Cards Row */}
+                            <div className="flex items-center gap-2 py-3  border-b border-gray-100">
+                                {[
+                                    { icon: <Smile className="text-[#FF8A00]" size={18} />, text: 'Farm Fresh' },
+                                    { icon: <Shield className="text-[#FF8A00]" size={18} />, text: 'Chemical Free' },
+                                    { icon: <Truck className="text-[#FF8A00]" size={18} />, text: 'Fast Delivery' },
+                                ].map((item, i) => (
+                                    <div key={i} className="w-16 h-16 flex flex-col items-center justify-center gap-1 bg-[#FFF9F3] border border-[#FFD9B2]/40 rounded-xl p-1">
+                                        <div className="">{item.icon}</div>
+                                        <span className="text-[8px] font-bold text-[#55606B] text-center leading-tight uppercase">
+                                            {item.text}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="py-2 border-b border-gray-100">
+                                <div className="flex items-baseline gap-3 mb-2 flex-wrap">
+                                    <span className="text-3xl font-black text-gray-900">₹{product.finalPrice}</span>
+                                    {product.discountPercent > 0 && (
+                                        <>
+                                            <span className="text-lg text-gray-400 line-through">₹{product.price}</span>
+                                            <span className="text-green-600 text-xs font-black bg-green-50 px-2 py-1 rounded">
+                                                {product.discountPercent}% OFF
+                                            </span>
+                                        </>
+                                    )}
                                 </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-gray-500 text-xs font-medium italic">Net Weight:</span>
+                                    <span className="text-gray-900 text-sm font-bold decoration-[var(--color-secondary)] decoration-2 underline-offset-4">
+                                        {product.netWeight} Kg
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* <div className="grid grid-cols-2 gap-2 py-3">
                                 <div className="bg-gray-50 p-2 rounded-lg border border-gray-100">
                                     <p className="text-[8px] text-gray-400 uppercase font-bold mb-0">Shelf Life</p>
                                     <p className="text-[12px] font-semibold text-gray-800">{product.shelfLife}</p>
@@ -497,7 +516,7 @@ const ProductDetail = () => {
                                     <p className="text-[8px] text-gray-400 uppercase font-bold mb-0">Type</p>
                                     <p className="text-[12px] font-semibold text-gray-800">100% Veg</p>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="space-y-2 mb-4">
                                 <div className="flex items-center gap-2">
@@ -537,7 +556,7 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Bottom Content (Trust Badges) - pushed down by justify-between */}
-                        <div className="border-t border-gray-100 pt-3 space-y-2 mt-0">
+                        {/* <div className="border-t border-gray-100 pt-3 space-y-2 mt-0">
                                 <div className="flex items-center gap-2">
                                 <div className="bg-yellow-50 p-1 rounded-md text-yellow-700 flex-shrink-0">
                                     <Package size={15} />
@@ -555,10 +574,56 @@ const ProductDetail = () => {
                                     <Shield size={14} className="text-green-600" /> Secure Pay
                                 </div>
                                 </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </main>
+
+            {/* About This Product Section */}
+            <section className="max-w-6xl mx-auto px-4 md:px-6 mb-16">
+                <div className="bg-white rounded-[32px] p-8 md:p-12 border border-gray-100 shadow-sm">
+                    <h2 className="text-2xl font-black text-gray-900 mb-8">About This Product</h2>
+                    
+                    <div className="space-y-8">
+                        <div>
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6 italic">Description</h3>
+                            
+                            <div className="space-y-8 text-gray-700">
+                                {/* Point 1 */}
+                                <div className="flex gap-4">
+                                    <span className="text-lg font-bold text-gray-900 pt-0.5">1.</span>
+                                    <div className="space-y-4">
+                                        <p className="text-lg font-bold text-gray-900">We ship Raw Mangoes.</p>
+                                        <ul className="space-y-4 text-sm md:text-base leading-relaxed text-gray-600 list-none pl-0">
+                                            <li className="flex items-start gap-3">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-2 flex-shrink-0"></span>
+                                                As it prevents damage during transit
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-2 flex-shrink-0"></span>
+                                                Natural ripening is uneven thus mangoes doesn't ripe altogether... providing convenience in consumption to customer.
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-2 flex-shrink-0"></span>
+                                                Natural ripening renders the mango that distinctive Alphonso aroma and sweetness unlike that of chemical induced ripening.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                {/* Point 2 */}
+                                <div className="flex gap-4 border-t border-gray-50 pt-8">
+                                    <span className="text-lg font-bold text-gray-900 pt-0.5">2.</span>
+                                    <p className="text-sm md:text-base font-medium leading-relaxed text-gray-800">
+                                        The weight of all mangoes mentioned on the website is related to raw mango. Change in with weight may occur during ripening process.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <Footer />
         </div>
     );

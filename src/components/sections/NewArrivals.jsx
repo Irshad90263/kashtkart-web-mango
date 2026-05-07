@@ -99,6 +99,7 @@ const NewArrivals = ({ addToRefs }) => {
                   priceStr: `₹${product.finalPrice} / kg`,
                   description: product.description,
                   category: product.category?.name,
+                  about: product.about,
                 }}
               />
             </Suspense>

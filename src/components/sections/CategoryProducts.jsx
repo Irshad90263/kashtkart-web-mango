@@ -89,17 +89,29 @@ const CategoryProducts = ({ addToRefs }) => {
             <section
               key={cat._id}
               ref={addToRefs}
-            className="py-14 transition-all duration-300 bg-amber-50/40 border border-amber-200/60 rounded-xl p-6 md:p-10 shadow-sm hover:shadow-md transition-all duration-500"
+            className={`relative overflow-hidden py-14 transition-all duration-500 rounded-xl p-6 md:p-10 shadow-sm hover:shadow-md ${
+              idx % 2 !== 0 
+                ? 'bg-amber-100/70 border border-amber-300/50' 
+                : 'bg-amber-50/40 border border-amber-200/60'
+            }`}
             >
+              {/* Decorative Background Elements */}
+              <div className="absolute inset-0 pointer-events-none opacity-20 z-0">
+                <span className="absolute top-4 -left-2 text-6xl select-none rotate-12">🥭</span>
+                <span className="absolute bottom-10 -right-2 text-5xl select-none -rotate-12">🍃</span>
+                <span className="absolute top-1/2 left-1/4 text-3xl select-none rotate-45 opacity-40">🌿</span>
+                <span className="absolute top-1/4 right-1/4 text-4xl select-none -rotate-45 opacity-30">🥭</span>
+              </div>
               {/* Category Heading */}
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-2">
+              <div className="mb-10 flex flex-col items-center text-center">
+                {/* <div className="flex items-center gap-3 mb-3 justify-center">
                   <div className="h-[2px] w-8 bg-[var(--color-secondary)]"></div>
-                  <span className="text-[var(--color-secondary)] font-bold uppercase tracking-wider text-xs">
+                  <span className="text-[var(--color-secondary)] font-bold uppercase tracking-widest text-[10px] sm:text-xs">
                     Fresh Collection
                   </span>
-                </div>
-                <h2 className="text-3xl md:text-4xl font-black text-[var(--color-text)] font-[var(--font-heading)]">
+                  <div className="h-[2px] w-8 bg-[var(--color-secondary)]"></div>
+                </div> */}
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight">
                   {cat.name} <span className="text-[var(--color-secondary)]">Special</span>
                 </h2>
               </div>
@@ -124,6 +136,7 @@ const CategoryProducts = ({ addToRefs }) => {
                             priceStr: `₹${item.finalPrice} / kg`,
                             description: item.description,
                             category: item.category?.name || cat.name,
+                            about: item.about,
                           }}
                         />
                       </div>

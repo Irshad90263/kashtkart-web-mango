@@ -75,41 +75,35 @@ const AppSection = () => {
                             Experience the finest quality with lightning-fast delivery.
                         </p>
 
-                        {/* Features Grid */}
-                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                            {features.map((feature, idx) => {
-                                const Icon = feature.icon;
-                                return (
-                                    <div 
-                                        key={idx}
-                                        className="flex items-center gap-3 p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-amber-100 hover:shadow-md hover:bg-white transition-all duration-300 hover:scale-105"
-                                    >
-                                        <div className={`p-2 rounded-lg bg-gradient-to-br ${feature.color}`}>
-                                            <Icon className="w-4 h-4 text-white" />
-                                        </div>
-                                        <span className="text-sm font-medium text-gray-800">{feature.text}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {/* Play Store Button */}
-                        <div className="pt-4">
-                            <button
-                                onClick={openPlayStore}
-                                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl shadow-lg overflow-hidden"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                <div className="relative z-10 flex items-center gap-3">
-                                    <div className="p-1.5 bg-white/10 rounded-xl">
-                                        <Download className="w-5 h-5" />
-                                    </div>
-                                    <div className="text-left">
-                                        <p className="text-xs opacity-80">GET IT ON</p>
-                                        <p className="text-xl font-bold tracking-tight">Google Play</p>
-                                    </div>
-                                </div>
-                            </button>
+                        {/* Download Links Section */}
+                        <div className="pt-6 flex flex-wrap items-center gap-6">
+                            <span className="text-xl sm:text-2xl font-medium text-[#4A5D6E] whitespace-nowrap">
+                                Download App:
+                            </span>
+                            <div className="flex flex-wrap items-center gap-4">
+                                {/* App Store Button */}
+                                <a 
+                                    href="#" 
+                                    className="transition-transform hover:scale-105 duration-300"
+                                >
+                                    <img 
+                                        src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
+                                        alt="Download on the App Store" 
+                                        className="h-10 sm:h-12 w-auto"
+                                    />
+                                </a>
+                                {/* Google Play Button */}
+                                <a 
+                                    href="#" 
+                                    className="transition-transform hover:scale-105 duration-300"
+                                >
+                                    <img 
+                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
+                                        alt="Get it on Google Play" 
+                                        className="h-10 sm:h-12 w-auto"
+                                    />
+                                </a>
+                            </div>
                         </div>
                     </div>
 

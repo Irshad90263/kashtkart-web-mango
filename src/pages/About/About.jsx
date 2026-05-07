@@ -4,6 +4,7 @@ import Footer from '../../components/layout/Footer';
 import mangoTree from '../../assets/images/mango-tree-isolate-on-transparent-background-png.png';
 import mangoFresh from '../../assets/images/pngtree-background-alphonso-mango-png-image_16550748.png';
 import mangoAlphonso from '../../assets/images/urunler_meyveler_mango.png';
+import whyChooseUs from '../../assets/images/whyChooseUs.png';
 
 const About = () => {
   const sectionRefs = useRef([]);
@@ -36,69 +37,27 @@ const About = () => {
   return (
     <div className="bg-[var(--color-primary)] text-[var(--color-text)] font-[var(--font-body)] min-h-screen">
 
-      {/* About Hero with Bubbles */}
-      <section className="py-4 px-4 md:px-8 md:py-14 md:px-24 bg-[linear-gradient(0deg,rgba(255,212,0,0.1)_0%,transparent_70%)] text-center relative overflow-hidden">
-        {/* Animated Background Bubbles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* About Hero with Full Width Image */}
+      <section className="w-full overflow-hidden">
+        <img 
+          src={whyChooseUs} 
+          alt="Why Choose Us" 
+          className="w-full h-auto block shadow-sm"
+        />
+        
+        {/* Animated Background Bubbles - Commented out */}
+        {/* <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="about-bubble about-bubble-1"></div>
           <div className="about-bubble about-bubble-2"></div>
           <div className="about-bubble about-bubble-3"></div>
           <div className="about-bubble about-bubble-4"></div>
-        </div>
+        </div> */}
 
-        <style dangerouslySetInnerHTML={{
-          __html: `
-            .about-bubble {
-              position: absolute;
-              background: rgba(255, 212, 0, 0.15);
-              border-radius: 50%;
-              animation: float-about-bubble 22s infinite ease-in-out;
-            }
-            .about-bubble-1 {
-              width: 120px;
-              height: 120px;
-              left: 10%;
-              top: 20%;
-              animation-delay: 0s;
-            }
-            .about-bubble-2 {
-              width: 150px;
-              height: 150px;
-              right: 15%;
-              top: 30%;
-              animation-delay: 3s;
-            }
-            .about-bubble-3 {
-              width: 100px;
-              height: 100px;
-              left: 70%;
-              bottom: 20%;
-              animation-delay: 6s;
-            }
-            .about-bubble-4 {
-              width: 130px;
-              height: 130px;
-              right: 60%;
-              bottom: 30%;
-              animation-delay: 2s;
-            }
-            @keyframes float-about-bubble {
-              0%, 100% {
-                transform: translate(0, 0) scale(1);
-                opacity: 0.4;
-              }
-              50% {
-                transform: translate(30px, -40px) scale(1.1);
-                opacity: 0.6;
-              }
-            }
-          `
-        }} />
-
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 relative z-10 text-[var(--color-secondary)]">Our Legacy of KaashtKart Mango</h1>
+        {/* Hero Text Content - Commented out */}
+        {/* <h1 className="text-4xl md:text-6xl font-bold mb-6 relative z-10 text-[var(--color-secondary)]">Our Legacy of KaashtKart Mango</h1>
         <p className="text-xl md:text-2xl opacity-90 max-w-2xl mx-auto italic relative z-10 text-[var(--color-text-muted)]">
           Crafting perfection for over a century, KaashtKart mango brings the authentic taste of tradition to your modern lifestyle.
-        </p>
+        </p> */}
       </section>
 
       {/* Legacy Section */}

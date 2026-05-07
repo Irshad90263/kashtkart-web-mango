@@ -55,11 +55,13 @@ const HeroSlider = memo(() => {
             <Slider {...settings}>
                 {sliders.map((slider) => (
                     <div key={slider._id} className="relative w-full outline-none">
-                        {/* Fluid Ratio Container - Matches shuddhswad.shop logic */}
-                        <div className="relative w-full aspect-[3/1] lg:aspect-[21/7] overflow-hidden">
+                        {/* Fluid Ratio Container - Optimized to prevent cropping */}
+                        {/* <div className="relative w-full aspect-[3/1] lg:aspect-[21/7] overflow-hidden"> */}
+                        <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:aspect-[21/8] overflow-hidden">
                             <img
                                 src={slider.image?.url || 'https://static.vecteezy.com/system/resources/previews/030/328/446/large_2x/mango-tree-and-mango-garden-mango-tree-generative-ai-photo.jpg'}
-                                alt={slider.title || 'SKS Laddu'}
+                                // src={slider.image?.url || 'https://static.vecteezy.com/system/resources/previews/030/328/446/large_2x/mango-tree-and-mango-garden-mango-tree-generative-ai-photo.jpg'}
+                                alt={slider.title || 'Fresh mango'}
                                 className="absolute inset-0 w-full h-full object-cover"
                                 loading="eager"
                             />

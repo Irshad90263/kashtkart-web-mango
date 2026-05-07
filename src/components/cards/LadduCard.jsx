@@ -25,6 +25,7 @@ const LadduCard = memo(({ product }) => {
   const displayPrice = product?.finalPrice || product?.price;
   const originalPrice = product?.price;
   const discount = product?.discountPercent;
+  const netWeight = product?.about?.netWeight || "N/A";
 
   const checkAuth = async () => {
     const token = localStorage.getItem('userToken');
@@ -104,6 +105,13 @@ const LadduCard = memo(({ product }) => {
         flex flex-col transition-all duration-500 hover:scale-[1.02]
         group relative overflow-hidden h-full cursor-pointer rounded-xl"
     >
+      {/* Discount Badge */}
+      {discount > 0 && (
+        <div className="absolute top-3 right-3 z-10 bg-[#FF4D4D] text-white text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-md shadow-md transform group-hover:scale-110 transition-transform duration-300">
+          {discount}% OFF
+        </div>
+      )}
+
       {/* IMAGE SECTION */}
       <div className="w-full aspect-square overflow-hidden bg-gray-100">
         <img
@@ -118,66 +126,65 @@ const LadduCard = memo(({ product }) => {
       <div className="p-3 sm:p-4 flex flex-col flex-1 bg-white/80">
 
         {/* Product Name */}
-        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 line-clamp-2 min-h-[48px] sm:min-h-[56px]">
+        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 line-clamp-2 mb-2">
           {name}
         </h3>
 
         {/* Rating Section */}
-        <div className="flex items-center gap-1 mt-1 mb-2">
-          <div className="flex items-center gap-0.5">
+        <div className="flex items-center mt-1 mb-2 gap-1">
+          {/* <div className="flex items-center gap-0.5">
             {renderStars(parseFloat(rating))}
-          </div>
+          </div> */}
           <span className="text-xs font-semibold text-gray-700 ml-1">{rating}</span>
           <span className="text-[10px] text-gray-400 ml-1">({reviewCount.toLocaleString()} reviews)</span>
         </div>
 
-        {/* Price Section */}
-        <div className="mt-auto">
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold text-[var(--color-secondary)]">
+        {/* Net Weight Badge */}
+        <div className="mb-3">
+          <div className="flex w-full items-center justify-between px-3 py-3 bg-amber-50/50 border border-amber-200/40 rounded-lg text-[11px] sm:text-xs">
+            <span className="text-amber-700/80 font-medium">Net Weight</span>
+            <span className="text-[var(--color-secondary)] font-black">{netWeight} Kg</span>
+          </div>
+        </div>
+
+        {/* Price and Action Section */}
+        <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between gap-2">
+          <div className="flex flex-col">
+            <span className="text-xl sm:text-2xl font-black text-[#FF6B00] leading-tight">
               ₹{displayPrice}
             </span>
             {discount > 0 && (
-              <>
-                <span className="text-xs sm:text-sm text-gray-400 line-through">
-                  ₹{originalPrice}
-                </span>
-                <span className="text-[11px] sm:text-xs text-green-600 font-semibold bg-green-50 px-1.5 py-0.5 rounded-md">
-                  {discount}% OFF
-                </span>
-              </>
+              <span className="text-xs sm:text-sm text-gray-400 line-through leading-tight">
+                ₹{originalPrice}
+              </span>
             )}
           </div>
 
-          {/* Add to Cart Button */}
-          <div className="mt-3 sm:mt-4">
-            <button
-              onClick={handleAddToCart}
-              disabled={added}
-              className={`
-                w-full rounded-lg py-2.5 sm:py-3
-                flex items-center justify-center gap-2
-                text-sm sm:text-base font-semibold
-                transition-all duration-300
-                ${added
-                  ? 'bg-green-600 text-white cursor-default'
-                  : 'bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-yellow-600 hover:scale-[1.02] active:scale-95 shadow-md'
-                }
-              `}
-            >
-              {added ? (
-                <>
-                  <CheckCircle size={18} />
-                  <span>Added to Cart ✓</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingCart size={18} />
-                  <span>Add to Cart</span>
-                </>
-              )}
-            </button>
-          </div>
+          <button
+            onClick={handleAddToCart}
+            disabled={added}
+            className={`
+              flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-sm border
+              transition-all duration-300 active:scale-95
+              ${added 
+                ? 'bg-green-600 border-green-600 text-white' 
+                : 'bg-white border text-[#004B8D] hover:bg-blue-50'
+              }
+              text-xs sm:text-sm font-bold
+            `}
+          >
+            {added ? (
+              <>
+                <CheckCircle size={16} />
+                <span className="hidden sm:inline">Added</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart size={16} />
+                <span>Add to Cart</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
