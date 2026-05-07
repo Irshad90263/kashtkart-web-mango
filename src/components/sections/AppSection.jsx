@@ -1,158 +1,268 @@
 import React from 'react';
-import { Download, Smartphone, Truck, Clock, BadgeCheck, Star } from 'lucide-react';
+import { Download, Smartphone, Truck, Clock, BadgeCheck, Star, Shield, Zap } from 'lucide-react';
 
 const AppSection = () => {
     const openPlayStore = () => {
         window.open('https://play.google.com', '_blank');
     };
 
+    const features = [
+        { icon: Truck, text: 'Free Delivery', color: 'from-orange-500 to-amber-500' },
+        { icon: Clock, text: '30 Mins Delivery', color: 'from-blue-500 to-cyan-500' },
+        { icon: BadgeCheck, text: 'Quality Guarantee', color: 'from-green-500 to-emerald-500' },
+        { icon: Star, text: '4.8 Rating', color: 'from-yellow-500 to-orange-500' },
+    ];
+
     return (
-        <section className="relative py-8 sm:py-10 md:py-12 lg:py-14 overflow-hidden">
-
-            {/* Background Gradient Overlay - Bottom to Top */}
-            <div className="absolute inset-0 bg-gradient-to-t from-yellow-400/60 via-amber-400/30 to-transparent"></div>
-
-            {/* Original Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-yellow-50/30"></div>
-
-            {/* Decorative Elements */}
-            <div className="absolute top-2 left-2 sm:top-3 sm:left-3 md:top-4 md:left-4 lg:top-5 lg:left-5 opacity-20 pointer-events-none z-10">
-                <div className="text-3xl sm:text-4xl md:text-5xl rotate-[-15deg]">🥭</div>
-            </div>
-            <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 md:bottom-4 md:right-4 lg:bottom-5 lg:right-5 opacity-20 pointer-events-none z-10">
-                <div className="text-3xl sm:text-4xl md:text-5xl rotate-[15deg]">🥭</div>
+        <section className="relative py-16 overflow-hidden bg-gradient-to-br from-amber-50/40 via-white to-yellow-50/40">
+            
+            {/* Animated Background Elements with Yellow Tone */}
+            <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-amber-300/30 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-200/15 rounded-full blur-3xl"></div>
+                
+                {/* Additional Yellow Glow */}
+                <div className="absolute top-20 left-1/4 w-64 h-64 bg-yellow-300/10 rounded-full blur-3xl animate-pulse delay-700"></div>
+                <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-amber-400/10 rounded-full blur-3xl animate-pulse delay-1500"></div>
             </div>
 
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 relative z-20">
-                <div className="flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-10 lg:gap-12">
+            {/* Soft Yellow Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-yellow-100/20 via-transparent to-amber-100/20"></div>
+
+            {/* Floating Decorative Elements */}
+            <div className="absolute inset-0 pointer-events-none opacity-40 overflow-hidden">
+                <span className="absolute -top-2 -left-2 text-7xl select-none rotate-[-15deg]">🥭</span>
+                <span className="absolute top-6 left-20 text-4xl select-none rotate-[20deg]">🌿</span>
+                <span className="absolute top-0 left-36 text-3xl select-none rotate-[-10deg]">🍃</span>
+                <span className="absolute -bottom-2 -right-2 text-7xl select-none rotate-[15deg]">🥭</span>
+                <span className="absolute bottom-6 right-20 text-4xl select-none rotate-[-20deg]">🌿</span>
+                <span className="absolute bottom-0 right-36 text-3xl select-none rotate-[10deg]">🍃</span>
+                <span className="absolute top-1/3 -left-1 text-4xl select-none rotate-[30deg]">🍃</span>
+                <span className="absolute top-2/3 -left-1 text-3xl select-none rotate-[-20deg]">🌿</span>
+                <span className="absolute top-1/3 -right-1 text-4xl select-none rotate-[-30deg]">🍃</span>
+                <span className="absolute top-2/3 -right-1 text-3xl select-none rotate-[20deg]">🌿</span>
+            </div>
+
+            {/* Grid Pattern */}
+            <div className="absolute inset-0 opacity-30">
+                <div className="w-full h-full" style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='rgba(251,191,36,0.08)' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E")`
+                }}></div>
+            </div>
+
+            <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full relative z-20">
+                <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
 
                     {/* Left Side - Content */}
-                    <div className="w-full lg:w-1/2 space-y-3 sm:space-y-4 md:space-y-5">
+                    <div className="w-full lg:w-1/2 space-y-6 md:space-y-8">
 
                         {/* Heading */}
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight">
-                            Download <span className="text-[var(--color-secondary)]">KashtKart</span> App
-                        </h2>
+                        <div className="space-y-3">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                                Download{' '}
+                                <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                                    KashtKart
+                                </span>{' '}
+                                App
+                            </h2>
+                            <div className="h-1 w-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
+                        </div>
 
                         {/* Description */}
-                        <p className="text-[var(--color-text-muted)] text-xs sm:text-sm md:text-base leading-relaxed">
-                            Order fresh mangoes directly from our orchards to your doorstep. Fast delivery, best quality.
+                        <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed max-w-lg">
+                            Order fresh mangoes directly from our orchards to your doorstep. 
+                            Experience the finest quality with lightning-fast delivery.
                         </p>
 
+                        {/* Features Grid */}
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                            {features.map((feature, idx) => {
+                                const Icon = feature.icon;
+                                return (
+                                    <div 
+                                        key={idx}
+                                        className="flex items-center gap-3 p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-amber-100 hover:shadow-md hover:bg-white transition-all duration-300 hover:scale-105"
+                                    >
+                                        <div className={`p-2 rounded-lg bg-gradient-to-br ${feature.color}`}>
+                                            <Icon className="w-4 h-4 text-white" />
+                                        </div>
+                                        <span className="text-sm font-medium text-gray-800">{feature.text}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
                         {/* Play Store Button */}
-                        <button
-                            onClick={openPlayStore}
-                            className="group flex items-center gap-1.5 sm:gap-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg transition-all duration-300 hover:scale-105 shadow-md w-fit"
-                        >
-                            <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            <div className="text-left">
-                                <p className="text-[10px] sm:text-xs md:text-sm font-bold -mt-0.5">Google Play</p>
-                            </div>
-                        </button>
+                        <div className="pt-4">
+                            <button
+                                onClick={openPlayStore}
+                                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl shadow-lg overflow-hidden"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div className="relative z-10 flex items-center gap-3">
+                                    <div className="p-1.5 bg-white/10 rounded-xl">
+                                        <Download className="w-5 h-5" />
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="text-xs opacity-80">GET IT ON</p>
+                                        <p className="text-xl font-bold tracking-tight">Google Play</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Right Side - Two Mobile Frames with Separate Rotation */}
-                    <div className="w-full lg:w-1/2 flex justify-center items-center mt-6 lg:mt-0">
-                        <div className="relative flex justify-center items-center gap-8 sm:gap-10 md:gap-12">
-
-                            {/* First Mobile Frame (Left - Rotate Left) */}
+                    {/* Right Side - Premium Phone Mockups */}
+                    <div className="w-full lg:w-1/2 flex justify-center items-center">
+                        <div className="relative flex justify-center items-center gap-6 sm:gap-8">
+                            
+                            {/* Background Glow - Yellow Tone */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-yellow-400/20 rounded-full blur-3xl"></div>
+                            
+                            {/* First Mobile Frame */}
                             <div
-                                className="relative w-[130px] sm:w-[150px] md:w-[170px] lg:w-[180px] z-0"
+                                className="relative z-0 transform -rotate-6 hover:rotate-0 transition-transform duration-500"
                                 style={{
-                                    transform: 'rotate(-5deg)',
-                                    animation: 'floatLeft 3s ease-in-out infinite'
+                                    animation: 'floatLeft 4s ease-in-out infinite'
                                 }}
                             >
-                                <div className="relative bg-[#1a1a1a] rounded-[1.5rem] sm:rounded-[1.8rem] md:rounded-[2rem] p-1 sm:p-1.5 md:p-2 shadow-xl">
-                                    <div className="bg-gradient-to-br from-amber-100 to-yellow-100 rounded-[1.2rem] sm:rounded-[1.3rem] md:rounded-[1.5rem] overflow-hidden">
-                                        <div className="aspect-[9/19] flex items-center justify-center">
-                                            {(() => {
-                                                try {
-                                                    const MobileApp = require('../../assets/images/mobileApp.png');
-                                                    return (
-                                                        <img
-                                                            src={MobileApp}
-                                                            alt="KashtKart App"
-                                                            className="w-full h-full object-cover rounded-[1.2rem] sm:rounded-[1.3rem] md:rounded-[1.5rem]"
-                                                        />
-                                                    );
-                                                } catch {
-                                                    return (
-                                                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[var(--color-secondary)]/20 to-[var(--color-secondary)]/5">
-                                                            <Smartphone className="w-6 h-6 sm:w-8 sm:h-8 text-[var(--color-secondary)] mb-1" />
-                                                            <p className="text-[var(--color-secondary)] font-semibold text-center text-[6px] sm:text-[8px] px-2">KashtKart App</p>
-                                                        </div>
-                                                    );
-                                                }
-                                            })()}
+                                <div className="relative">
+                                    {/* Phone Shadow */}
+                                    <div className="absolute -inset-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    
+                                    <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[2rem] p-1.5 shadow-2xl">
+                                        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-[1.7rem] overflow-hidden">
+                                            <div className="aspect-[9/19] flex items-center justify-center relative">
+                                                {(() => {
+                                                    try {
+                                                        const MobileApp = require('../../assets/images/mobileApp.png');
+                                                        return (
+                                                            <img
+                                                                src={MobileApp}
+                                                                alt="KashtKart App"
+                                                                className="w-full h-full object-cover rounded-[1.7rem]"
+                                                            />
+                                                        );
+                                                    } catch {
+                                                        return (
+                                                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-amber-400/30 to-orange-400/30">
+                                                                <Smartphone className="w-10 h-10 text-amber-600 mb-2" />
+                                                                <p className="text-amber-700 font-bold text-center text-xs px-4">KashtKart App</p>
+                                                            </div>
+                                                        );
+                                                    }
+                                                })()}
+                                                
+                                                {/* Screen Glare */}
+                                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-[1.7rem] pointer-events-none"></div>
+                                            </div>
                                         </div>
+                                        {/* Dynamic Island */}
+                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[0.85rem] bg-black rounded-full"></div>
                                     </div>
-                                    <div className="absolute top-1 left-1/2 -translate-x-1/2 w-10 sm:w-12 md:w-14 h-2.5 sm:h-3 md:h-3.5 bg-black rounded-full"></div>
-                                    <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-12 sm:w-14 md:w-16 h-0.5 bg-gray-400 rounded-full"></div>
                                 </div>
-                                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-3 sm:h-3.5 bg-black/15 blur-md rounded-full"></div>
                             </div>
 
-                            {/* Second Mobile Frame (Right - Rotate Right) */}
+                            {/* Second Mobile Frame */}
                             <div
-                                className="relative w-[140px] sm:w-[160px] md:w-[180px] lg:w-[190px] z-10"
+                                className="relative z-10 transform rotate-6 hover:rotate-0 transition-transform duration-500"
                                 style={{
-                                    transform: 'rotate(5deg)',
-                                    animation: 'floatRight 3s ease-in-out infinite 0.5s'
+                                    animation: 'floatRight 4s ease-in-out infinite 0.5s'
                                 }}
                             >
-                                <div className="relative bg-[#1a1a1a] rounded-[1.5rem] sm:rounded-[1.8rem] md:rounded-[2rem] p-1 sm:p-1.5 md:p-2 shadow-xl">
-                                    <div className="bg-gradient-to-br from-amber-100 to-yellow-100 rounded-[1.2rem] sm:rounded-[1.3rem] md:rounded-[1.5rem] overflow-hidden">
-                                        <div className="aspect-[9/19] flex items-center justify-center">
-                                            {(() => {
-                                                try {
-                                                    const MobileApp = require('../../assets/images/mobileApp.png');
-                                                    return (
-                                                        <img
-                                                            src={MobileApp}
-                                                            alt="KashtKart App"
-                                                            className="w-full h-full object-cover rounded-[1.2rem] sm:rounded-[1.3rem] md:rounded-[1.5rem]"
-                                                        />
-                                                    );
-                                                } catch {
-                                                    return (
-                                                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[var(--color-secondary)]/20 to-[var(--color-secondary)]/5">
-                                                            <Smartphone className="w-7 h-7 sm:w-9 sm:h-9 text-[var(--color-secondary)] mb-1" />
-                                                            <p className="text-[var(--color-secondary)] font-semibold text-center text-[7px] sm:text-[9px] px-2">KashtKart App</p>
+                                <div className="relative">
+                                    <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[2rem] p-1.5 shadow-2xl">
+                                        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-[1.7rem] overflow-hidden">
+                                            <div className="aspect-[9/19] flex items-center justify-center relative">
+                                                {(() => {
+                                                    try {
+                                                        const MobileApp = require('../../assets/images/mobileApp.png');
+                                                        return (
+                                                            <img
+                                                                src={MobileApp}
+                                                                alt="KashtKart App"
+                                                                className="w-full h-full object-cover rounded-[1.7rem]"
+                                                            />
+                                                        );
+                                                    } catch {
+                                                        return (
+                                                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-amber-400/30 to-orange-400/30">
+                                                                <Smartphone className="w-10 h-10 text-amber-600 mb-2" />
+                                                                <p className="text-amber-700 font-bold text-center text-xs px-4">KashtKart App</p>
+                                                            </div>
+                                                        );
+                                                    }
+                                                })()}
+                                                
+                                                {/* Screen Content Overlay */}
+                                                <div className="absolute bottom-4 left-4 right-4">
+                                                    <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                                            <p className="text-[8px] font-bold text-gray-800">Order Now →</p>
                                                         </div>
-                                                    );
-                                                }
-                                            })()}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[0.85rem] bg-black rounded-full"></div>
                                     </div>
-                                    <div className="absolute top-1 left-1/2 -translate-x-1/2 w-10 sm:w-12 md:w-14 h-2.5 sm:h-3 md:h-3.5 bg-black rounded-full"></div>
-                                    <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-12 sm:w-14 md:w-16 h-0.5 bg-gray-400 rounded-full"></div>
                                 </div>
-                                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-3 sm:h-3.5 bg-black/15 blur-md rounded-full"></div>
                             </div>
+
+                            {/* Floating Elements - Yellow Theme */}
+                            <div className="absolute -top-10 -right-10 w-20 h-20 bg-amber-400/40 rounded-full blur-2xl animate-pulse"></div>
+                            <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-yellow-400/30 rounded-full blur-2xl animate-pulse delay-700"></div>
+                            <div className="absolute top-1/2 -right-12 w-12 h-12 bg-orange-300/30 rounded-full blur-xl animate-pulse delay-1200"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* CSS for floating animations with rotation */}
+            {/* Animations */}
             <style>{`
                 @keyframes floatLeft {
                     0%, 100% { 
-                        transform: translateY(0px) rotate(-5deg); 
+                        transform: translateY(0px) rotate(-6deg); 
                     }
                     50% { 
-                        transform: translateY(-10px) rotate(-3deg); 
+                        transform: translateY(-15px) rotate(-4deg); 
                     }
                 }
                 
                 @keyframes floatRight {
                     0%, 100% { 
-                        transform: translateY(0px) rotate(5deg); 
+                        transform: translateY(0px) rotate(6deg); 
                     }
                     50% { 
-                        transform: translateY(-12px) rotate(7deg); 
+                        transform: translateY(-18px) rotate(8deg); 
                     }
+                }
+
+                @keyframes pulse {
+                    0%, 100% { opacity: 0.6; transform: scale(1); }
+                    50% { opacity: 0.8; transform: scale(1.1); }
+                }
+
+                .animate-pulse {
+                    animation: pulse 3s ease-in-out infinite;
+                }
+
+                .delay-1000 {
+                    animation-delay: 1s;
+                }
+
+                .delay-700 {
+                    animation-delay: 0.7s;
+                }
+
+                .delay-1500 {
+                    animation-delay: 1.5s;
+                }
+
+                .delay-1200 {
+                    animation-delay: 1.2s;
                 }
             `}</style>
         </section>

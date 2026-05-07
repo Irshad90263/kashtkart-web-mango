@@ -58,7 +58,7 @@ const HeroSlider = memo(() => {
                         {/* Fluid Ratio Container - Matches shuddhswad.shop logic */}
                         <div className="relative w-full aspect-[3/1] lg:aspect-[21/7] overflow-hidden">
                             <img
-                                src={slider.image?.url}
+                                src={slider.image?.url || 'https://static.vecteezy.com/system/resources/previews/030/328/446/large_2x/mango-tree-and-mango-garden-mango-tree-generative-ai-photo.jpg'}
                                 alt={slider.title || 'SKS Laddu'}
                                 className="absolute inset-0 w-full h-full object-cover"
                                 loading="eager"

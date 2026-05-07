@@ -17,7 +17,7 @@ const AboutSection = () => {
       {/* Overlay for background image opacity */}
       <div className="absolute inset-0 bg-white/50"></div>
 
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-2 sm:px-4 md:px-6 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-10">
+      <div className="relative z-10 w-full max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-10">
 
         {/* Left Side: Image - Perfect balance */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-center items-center">

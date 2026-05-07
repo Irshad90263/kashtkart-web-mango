@@ -15,10 +15,10 @@ const FAQ = ({ addToRefs }) => {
   return (
     <section
       ref={addToRefs || null}
-      className={`${addToRefs ? 'scroll-section' : ''} bg-[var(--color-surface)] py-16 px-8 md:px-24 2xl:px-32 3xl:px-48`}
+      className={`${addToRefs ? 'scroll-section' : ''} bg-[var(--color-surface)] py-16`}
       id="faq"
     >
-      <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto">
+      <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full">
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-[1px] w-8 bg-[var(--color-secondary)] opacity-60"></div>
@@ -32,19 +32,26 @@ const FAQ = ({ addToRefs }) => {
 
         <div className="flex flex-col gap-3">
           {FAQS.map((faq, i) => (
-            <div key={i} className="border border-[var(--color-secondary)]/20 rounded-xl overflow-hidden">
+            <div key={i} className="border border-[var(--color-secondary)]/20 rounded-xl overflow-hidden bg-[var(--color-primary)]">
               <button
                 onClick={() => setOpen(open === i ? -1 : i)}
-                className="w-full flex items-center justify-between px-6 py-4 text-left bg-[var(--color-primary)] hover:bg-[var(--color-secondary)]/5 transition-colors"
+                className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-[var(--color-secondary)]/5 transition-colors"
               >
-                <span className="text-[var(--color-secondary)] font-semibold text-sm md:text-base">{faq.q}</span>
-                <span className="text-[var(--color-secondary)] text-xl flex-shrink-0 ml-4">{open === i ? '−' : '+'}</span>
+                <span className={`font-semibold text-sm md:text-base transition-colors ${open === i ? 'text-[var(--color-secondary)]' : 'text-[var(--color-text)]'}`}>{faq.q}</span>
+                <span className={`text-[var(--color-secondary)] text-xl transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`}>
+                  {open === i ? '−' : '+'}
+                </span>
               </button>
-              {open === i && (
-                <div className="px-6 py-4 bg-[var(--color-surface)] text-[var(--color-text-muted)] text-sm leading-relaxed">
-                  {faq.a}
+              
+              <div 
+                className={`grid transition-all duration-300 ease-in-out ${open === i ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+              >
+                <div className="overflow-hidden">
+                  <div className="px-6 pb-5 bg-[var(--color-primary)] text-[var(--color-text-muted)] text-sm md:text-base leading-relaxed">
+                    {faq.a}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

@@ -100,100 +100,102 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className="flex justify-between items-center py-2 px-4 md:px-16 bg-[var(--color-primary)]/80 font-[var(--font-body)] fixed top-0 left-0 right-0 w-full z-[1000] shadow-sm transition-all duration-300 border-b border-[var(--color-secondary)]/10 backdrop-blur-lg">
-            {/* Logo Section */}
-            <div className="flex items-center">
-                <img src="/sks-logo.png" alt="SKS Logo" className="w-24 h-16 md:w-32 md:h-20 hover:scale-105 transition-transform cursor-pointer" onClick={() => navigate('/')} />
-            </div>
+        <nav className="bg-[var(--color-primary)]/80 font-[var(--font-body)] fixed top-0 left-0 right-0 w-full z-[1000] shadow-sm transition-all duration-300 border-b border-[var(--color-secondary)]/10 backdrop-blur-lg">
+            <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto flex justify-between items-center py-2 px-4 md:px-12 w-full">
+                {/* Logo Section */}
+                <div className="flex items-center">
+                    <img src="/sks-logo.png" alt="SKS Logo" className="w-24 h-16 md:w-32 md:h-20 hover:scale-105 transition-transform cursor-pointer" onClick={() => navigate('/')} />
+                </div>
 
-            {/* Desktop Menu */}
-            <ul className="hidden lg:flex list-none gap-8 m-0 p-0">
-                {navLinks.map(link => {
-                    if (link.to === '/laddus') {
-                        return (
-                            <li
-                                key={link.to}
-                                className="relative group"
-                                ref={dropdownRef}
-                                onMouseEnter={handleMouseEnter}
-                                onMouseLeave={handleMouseLeave}
-                            >
-                                <NavLink
-                                    to={link.to}
-                                    state={{ categoryId: 'all' }}
-                                    className={({ isActive }) => isActive ? activeLink + " flex items-center gap-1" : normalLink + " flex items-center gap-1"}
-                                    onClick={() => setIsDropdownOpen(false)}
+                {/* Desktop Menu */}
+                <ul className="hidden lg:flex list-none gap-8 m-0 p-0">
+                    {navLinks.map(link => {
+                        if (link.to === '/laddus') {
+                            return (
+                                <li
+                                    key={link.to}
+                                    className="relative group"
+                                    ref={dropdownRef}
+                                    onMouseEnter={handleMouseEnter}
+                                    onMouseLeave={handleMouseLeave}
                                 >
-                                    {link.label} <ChevronDown size={14} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                                </NavLink>
+                                    <NavLink
+                                        to={link.to}
+                                        state={{ categoryId: 'all' }}
+                                        className={({ isActive }) => isActive ? activeLink + " flex items-center gap-1" : normalLink + " flex items-center gap-1"}
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    >
+                                        {link.label} <ChevronDown size={14} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                                    </NavLink>
 
-                                {/* Dropdown */}
-                                <div className={`absolute left-0 mt-2 w-56 bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 overflow-hidden ${isDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
-                                    <div className="py-2 flex flex-col">
-                                        <div
-                                            className="px-4 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium"
-                                            onClick={() => handleCategoryClick('all')}
-                                        >
-                                            All Products
-                                        </div>
-                                        {categories.map(cat => (
+                                    {/* Dropdown */}
+                                    <div className={`absolute left-0 mt-2 w-56 bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 overflow-hidden ${isDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                                        <div className="py-2 flex flex-col">
                                             <div
-                                                key={cat._id}
-                                                className="px-2 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium flex gap-2"
-                                                onClick={() => handleCategoryClick(cat._id)}
+                                                className="px-4 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium"
+                                                onClick={() => handleCategoryClick('all')}
                                             >
-                                                <img className='h-6 w-6' src={cat.image?.url || "KK"}/>
-                                                <div>{cat.name}</div>
+                                                All Products
                                             </div>
-                                        ))}
+                                            {categories.map(cat => (
+                                                <div
+                                                    key={cat._id}
+                                                    className="px-2 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium flex gap-2"
+                                                    onClick={() => handleCategoryClick(cat._id)}
+                                                >
+                                                    <img className='h-6 w-6' src={cat.image?.url || "KK"} />
+                                                    <div>{cat.name}</div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                </li>
+                            );
+                        }
+
+                        return (
+                            <li key={link.to}>
+                                <NavLink to={link.to} className={({ isActive }) => isActive ? activeLink : normalLink}>
+                                    {link.label}
+                                </NavLink>
                             </li>
                         );
-                    }
+                    })}
+                </ul>
 
-                    return (
-                        <li key={link.to}>
-                            <NavLink to={link.to} className={({ isActive }) => isActive ? activeLink : normalLink}>
-                                {link.label}
-                            </NavLink>
-                        </li>
-                    );
-                })}
-            </ul>
+                {/* Actions & Mobile Toggle */}
+                <div className="flex items-center gap-4 md:gap-6">
+                    {/* Cart Icon */}
+                    <div
+                        onClick={() => navigate('/shop')}
+                        className="flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110 relative"
+                        title="View Order"
+                    >
+                        <ShoppingCart size={24} className="md:w-7 md:h-7" />
+                        {cartCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-[var(--color-secondary)] text-[var(--color-primary)] text-[10px] font-extrabold w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full shadow-md animate-bounce">
+                                {cartCount}
+                            </span>
+                        )}
+                    </div>
 
-            {/* Actions & Mobile Toggle */}
-            <div className="flex items-center gap-4 md:gap-6">
-                {/* Cart Icon */}
-                <div
-                    onClick={() => navigate('/shop')}
-                    className="flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110 relative"
-                    title="View Order"
-                >
-                    <ShoppingCart size={24} className="md:w-7 md:h-7" />
-                    {cartCount > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-[var(--color-secondary)] text-[var(--color-primary)] text-[10px] font-extrabold w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full shadow-md animate-bounce">
-                            {cartCount}
-                        </span>
-                    )}
+                    <div
+                        onClick={() => navigate('/profile')}
+                        className="hidden sm:flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110"
+                        title="Customer Profile"
+                    >
+                        <User size={24} className="md:w-7 md:h-7" />
+                    </div>
+
+                    {/* Hamburger Button */}
+                    <button
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="lg:hidden flex flex-col justify-center text-[var(--color-secondary)] focus:outline-none z-[1001] bg-[var(--color-surface)] p-2 rounded-xl shadow-sm border border-[var(--color-secondary)]/10 transition-transform active:scale-95"
+                        aria-label="Toggle Menu"
+                    >
+                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                 </div>
-
-                <div
-                    onClick={() => navigate('/profile')}
-                    className="hidden sm:flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110"
-                    title="Customer Profile"
-                >
-                    <User size={24} className="md:w-7 md:h-7" />
-                </div>
-
-                {/* Hamburger Button */}
-                <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="lg:hidden flex flex-col justify-center text-[var(--color-secondary)] focus:outline-none z-[1001] bg-[var(--color-surface)] p-2 rounded-xl shadow-sm border border-[var(--color-secondary)]/10 transition-transform active:scale-95"
-                    aria-label="Toggle Menu"
-                >
-                    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
             </div>
 
             {/* Mobile Sidebar */}

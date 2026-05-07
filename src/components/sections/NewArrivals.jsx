@@ -50,7 +50,7 @@ const NewArrivals = ({ addToRefs }) => {
   if (isLoading) {
     return (
       <section className="py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 bg-[var(--color-primary)]">
-        <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto">
+      <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full relative z-10">
           <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-10"></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
@@ -65,10 +65,10 @@ const NewArrivals = ({ addToRefs }) => {
   return (
     <section
       ref={addToRefs}
-      className="scroll-section py-12 sm:py-14 md:py-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 bg-[var(--color-primary)] relative overflow-hidden"
+      className="scroll-section py-12 sm:py-14 md:py-8 bg-[var(--color-primary)] relative overflow-hidden"
       id="new-arrivals"
     >
-      <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto relative z-10">
+      <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full relative z-10">
 
         {/* Header */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">

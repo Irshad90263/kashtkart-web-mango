@@ -16,6 +16,7 @@ const CustomerReviews = lazy(() => import('../../components/sections/CustomerRev
 import Loader from '../../components/common/Loader';
 
 import mangoTree from '../../assets/images/mango-tree-isolate-on-transparent-background-png.png';
+import WhyKashtKart from '../../components/common/WhyKashtKart';
 
 
 const Home = memo(() => {
@@ -58,7 +59,8 @@ const Home = memo(() => {
 
       {/* Features Strip */}
       <section className="bg-[var(--color-surface)] border-b border-[var(--color-secondary)]/15">
-        <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[var(--color-secondary)]/15">
+        <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[var(--color-secondary)]/15">
           {[
             { icon: <Truck className="w-6 h-6" />, title: 'Home Delivery', desc: 'Fresh mangoes delivered right to your doorstep, anywhere in India' },
             { icon: <Gift className="w-6 h-6" />, title: 'Free Shipping', desc: 'Enjoy free delivery on every order, no minimum required' },
@@ -73,6 +75,7 @@ const Home = memo(() => {
               </div>
             </div>
           ))}
+          </div>
         </div>
       </section>
 
@@ -107,139 +110,116 @@ const Home = memo(() => {
       {/* Why Choose KashtKart Section */}
       <section ref={addToRefs} className="scroll-section relative py-16 px-8 md:px-24 2xl:px-32 3xl:px-48 overflow-hidden" id="why-kashtkart" style={{ background: 'linear-gradient(to top, #fef08a, #ffffff)' }}>
 
-        {/* Decorative Mango Elements */}
-        <div className="absolute bottom-10 left-2 opacity-40 pointer-events-none">
-          <div className="text-9xl">🥭</div>
-        </div>
-        <div className="absolute top-4 -right-10 opacity-40 pointer-events-none">
-          <div className="text-9xl rotate-12">🥭</div>
-        </div>
-        <div className="absolute bottom-40 left-40 opacity-40 pointer-events-none">
-          <div className="text-4xl rotate-[-15deg]">🥭</div>
-        </div>
-        <div className="absolute top-40 right-16 opacity-40 pointer-events-none">
-          <div className="text-3xl rotate-[20deg]">🥭</div>
-        </div>
+  <div className="absolute bottom-10 left-2 opacity-40 pointer-events-none">
+    <div className="text-9xl">🥭</div>
+  </div>
+  <div className="absolute top-4 -right-10 opacity-40 pointer-events-none">
+    <div className="text-9xl rotate-12">🥭</div>
+  </div>
+  <div className="absolute bottom-40 left-40 opacity-40 pointer-events-none">
+    <div className="text-4xl rotate-[-15deg]">🥭</div>
+  </div>
+  <div className="absolute top-40 right-16 opacity-40 pointer-events-none">
+    <div className="text-3xl rotate-[20deg]">🥭</div>
+  </div>
 
-        <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto relative z-10">
+  <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full relative z-10">
 
-          {/* Header Section - Spot The Goodness Inside */}
-          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 mb-12">
-
-            {/* Left Side - Main Heading - Properly Aligned */}
-            <div className="md:w-1/2">
-              <div className="text-left">
-                {/* Spot The - Line 1 */}
-                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight">
-                  Spot The
-                </div>
-
-                {/* Goodness - Line 2 */}
-                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[var(--color-secondary)] font-[var(--font-heading)] leading-tight mt-0">
-                  Goodness
-                </div>
-
-                {/* Inside - Line 3 */}
-                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[var(--color-secondary)] font-[var(--font-heading)] leading-tight -mt-1 ml-1 md:ml-2">
-                  Inside
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side - Small Content */}
-            <div className="md:w-1/2 flex flex-col items-start justify-start md:mt-8 lg:mt-12">
-              <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">
-                At KashtKart, every mango tells a story of purity, passion, and perfection.
-                We bring you nature's finest, straight from the heart of trusted farms.
-              </p>
-              <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">
-                No chemicals, no shortcuts — just authentic, sun-kissed sweetness that
-                captures the true essence of farm-fresh mangoes.
-              </p>
-            </div>
+    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 mb-12">
+      <div className="md:w-1/2">
+        <div className="text-left">
+          <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight">
+            Spot The
           </div>
-
-          {/* Cards Section */}
-          <div className="md:pl-12 lg:pl-70 xl:pl-70">
-            {/* Top 3 Cards */}
-            <div className="flex flex-wrap justify-center md:justify-start gap-6 mb-4">
-              <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-[260px]">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
-                  <Leaf className="w-5 h-5" />
-                </div>
-                <h4 className="text-yellow-700 font-semibold text-sm">Farm Fresh</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">Picked & packed on the same day from the orchard</p>
-              </div>
-
-              <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-[260px]">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
-                  <Sprout className="w-5 h-5" />
-                </div>
-                <h4 className="text-yellow-700 font-semibold text-sm">100% Organic</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">Grown without pesticides or chemical fertilizers</p>
-              </div>
-
-              <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-[260px]">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
-                  <Sun className="w-5 h-5" />
-                </div>
-                <h4 className="text-yellow-700 font-semibold text-sm">Naturally Ripened</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">No calcium carbide — ripened the way nature intended</p>
-              </div>
-            </div>
-
-            {/* Bottom 3 Cards */}
-            <div className="flex flex-wrap justify-center md:justify-start gap-6 md:ml-12 lg:ml-24 xl:ml-32">
-              <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-[260px]">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
-                  <HeartPulse className="w-5 h-5" />
-                </div>
-                <h4 className="text-yellow-700 font-semibold text-sm">Rich in Nutrients</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">High in Vitamin C, A, fibre & natural antioxidants</p>
-              </div>
-
-              <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-[260px]">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
-                  <BadgeCheck className="w-5 h-5" />
-                </div>
-                <h4 className="text-yellow-700 font-semibold text-sm">Quality Checked</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">Every batch inspected before dispatch, zero compromise</p>
-              </div>
-
-              <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-[260px]">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
-                  <Truck className="w-5 h-5" />
-                </div>
-                <h4 className="text-yellow-700 font-semibold text-sm">Farm to Home</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">Quick delivery ensuring maximum freshness</p>
-              </div>
-            </div>
+          <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[var(--color-secondary)] font-[var(--font-heading)] leading-tight mt-0">
+            Goodness
+          </div>
+          <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[var(--color-secondary)] font-[var(--font-heading)] leading-tight -mt-1 ml-1 md:ml-2">
+            Inside
           </div>
         </div>
-      </section>
+      </div>
+      <div className="md:w-1/2 flex flex-col items-start justify-start md:mt-8 lg:mt-12">
+        <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">
+          At KashtKart, every mango tells a story of purity, passion, and perfection.
+          We bring you nature's finest, straight from the heart of trusted farms.
+        </p>
+        <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">
+          No chemicals, no shortcuts — just authentic, sun-kissed sweetness that
+          captures the true essence of farm-fresh mangoes.
+        </p>
+      </div>
+    </div>
+
+    <div className="md:pl-12 lg:pl-70 xl:pl-70">
+      {/* Row 1 */}
+      <div className="grid grid-cols-3 gap-6 mb-4">
+        <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
+            <Leaf className="w-5 h-5" />
+          </div>
+          <h4 className="text-yellow-700 font-semibold text-sm">Farm Fresh</h4>
+          <p className="text-gray-600 text-xs leading-relaxed">Picked & packed on the same day from the orchard</p>
+        </div>
+
+        <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
+            <Sprout className="w-5 h-5" />
+          </div>
+          <h4 className="text-yellow-700 font-semibold text-sm">100% Organic</h4>
+          <p className="text-gray-600 text-xs leading-relaxed">Grown without pesticides or chemical fertilizers</p>
+        </div>
+
+        <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
+            <Sun className="w-5 h-5" />
+          </div>
+          <h4 className="text-yellow-700 font-semibold text-sm">Naturally Ripened</h4>
+          <p className="text-gray-600 text-xs leading-relaxed">No calcium carbide — ripened the way nature intended</p>
+        </div>
+      </div>
+
+      {/* Row 2 - shifted right */}
+      <div className="grid grid-cols-3 gap-6 md:ml-12 lg:ml-24 xl:ml-32">
+        <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
+            <HeartPulse className="w-5 h-5" />
+          </div>
+          <h4 className="text-yellow-700 font-semibold text-sm">Rich in Nutrients</h4>
+          <p className="text-gray-600 text-xs leading-relaxed">High in Vitamin C, A, fibre & natural antioxidants</p>
+        </div>
+
+        <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
+            <BadgeCheck className="w-5 h-5" />
+          </div>
+          <h4 className="text-yellow-700 font-semibold text-sm">Quality Checked</h4>
+          <p className="text-gray-600 text-xs leading-relaxed">Every batch inspected before dispatch, zero compromise</p>
+        </div>
+
+        <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
+            <Truck className="w-5 h-5" />
+          </div>
+          <h4 className="text-yellow-700 font-semibold text-sm">Farm to Home</h4>
+          <p className="text-gray-600 text-xs leading-relaxed">Quick delivery ensuring maximum freshness</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+      {/* <WhyKashtKart addToRefs={addToRefs} /> */}
 
 
       {/* Products by Category */}
-      <Suspense fallback={
-        <section className="py-12 px-8 md:px-24 2xl:px-32 bg-[var(--color-primary)]">
-          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-6"></div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-80 bg-gray-200 rounded-xl animate-pulse"></div>)}
-          </div>
-        </section>
-      }>
+      <Suspense fallback={<div className="h-40 bg-gray-100/50 rounded-xl animate-pulse mx-auto max-w-[1440px]"></div>}>
         <CategoryProducts addToRefs={addToRefs} />
       </Suspense>
 
       {/* app section */}
-      <Suspense fallback={
-        <section className="py-12 px-8 md:px-24 2xl:px-32 bg-[var(--color-primary)]">
-          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-6"></div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-80 bg-gray-200 rounded-xl animate-pulse"></div>)}
-          </div>
-        </section>
-      }>
+      <Suspense fallback={<div className="h-40 bg-gray-50 animate-pulse"></div>}>
         <AppSection />
       </Suspense>
 
@@ -268,7 +248,7 @@ const Home = memo(() => {
         <span className="absolute top-1/3 -right-1 text-4xl select-none rotate-[-30deg]">🍃</span>
         <span className="absolute top-2/3 -right-1 text-3xl select-none rotate-[20deg]">🌿</span>
 
-        <div className="max-w-3xl 2xl:max-w-5xl 3xl:max-w-6xl mx-auto relative z-10 text-center px-4">
+        <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full relative z-10 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-[1px] w-8 bg-[var(--color-secondary)] opacity-60"></div>
             <span className="text-[var(--color-secondary)] font-bold uppercase tracking-[0.4em] text-xs">Pan India Delivery</span>
@@ -306,7 +286,7 @@ const Home = memo(() => {
       </Suspense>
       
       {/* Our Priorities */}
-      <section ref={addToRefs} className="scroll-section relative py-16 px-8 md:px-24 2xl:px-32 3xl:px-48 overflow-hidden" id="priorities" style={{ background: 'linear-gradient(to bottom, #ffffff, #fef08a)' }}>
+      <section className="relative py-16 px-8 md:px-24 2xl:px-32 3xl:px-48 overflow-hidden" id="priorities" style={{ background: 'linear-gradient(to bottom, #ffffff, #fef08a)' }}>
 
         {/* Decorative Mango Elements - Same as Why Choose Us */}
         <div className="absolute bottom-10 right-2 opacity-30 pointer-events-none">
@@ -322,7 +302,7 @@ const Home = memo(() => {
           <div className="text-3xl -rotate-[20deg]">🥭</div>
         </div>
 
-        <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto relative z-10">
+        <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full relative z-10">
 
           {/* Header Section - Matching Why Choose Us style */}
           <div className="flex flex-col items-center mb-12">
@@ -337,15 +317,15 @@ const Home = memo(() => {
             </p>
           </div>
 
-          {/* Cards Section - Same card style as Why Choose Us */}
-          <div className="flex flex-wrap justify-center gap-6">
+          {/* Cards Section - Fixed to 4 columns on Desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 place-items-center">
             {[
               { icon: <Shield className="w-5 h-5" />, title: 'Health First', desc: 'No artificial preservatives, colors, or flavors. Pure and natural ingredients only.' },
               { icon: <Droplets className="w-5 h-5" />, title: 'Hygiene Standards', desc: 'FSSAI certified kitchen with strict hygiene protocols and regular quality checks.' },
               { icon: <Leaf className="w-5 h-5" />, title: 'Fresh Daily', desc: 'Made fresh every day and delivered within 3 to 7 days to ensure maximum freshness.' },
               { icon: <HeartIcon className="w-5 h-5" />, title: 'Made with Love', desc: "Every Mango is handcrafted with care, carrying forward our family's century-old tradition." },
             ].map(({ icon, title, desc }) => (
-              <div key={title} className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-[260px]">
+              <div key={title} className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm w-full max-w-[320px] h-full">
                 <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
                   {icon}
                 </div>
