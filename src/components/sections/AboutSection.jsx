@@ -23,7 +23,7 @@ const AboutSection = () => {
         <div className="w-full md:w-1/2 flex justify-center md:justify-center items-center">
           <img
             src={leftImage}
-            alt="KashtKart Mango"
+            alt="kaashtkart Mango"
             className="w-[80%] md:w-[85%] max-w-[400px] object-contain mix-blend-multiply drop-shadow-2xl"
           />
         </div>
@@ -33,7 +33,7 @@ const AboutSection = () => {
 
           <h2 className="flex flex-col font-black font-[var(--font-heading)] uppercase leading-[1.1] mb-4 tracking-wide">
             <span className="text-2xl md:text-3xl lg:text-4xl text-gray-800">
-              Why is Kashtkart
+              Why is kaashtkart
             </span>
             <span className="text-4xl md:text-5xl lg:text-6xl text-[var(--color-secondary)] mt-1 drop-shadow-sm">
               So Special
@@ -45,7 +45,7 @@ const AboutSection = () => {
               We bring you nature's finest, directly from heritage orchards. No chemicals, no artificial ripening—just pure, authentic sweetness harvested with love.
             </p>
             <p>
-              Every bite of a Kashtkart mango is a premium experience, packed with rich nutrients, irresistible aroma, and a taste that transports you back to your roots.
+              Every bite of a kaashtkart mango is a premium experience, packed with rich nutrients, irresistible aroma, and a taste that transports you back to your roots.
             </p>
           </div>
 

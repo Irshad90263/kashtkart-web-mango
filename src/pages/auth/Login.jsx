@@ -4,7 +4,7 @@ import { Phone } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import { loginUserApi } from '../../api/user';
-import { saveToken } from '../../utils/auth';
+import { saveToken, saveUserData } from '../../utils/auth';
 import Footer from '../../components/layout/Footer';
 import Navbar from '../../components/Navbar/Navbar';
 
@@ -72,9 +72,12 @@ const Login = () => {
             const otpString = otp.join('');
             const response = await loginUserApi({ phone, otp: otpString });
             
-            // Save token first
+            // Save token and user data
             if (response.token) {
                 saveToken(response.token);
+                if (response.user) {
+                    saveUserData(response.user);
+                }
                 // Only show login success toast, not OTP sent message
                 toast.success('Login successful!', { position: "top-right" });
                 navigate('/');

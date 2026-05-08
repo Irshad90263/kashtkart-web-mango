@@ -235,7 +235,7 @@ const Contact = () => {
                         </div>
 
                         <div className="mt-8 md:mt-12 pt-8 md:pt-12 border-t border-[var(--color-secondary)]/10 italic text-[var(--color-text-muted)] text-xs md:text-sm">
-                            "Bringing the warmth of KashtKart to your home."
+                            "Bringing the warmth of kaashtkart to your home."
                         </div>
                     </div>
 

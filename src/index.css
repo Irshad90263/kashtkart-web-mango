@@ -18,13 +18,14 @@
   --font-accent: 'Poppins', sans-serif;
 }
 
-html,
-body {
-  overflow-x: hidden;
-  max-width: 100%;
+html {
+  scroll-behavior: smooth;
+  /* overflow-x: hidden; */
+  /* max-width: 100%; */
 }
 
 body {
+  font-family: var(--font-body);
   font-family: var(--font-body);
   background-color: var(--color-primary);
   color: var(--color-text);
@@ -120,14 +121,17 @@ section {
 .scrollbar-thin::-webkit-scrollbar {
   height: 6px;
 }
+
 .scrollbar-thin::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
+
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 10px;
 }
+
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }

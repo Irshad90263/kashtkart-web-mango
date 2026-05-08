@@ -1,11 +1,26 @@
-import React, { useState, useEffect, useRef, useTransition, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Shield, Truck, Package, Heart, Clock, Sparkles, Filter, X } from 'lucide-react';
-import LadduCard from '../../components/cards/LadduCard';
-import Footer from '../../components/layout/Footer';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useTransition,
+  useCallback,
+} from "react";
+import { useLocation } from "react-router-dom";
+import {
+  Shield,
+  Truck,
+  Package,
+  Heart,
+  Clock,
+  Sparkles,
+  Filter,
+  X,
+} from "lucide-react";
+import LadduCard from "../../components/cards/LadduCard";
+import Footer from "../../components/layout/Footer";
 
-import { listCategoriesApi } from '../../api/categories';
-import { listProductsApi, listProductsByCategoryApi } from '../../api/product';
+import { listCategoriesApi } from "../../api/categories";
+import { listProductsApi, listProductsByCategoryApi } from "../../api/product";
 
 const Laddus = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -13,14 +28,28 @@ const Laddus = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState("");
   const location = useLocation();
+
+  // Listen for category selection from navigation state (Navbar dropdown)
+  useEffect(() => {
+    if (location.state?.categoryId) {
+      const catId = location.state.categoryId;
+      if (catId === "all") {
+        setSelectedCategories([]);
+      } else {
+        setSelectedCategories([catId]);
+      }
+      // Clear location state to prevent re-applying filter on back/forward
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Mobile filter modal states
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [mobileSelectedTab, setMobileSelectedTab] = useState('categories');
+  const [mobileSelectedTab, setMobileSelectedTab] = useState("categories");
   const [tempSelectedCategories, setTempSelectedCategories] = useState([]);
-  const [tempSortBy, setTempSortBy] = useState('');
+  const [tempSortBy, setTempSortBy] = useState("");
 
   // Products section end detect
   const productsEndRef = useRef(null);
@@ -29,7 +58,7 @@ const Laddus = () => {
   // Clear all filters function
   const clearAllFilters = () => {
     setSelectedCategories([]);
-    setSortBy('');
+    setSortBy("");
   };
 
   // Fetch categories on mount
@@ -37,7 +66,9 @@ const Laddus = () => {
     const fetchCategories = async () => {
       try {
         const data = await listCategoriesApi();
-        setCategories(data.categories.map(c => ({ ...c, id: c._id || c.id })));
+        setCategories(
+          data.categories.map((c) => ({ ...c, id: c._id || c.id })),
+        );
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }
@@ -51,21 +82,21 @@ const Laddus = () => {
       ([entry]) => {
         setIsProductsEndReached(entry.isIntersecting);
       },
-      { threshold: 0, rootMargin: '0px' }
+      { threshold: 0, rootMargin: "0px" },
     );
-    
+
     if (productsEndRef.current) {
       observer.observe(productsEndRef.current);
     }
-    
+
     return () => observer.disconnect();
   }, []);
 
   // Handle category checkbox change
   const handleCategoryToggle = (categoryId) => {
-    setSelectedCategories(prev => {
+    setSelectedCategories((prev) => {
       if (prev.includes(categoryId)) {
-        return prev.filter(id => id !== categoryId);
+        return prev.filter((id) => id !== categoryId);
       } else {
         return [...prev, categoryId];
       }
@@ -85,7 +116,7 @@ const Laddus = () => {
         data = await listProductsByCategoryApi(selectedCategories[0], sortBy);
         setProducts(data.products || (Array.isArray(data) ? data : []));
       } else {
-        const categoryIds = selectedCategories.join(',');
+        const categoryIds = selectedCategories.join(",");
         data = await listProductsByCategoryApi(categoryIds, sortBy);
         setProducts(data.products || (Array.isArray(data) ? data : []));
       }
@@ -126,9 +157,9 @@ const Laddus = () => {
   };
 
   const handleTempCategoryToggle = (categoryId) => {
-    setTempSelectedCategories(prev => {
+    setTempSelectedCategories((prev) => {
       if (prev.includes(categoryId)) {
-        return prev.filter(id => id !== categoryId);
+        return prev.filter((id) => id !== categoryId);
       } else {
         return [...prev, categoryId];
       }
@@ -136,7 +167,7 @@ const Laddus = () => {
   };
 
   return (
-    <div className="bg-[var(--color-primary)] text-[var(--color-text)] font-[var(--font-body)] min-h-screen overflow-x-hidden -mt-4">
+    <div className="bg-[var(--color-primary)] text-[var(--color-text)] font-[var(--font-body)] min-h-screen">
       {/* Header Section */}
       <section className="relative py-10 md:py-12 px-8 text-center rounded-b-[40px] md:rounded-b-[50px] overflow-hidden mb-12">
         <div className="absolute inset-0 bg-gradient-to-b from-yellow-400/20 via-amber-400/10 to-transparent"></div>
@@ -149,8 +180,9 @@ const Laddus = () => {
           <div className="laddus-bubble laddus-bubble-4"></div>
         </div>
 
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
             .laddus-bubble {
               position: absolute;
               background: rgba(255, 212, 0, 0.15);
@@ -165,80 +197,93 @@ const Laddus = () => {
               0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
               50% { transform: translate(25px, -35px) scale(1.08); opacity: 0.6; }
             }
-          `
-        }} />
+          `,
+          }}
+        />
 
         <h1 className="text-3xl md:text-7xl font-bold mb-4 relative z-10 text-[var(--color-secondary)] font-[var(--font-heading)]">
           Our Mango Gallery
         </h1>
         <p className="text-base md:text-xl italic opacity-90 max-w-2xl mx-auto relative z-10 text-[var(--color-text-muted)]">
-          Explore our diverse collection of authentic KashtKart, handcrafted for every palate and occasion.
+          Explore our diverse collection of authentic kaashtkart, handcrafted
+          for every palate and occasion.
         </p>
       </section>
 
       {/* Main Section */}
-      <section className="px-4 md:px-12 mb-4">
+      <section className="px-4 md:px-12 mb-4 pb-10">
         <div className="grid grid-cols-12 gap-6">
           {/* Sidebar - Desktop only */}
           <div className="hidden md:block col-span-2">
-            {/* Categories Section */}
-            <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4 mb-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-base font-bold text-[var(--color-secondary)] uppercase">
-                  Categories
-                </h3>
-                {(selectedCategories.length > 0 || sortBy) && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="text-xs text-red-500 hover:underline"
-                  >
-                    Clear All
-                  </button>
-                )}
+            <div className="sticky top-[120px] self-start space-y-4 z-10">
+              {/* Categories Section */}
+              <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-base font-bold text-[var(--color-secondary)] uppercase">
+                    Categories
+                  </h3>
+                  {(selectedCategories.length > 0 || sortBy) && (
+                    <button
+                      onClick={clearAllFilters}
+                      className="text-xs text-red-500 hover:underline"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+                  {categories.map((cat) => (
+                    <label
+                      key={cat.id}
+                      className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10 transition-all"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedCategories.includes(cat.id)}
+                        onChange={() => handleCategoryToggle(cat.id)}
+                        className="w-4 h-4 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                      />
+                      <span className="text-sm text-[var(--color-text-muted)]">
+                        {cat.name}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
-                {categories.map(cat => (
-                  <label key={cat.id} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10 transition-all">
-                    <input
-                      type="checkbox"
-                      checked={selectedCategories.includes(cat.id)}
-                      onChange={() => handleCategoryToggle(cat.id)}
-                      className="w-4 h-4 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
-                    />
-                    <span className="text-sm text-[var(--color-text-muted)]">{cat.name}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
 
-            {/* Sort Section - Desktop */}
-            <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
-              <h3 className="text-sm font-bold text-[var(--color-secondary)] uppercase mb-3">
-                Price
-              </h3>
-              <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
-                  <input
-                    type="radio"
-                    name="sort"
-                    value="price_asc"
-                    checked={sortBy === 'price_asc'}
-                    onChange={handleSortChange}
-                    className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
-                  />
-                  <span className="text-sm text-[var(--color-text-muted)]">Low to High</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
-                  <input
-                    type="radio"
-                    name="sort"
-                    value="price_desc"
-                    checked={sortBy === 'price_desc'}
-                    onChange={handleSortChange}
-                    className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
-                  />
-                  <span className="text-sm text-[var(--color-text-muted)]">High to Low</span>
-                </label>
+              {/* Sort Section - Desktop */}
+              <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
+                <h3 className="text-sm font-bold text-[var(--color-secondary)] uppercase mb-3">
+                  Price
+                </h3>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="price_asc"
+                      checked={sortBy === "price_asc"}
+                      onChange={handleSortChange}
+                      className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                    />
+                    <span className="text-sm text-[var(--color-text-muted)]">
+                      Low to High
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="price_desc"
+                      checked={sortBy === "price_desc"}
+                      onChange={handleSortChange}
+                      className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                    />
+                    <span className="text-sm text-[var(--color-text-muted)]">
+                      High to Low
+                    </span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -264,11 +309,14 @@ const Laddus = () => {
             )}
 
             {/* Loading Skeleton */}
-            {(loading || isPending) ? (
+            {loading || isPending ? (
               <div className="animate-fadeIn">
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                   {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="bg-gray-200 animate-pulse rounded-xl">
+                    <div
+                      key={i}
+                      className="bg-gray-200 animate-pulse rounded-xl"
+                    >
                       <div className="w-full aspect-square bg-gray-300 rounded-t-xl"></div>
                       <div className="p-3">
                         <div className="h-3 bg-gray-300 rounded mb-2 w-3/4"></div>
@@ -292,7 +340,8 @@ const Laddus = () => {
                         finalPrice: laddu.finalPrice,
                         discountPercent: laddu.discountPercent,
                         description: laddu.description,
-                        category: laddu.category?.name || 'Special'
+                        category: laddu.category?.name || "Special",
+                        about: laddu.about,
                       }}
                     />
                   ))}
@@ -312,13 +361,15 @@ const Laddus = () => {
           <div className="bg-[var(--color-primary)] w-full h-[90vh] rounded-t-2xl flex flex-col overflow-hidden">
             {/* Modal Header */}
             <div className="flex justify-between items-center p-4 border-b border-[var(--color-secondary)]/20">
-              <h3 className="text-lg font-bold text-[var(--color-secondary)]">Filters</h3>
+              <h3 className="text-lg font-bold text-[var(--color-secondary)]">
+                Filters
+              </h3>
               <div className="flex gap-3">
                 {(tempSelectedCategories.length > 0 || tempSortBy) && (
                   <button
                     onClick={() => {
                       setTempSelectedCategories([]);
-                      setTempSortBy('');
+                      setTempSortBy("");
                     }}
                     className="text-sm text-red-500"
                   >
@@ -336,20 +387,22 @@ const Laddus = () => {
               {/* Left Sidebar Tabs */}
               <div className="w-1/3 bg-[var(--color-surface)] border-r border-[var(--color-secondary)]/10">
                 <button
-                  onClick={() => setMobileSelectedTab('categories')}
-                  className={`w-full p-4 text-left font-medium transition-all ${mobileSelectedTab === 'categories'
-                    ? 'bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]'
-                    : 'text-[var(--color-text-muted)]'
-                    }`}
+                  onClick={() => setMobileSelectedTab("categories")}
+                  className={`w-full p-4 text-left font-medium transition-all ${
+                    mobileSelectedTab === "categories"
+                      ? "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]"
+                      : "text-[var(--color-text-muted)]"
+                  }`}
                 >
                   Categories
                 </button>
                 <button
-                  onClick={() => setMobileSelectedTab('price')}
-                  className={`w-full p-4 text-left font-medium transition-all ${mobileSelectedTab === 'price'
-                    ? 'bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]'
-                    : 'text-[var(--color-text-muted)]'
-                    }`}
+                  onClick={() => setMobileSelectedTab("price")}
+                  className={`w-full p-4 text-left font-medium transition-all ${
+                    mobileSelectedTab === "price"
+                      ? "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]"
+                      : "text-[var(--color-text-muted)]"
+                  }`}
                 >
                   Price
                 </button>
@@ -357,50 +410,63 @@ const Laddus = () => {
 
               {/* Right Side Content */}
               <div className="flex-1 overflow-y-auto p-4">
-                {mobileSelectedTab === 'categories' && (
+                {mobileSelectedTab === "categories" && (
                   <div>
-                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">Select Categories</span>
+                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">
+                      Select Categories
+                    </span>
                     <div className="space-y-3">
-                      {categories.map(cat => (
-                        <label key={cat.id} className="flex items-center gap-3 cursor-pointer">
+                      {categories.map((cat) => (
+                        <label
+                          key={cat.id}
+                          className="flex items-center gap-3 cursor-pointer"
+                        >
                           <input
                             type="checkbox"
                             checked={tempSelectedCategories.includes(cat.id)}
                             onChange={() => handleTempCategoryToggle(cat.id)}
                             className="w-5 h-5 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
                           />
-                          <span className="text-sm text-[var(--color-text)]">{cat.name}</span>
+                          <span className="text-sm text-[var(--color-text)]">
+                            {cat.name}
+                          </span>
                         </label>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {mobileSelectedTab === 'price' && (
+                {mobileSelectedTab === "price" && (
                   <div>
-                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">Sort by Price</span>
+                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">
+                      Sort by Price
+                    </span>
                     <div className="space-y-3">
                       <label className="flex items-center gap-3 cursor-pointer">
                         <input
                           type="radio"
                           name="mobileSort"
                           value="price_asc"
-                          checked={tempSortBy === 'price_asc'}
+                          checked={tempSortBy === "price_asc"}
                           onChange={(e) => setTempSortBy(e.target.value)}
                           className="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
                         />
-                        <span className="text-sm text-[var(--color-text)]">Low to High</span>
+                        <span className="text-sm text-[var(--color-text)]">
+                          Low to High
+                        </span>
                       </label>
                       <label className="flex items-center gap-3 cursor-pointer">
                         <input
                           type="radio"
                           name="mobileSort"
                           value="price_desc"
-                          checked={tempSortBy === 'price_desc'}
+                          checked={tempSortBy === "price_desc"}
                           onChange={(e) => setTempSortBy(e.target.value)}
                           className="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
                         />
-                        <span className="text-sm text-[var(--color-text)]">High to Low</span>
+                        <span className="text-sm text-[var(--color-text)]">
+                          High to Low
+                        </span>
                       </label>
                     </div>
                   </div>
@@ -430,10 +496,11 @@ const Laddus = () => {
         <div className="relative z-10 p-8 md:px-12">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-secondary)] font-[var(--font-heading)]">
-              The KashtKart Quality Promise
+              The kaashtkart Quality Promise
             </h2>
             <p className="text-[var(--color-text-muted)] text-base mt-3 max-w-2xl mx-auto">
-              We ensure that every mango you receive meets the highest standards of quality, freshness, and taste.
+              We ensure that every mango you receive meets the highest standards
+              of quality, freshness, and taste.
             </p>
           </div>
 
@@ -442,9 +509,12 @@ const Laddus = () => {
               <div className="w-16 h-16 bg-[var(--color-secondary)]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[var(--color-secondary)] group-hover:scale-110 transition-all duration-300">
                 <Shield className="w-8 h-8 text-[var(--color-secondary)] group-hover:text-white transition-colors" />
               </div>
-              <h4 className="font-bold text-lg text-[var(--color-text)] mb-2">Hygienically Packed</h4>
+              <h4 className="font-bold text-lg text-[var(--color-text)] mb-2">
+                Hygienically Packed
+              </h4>
               <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
-                Double-sealed airtight containers to maintain freshness and purity.
+                Double-sealed airtight containers to maintain freshness and
+                purity.
               </p>
             </div>
 
@@ -452,7 +522,9 @@ const Laddus = () => {
               <div className="w-16 h-16 bg-[var(--color-secondary)]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[var(--color-secondary)] group-hover:scale-110 transition-all duration-300">
                 <Truck className="w-8 h-8 text-[var(--color-secondary)] group-hover:text-white transition-colors" />
               </div>
-              <h4 className="font-bold text-lg text-[var(--color-text)] mb-2">Pan-India Shipping</h4>
+              <h4 className="font-bold text-lg text-[var(--color-text)] mb-2">
+                Pan-India Shipping
+              </h4>
               <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
                 Fast delivery to any corner of India within 3-5 business days.
               </p>
@@ -462,7 +534,9 @@ const Laddus = () => {
               <div className="w-16 h-16 bg-[var(--color-secondary)]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[var(--color-secondary)] group-hover:scale-110 transition-all duration-300">
                 <Heart className="w-8 h-8 text-[var(--color-secondary)] group-hover:text-white transition-colors" />
               </div>
-              <h4 className="font-bold text-lg text-[var(--color-text)] mb-2">Made with Love</h4>
+              <h4 className="font-bold text-lg text-[var(--color-text)] mb-2">
+                Made with Love
+              </h4>
               <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
                 Every mango is handpicked with care from our trusted orchards.
               </p>
@@ -471,11 +545,17 @@ const Laddus = () => {
 
           <div className="mt-8 pt-6 border-t border-[var(--color-secondary)]/10 text-center">
             <p className="text-[var(--color-text-muted)] text-sm flex items-center justify-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" /> Freshly Picked</span>
+              <span className="inline-flex items-center gap-1">
+                <Clock className="w-3 h-3" /> Freshly Picked
+              </span>
               <span className="w-1 h-1 bg-[var(--color-secondary)]/30 rounded-full"></span>
-              <span className="inline-flex items-center gap-1">Naturally Ripened</span>
+              <span className="inline-flex items-center gap-1">
+                Naturally Ripened
+              </span>
               <span className="w-1 h-1 bg-[var(--color-secondary)]/30 rounded-full"></span>
-              <span className="inline-flex items-center gap-1">100% Chemical Free</span>
+              <span className="inline-flex items-center gap-1">
+                100% Chemical Free
+              </span>
             </p>
           </div>
         </div>
@@ -485,8 +565,9 @@ const Laddus = () => {
         <Footer />
       </div>
 
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           @keyframes fadeIn {
             from {
               opacity: 0;
@@ -500,8 +581,9 @@ const Laddus = () => {
           .animate-fadeIn {
             animation: fadeIn 0.3s ease-out;
           }
-        `
-      }} />
+        `,
+        }}
+      />
     </div>
   );
 };

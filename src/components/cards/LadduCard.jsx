@@ -168,7 +168,7 @@ const LadduCard = memo(({ product }) => {
               transition-all duration-300 active:scale-95
               ${added 
                 ? 'bg-green-600 border-green-600 text-white' 
-                : 'bg-white border text-[#004B8D] hover:bg-blue-50'
+                : 'bg-white border text-[#FF6B00] hover:bg-yellow-50'
               }
               text-xs sm:text-sm font-bold
             `}

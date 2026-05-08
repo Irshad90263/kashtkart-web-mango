@@ -1,5 +1,6 @@
-import React from 'react';
 import { Download, Smartphone, Truck, Clock, BadgeCheck, Star, Shield, Zap } from 'lucide-react';
+import AppMockup1 from '../../assets/images/AppMockup1.png';
+import AppMockup2 from '../../assets/images/AppMockup2.png';
 
 const AppSection = () => {
     const openPlayStore = () => {
@@ -62,7 +63,7 @@ const AppSection = () => {
                             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                                 Download{' '}
                                 <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                                    KashtKart
+                                    kaashtkart
                                 </span>{' '}
                                 App
                             </h2>
@@ -109,106 +110,42 @@ const AppSection = () => {
 
                     {/* Right Side - Premium Phone Mockups */}
                     <div className="w-full lg:w-1/2 flex justify-center items-center">
-                        <div className="relative flex justify-center items-center gap-6 sm:gap-8">
+                        <div className="relative flex justify-center items-center">
                             
                             {/* Background Glow - Yellow Tone */}
                             <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-yellow-400/20 rounded-full blur-3xl"></div>
                             
-                            {/* First Mobile Frame */}
+                            {/* First Mobile Mockup */}
                             <div
-                                className="relative z-0 transform -rotate-6 hover:rotate-0 transition-transform duration-500"
+                                className="relative z-0 transform -rotate-12 hover:rotate-0 transition-transform duration-500 -mr-12 sm:-mr-20"
                                 style={{
                                     animation: 'floatLeft 4s ease-in-out infinite'
                                 }}
                             >
-                                <div className="relative">
-                                    {/* Phone Shadow */}
-                                    <div className="absolute -inset-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                    
-                                    <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[2rem] p-1.5 shadow-2xl">
-                                        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-[1.7rem] overflow-hidden">
-                                            <div className="aspect-[9/19] flex items-center justify-center relative">
-                                                {(() => {
-                                                    try {
-                                                        const MobileApp = require('../../assets/images/mobileApp.png');
-                                                        return (
-                                                            <img
-                                                                src={MobileApp}
-                                                                alt="KashtKart App"
-                                                                className="w-full h-full object-cover rounded-[1.7rem]"
-                                                            />
-                                                        );
-                                                    } catch {
-                                                        return (
-                                                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-amber-400/30 to-orange-400/30">
-                                                                <Smartphone className="w-10 h-10 text-amber-600 mb-2" />
-                                                                <p className="text-amber-700 font-bold text-center text-xs px-4">KashtKart App</p>
-                                                            </div>
-                                                        );
-                                                    }
-                                                })()}
-                                                
-                                                {/* Screen Glare */}
-                                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-[1.7rem] pointer-events-none"></div>
-                                            </div>
-                                        </div>
-                                        {/* Dynamic Island */}
-                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[0.85rem] bg-black rounded-full"></div>
-                                    </div>
-                                </div>
+                                <img 
+                                    src={AppMockup1} 
+                                    alt="kaashtkart App View 1" 
+                                    className="w-[120px] sm:w-[180px] md:w-[220px] h-auto drop-shadow-2xl"
+                                />
                             </div>
 
-                            {/* Second Mobile Frame */}
+                            {/* Second Mobile Mockup */}
                             <div
-                                className="relative z-10 transform rotate-6 hover:rotate-0 transition-transform duration-500"
+                                className="relative z-10 transform rotate-12 hover:rotate-0 transition-transform duration-500"
                                 style={{
                                     animation: 'floatRight 4s ease-in-out infinite 0.5s'
                                 }}
                             >
-                                <div className="relative">
-                                    <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[2rem] p-1.5 shadow-2xl">
-                                        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-[1.7rem] overflow-hidden">
-                                            <div className="aspect-[9/19] flex items-center justify-center relative">
-                                                {(() => {
-                                                    try {
-                                                        const MobileApp = require('../../assets/images/mobileApp.png');
-                                                        return (
-                                                            <img
-                                                                src={MobileApp}
-                                                                alt="KashtKart App"
-                                                                className="w-full h-full object-cover rounded-[1.7rem]"
-                                                            />
-                                                        );
-                                                    } catch {
-                                                        return (
-                                                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-amber-400/30 to-orange-400/30">
-                                                                <Smartphone className="w-10 h-10 text-amber-600 mb-2" />
-                                                                <p className="text-amber-700 font-bold text-center text-xs px-4">KashtKart App</p>
-                                                            </div>
-                                                        );
-                                                    }
-                                                })()}
-                                                
-                                                {/* Screen Content Overlay */}
-                                                <div className="absolute bottom-4 left-4 right-4">
-                                                    <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                                            <p className="text-[8px] font-bold text-gray-800">Order Now →</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[0.85rem] bg-black rounded-full"></div>
-                                    </div>
-                                </div>
+                                <img 
+                                    src={AppMockup2} 
+                                    alt="kaashtkart App View 2" 
+                                    className="w-[120px] sm:w-[180px] md:w-[220px] h-auto drop-shadow-2xl"
+                                />
                             </div>
 
                             {/* Floating Elements - Yellow Theme */}
                             <div className="absolute -top-10 -right-10 w-20 h-20 bg-amber-400/40 rounded-full blur-2xl animate-pulse"></div>
                             <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-yellow-400/30 rounded-full blur-2xl animate-pulse delay-700"></div>
-                            <div className="absolute top-1/2 -right-12 w-12 h-12 bg-orange-300/30 rounded-full blur-xl animate-pulse delay-1200"></div>
                         </div>
                     </div>
                 </div>

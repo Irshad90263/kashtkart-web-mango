@@ -141,7 +141,7 @@ const Home = memo(() => {
       </div>
       <div className="md:w-1/2 flex flex-col items-start justify-start md:mt-8 lg:mt-12">
         <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">
-          At KashtKart, every mango tells a story of purity, passion, and perfection.
+          At kaashtkart, every mango tells a story of purity, passion, and perfection.
           We bring you nature's finest, straight from the heart of trusted farms.
         </p>
         <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">

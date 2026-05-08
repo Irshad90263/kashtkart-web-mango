@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy } from "react";
+import CarporateGifting from "../pages/CarporateGifting/CarporateGifting";
 
 // Lazy load all components for better performance
 const Layout = lazy(() => import("../components/layout/Layout"));
@@ -10,7 +11,9 @@ const Testimonials = lazy(() => import("../pages/Testimonials/Testimonials"));
 const Contact = lazy(() => import("../pages/Contact/Contact"));
 const NotFound = lazy(() => import("../pages/NotFound/NotFound"));
 const FaqPage = lazy(() => import("../pages/Faq/FaqPage"));
-const ProductDetail = lazy(() => import("../pages/ProductDetail/ProductDetail"));
+const ProductDetail = lazy(
+  () => import("../pages/ProductDetail/ProductDetail"),
+);
 const Login = lazy(() => import("../pages/auth/Login"));
 const Registration = lazy(() => import("../pages/auth/Registration"));
 const Profile = lazy(() => import("../pages/auth/Profile"));
@@ -19,6 +22,8 @@ const Orders = lazy(() => import("../pages/Orders/Orders"));
 const ReturnPolicy = lazy(() => import("../pages/Policies/ReturnPolicy"));
 const ShippingPolicy = lazy(() => import("../pages/Policies/ShippingPolicy"));
 const TermsOfService = lazy(() => import("../pages/Policies/TermsOfService"));
+const Blogs = lazy(() => import("../pages/Blogs"));
+const BlogDetail = lazy(() => import("../pages/BlogDetail"));
 const ErrorPage = lazy(() => import("../components/common/ErrorPage"));
 
 export const router = createBrowserRouter([
@@ -35,6 +40,8 @@ export const router = createBrowserRouter([
       { path: "about", element: <About /> },
       { path: "laddus", element: <Laddus /> },
       { path: "faqs", element: <FaqPage /> },
+      { path: "blogs", element: <Blogs /> },
+      { path: "blog/:slug", element: <BlogDetail /> },
       { path: "product/:id", element: <ProductDetail /> },
       { path: "testimonials", element: <Testimonials /> },
       { path: "contact", element: <Contact /> },
@@ -42,6 +49,7 @@ export const router = createBrowserRouter([
       { path: "return-policy", element: <ReturnPolicy /> },
       { path: "shipping-policy", element: <ShippingPolicy /> },
       { path: "terms-of-service", element: <TermsOfService /> },
+      { path: "CarporateGifting", element: <CarporateGifting /> },
       { path: "*", element: <NotFound /> },
     ],
   },

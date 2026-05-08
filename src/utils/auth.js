@@ -27,8 +27,22 @@ export const getToken = () => {
     }
 };
 
+export const saveUserData = (user) => {
+    localStorage.setItem("userData", JSON.stringify(user));
+};
+
+export const getUserData = () => {
+    try {
+        const data = localStorage.getItem("userData");
+        return data ? JSON.parse(data) : null;
+    } catch (error) {
+        return null;
+    }
+};
+
 export const removeToken = () => {
     localStorage.removeItem("userToken");
+    localStorage.removeItem("userData");
 };
 
 export const isTokenValid = () => {

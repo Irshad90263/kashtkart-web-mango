@@ -71,7 +71,7 @@ const Testimonials = memo(() => {
     };
 
     const textReviews = [
-        { quote: "Absolutely delicious! Brings back childhood memories of my visits to KashtKArt. The texture is just perfect.", name: "Anjali S.", color: 'var(--color-secondary)', initial: 'AS', location: 'Lucknow', rating: 5 },
+        { quote: "Absolutely delicious! Brings back childhood memories of my visits to kaashtkart. The texture is just perfect.", name: "Anjali S.", color: 'var(--color-secondary)', initial: 'AS', location: 'Lucknow', rating: 5 },
         { quote: "The best Mango I've ever tasted. The kesar flavor is so authentic and the richness of ghee is unmatched.", name: "Rajesh K.", color: 'var(--color-maroon)', initial: 'RK', location: 'Delhi', rating: 5 },
         { quote: "Pure and authentic! You can tell it's made with real desi ghee. My parents were very impressed with the quality.", name: "Meera T.", color: 'var(--color-secondary)', initial: 'MT', location: 'Mumbai', rating: 4 },
         { quote: "Ordered these for my sister's wedding. Everyone loved them! The guest couldn't stop asking where they're from.", name: "Vikram P.", color: 'var(--color-maroon)', initial: 'VP', location: 'Bangalore', rating: 5 },

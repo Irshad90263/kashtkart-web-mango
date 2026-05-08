@@ -106,7 +106,7 @@ const OurCategories = memo(({ addToRefs }) => {
                       loading="lazy"
                     />
                   ) : (
-                    <span className="text-1xl">KashtKart</span>
+                    <span className="text-1xl">kaashtkart</span>
                   )}
                 </div>
                 {/* Name */}

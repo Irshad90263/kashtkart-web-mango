@@ -55,7 +55,7 @@ const stats = [
 export default function WhyKashtKart({ addToRefs }) {
   return (
     <section
-      id="why-kashtkart"
+      id="why-kaashtkart"
       className="relative py-16 overflow-hidden"
       style={{
         background: "linear-gradient(160deg, #fff8e8 0%, #fef3d0 35%, #fdedb8 65%, #fef6dc 85%, #ffffff 100%)",
@@ -128,7 +128,7 @@ export default function WhyKashtKart({ addToRefs }) {
                 className="text-sm md:text-base mb-3 leading-relaxed"
                 style={{ color: "#5a3d00", fontFamily: "var(--font-body, inherit)" }}
               >
-                At KashtKart, every mango tells a story of purity, passion, and
+                At kaashtkart, every mango tells a story of purity, passion, and
                 perfection. We bring nature's finest straight from the heart of trusted farms.
               </p>
               <p

@@ -9,14 +9,14 @@ const Layout = () => {
     const isHome = location.pathname === "/";
 
     return (
-        <div className={`min-h-screen bg-[var(--color-primary)] font-[var(--font-body)] ${isHome ? '' : 'pt-24 md:pt-28'}`}>
+        <div className={`min-h-screen bg-[var(--color-primary)] font-[var(--font-body)] ${isHome ? '' : 'pt-20'}`}>
             <ScrollToTop />
             <Navbar />
             <main>
                 <Outlet />
             </main>
             <ToastContainer
-                position="bottom-right"
+                position="top-right"
                 autoClose={3000}
                 hideProgressBar={false}
                 newestOnTop

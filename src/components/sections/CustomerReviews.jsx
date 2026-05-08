@@ -3,7 +3,7 @@ import { Star, Quote } from 'lucide-react';
 
 const LovedByCustomers = () => {
     const reviews = [
-        { id: 1, name: 'Priya Sharma', rating: 5, review: 'Best mangoes ever! Fresh, juicy and delicious. Highly recommend KashtKart!' },
+        { id: 1, name: 'Priya Sharma', rating: 5, review: 'Best mangoes ever! Fresh, juicy and delicious. Highly recommend kaashtkart!' },
         { id: 2, name: 'Rahul Verma', rating: 5, review: 'Outstanding quality. No chemicals, naturally ripened. Perfect delivery.' },
         { id: 3, name: 'Neha Gupta', rating: 4, review: 'Great taste and quick delivery. Customer support is very helpful.' },
     ];
