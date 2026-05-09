@@ -128,7 +128,7 @@ export default function WhyKashtKart({ addToRefs }) {
                 className="text-sm md:text-base mb-3 leading-relaxed"
                 style={{ color: "#5a3d00", fontFamily: "var(--font-body, inherit)" }}
               >
-                At kaashtkart, every mango tells a story of purity, passion, and
+                At KaashtKart, every mango tells a story of purity, passion, and
                 perfection. We bring nature's finest straight from the heart of trusted farms.
               </p>
               <p

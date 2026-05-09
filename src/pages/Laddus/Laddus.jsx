@@ -205,7 +205,7 @@ const Laddus = () => {
           Our Mango Gallery
         </h1>
         <p className="text-base md:text-xl italic opacity-90 max-w-2xl mx-auto relative z-10 text-[var(--color-text-muted)]">
-          Explore our diverse collection of authentic kaashtkart, handcrafted
+          Explore our diverse collection of authentic KaashtKart, handcrafted
           for every palate and occasion.
         </p>
       </section>
@@ -496,7 +496,7 @@ const Laddus = () => {
         <div className="relative z-10 p-8 md:px-12">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-secondary)] font-[var(--font-heading)]">
-              The kaashtkart Quality Promise
+              The KaashtKart Quality Promise
             </h2>
             <p className="text-[var(--color-text-muted)] text-base mt-3 max-w-2xl mx-auto">
               We ensure that every mango you receive meets the highest standards

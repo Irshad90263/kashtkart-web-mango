@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getPublishedBlogs } from "../api/blogs";
 import Footer from "../components/layout/Footer";
 
@@ -7,10 +7,15 @@ const Blog = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("search") || "";
+
   useEffect(() => {
     const fetchBlogs = async () => {
+      setLoading(true);
       try {
-        const res = await getPublishedBlogs(1, 100); // Fetch latest blogs
+        const res = await getPublishedBlogs(1, 100, searchQuery); 
         setBlogs(res.blogs || []);
       } catch (err) {
         console.error("Error fetching blogs:", err);
@@ -19,7 +24,7 @@ const Blog = () => {
       }
     };
     fetchBlogs();
-  }, []);
+  }, [searchQuery]);
 
   if (loading) return (
     <div className="min-h-screen bg-[#FEF7E0] flex items-center justify-center">
@@ -53,7 +58,9 @@ const Blog = () => {
             Mango<span className="text-[#D9921E]">Blog</span>
           </h1>
           <p className="text-base md:text-lg text-[#7A6233] max-w-2xl mx-auto">
-            Insights, stories, and updates from the world of premium mangoes and thoughtful gifting
+            {searchQuery 
+              ? `Showing results for "${searchQuery}"` 
+              : "Insights, stories, and updates from the world of premium mangoes and thoughtful gifting"}
           </p>
         </div>
 

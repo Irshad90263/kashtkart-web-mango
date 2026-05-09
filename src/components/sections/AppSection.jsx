@@ -1,6 +1,8 @@
 import { Download, Smartphone, Truck, Clock, BadgeCheck, Star, Shield, Zap } from 'lucide-react';
 import AppMockup1 from '../../assets/images/AppMockup1.png';
 import AppMockup2 from '../../assets/images/AppMockup2.png';
+import mangoBgPattern from '../../assets/images/mangoBgPattern.png';
+import mangoBgPattern2 from '../../assets/images/mangoBgPattern2.png';
 
 const AppSection = () => {
     const openPlayStore = () => {
@@ -19,17 +21,17 @@ const AppSection = () => {
             
             {/* Animated Background Elements with Yellow Tone */}
             <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute -top-40 -right-40 w-80 h-80 bg-amber-300/30 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-yellow-300/30 rounded-full blur-3xl animate-pulse"></div>
                 <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-200/15 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-200/15 rounded-full blur-3xl"></div>
                 
                 {/* Additional Yellow Glow */}
                 <div className="absolute top-20 left-1/4 w-64 h-64 bg-yellow-300/10 rounded-full blur-3xl animate-pulse delay-700"></div>
-                <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-amber-400/10 rounded-full blur-3xl animate-pulse delay-1500"></div>
+                <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-yellow-400/10 rounded-full blur-3xl animate-pulse delay-1500"></div>
             </div>
 
             {/* Soft Yellow Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-yellow-100/20 via-transparent to-amber-100/20"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-yellow-200/20 via-transparent to-yellow-100/20"></div>
 
             {/* Floating Decorative Elements */}
             <div className="absolute inset-0 pointer-events-none opacity-40 overflow-hidden">
@@ -45,12 +47,12 @@ const AppSection = () => {
                 <span className="absolute top-2/3 -right-1 text-3xl select-none rotate-[20deg]">🌿</span>
             </div>
 
-            {/* Grid Pattern */}
-            <div className="absolute inset-0 opacity-30">
-                <div className="w-full h-full" style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='rgba(251,191,36,0.08)' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E")`
-                }}></div>
-            </div>
+            {/* Mango Pattern Background */}
+            <div className="absolute inset-0 opacity-[0.6] pointer-events-none mix-blend-multiply" style={{
+                backgroundImage: `url(${mangoBgPattern2})`,
+                backgroundSize: '500px',
+                backgroundRepeat: 'repeat',
+            }}></div>
 
             <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full relative z-20">
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
@@ -63,7 +65,7 @@ const AppSection = () => {
                             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                                 Download{' '}
                                 <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                                    kaashtkart
+                                    KaashtKart
                                 </span>{' '}
                                 App
                             </h2>
@@ -78,9 +80,9 @@ const AppSection = () => {
 
                         {/* Download Links Section */}
                         <div className="pt-6 flex flex-wrap items-center gap-6">
-                            <span className="text-xl sm:text-2xl font-medium text-[#4A5D6E] whitespace-nowrap">
+                            {/* <span className="text-xl sm:text-2xl font-medium text-[#4A5D6E] whitespace-nowrap">
                                 Download App:
-                            </span>
+                            </span> */}
                             <div className="flex flex-wrap items-center gap-4">
                                 {/* App Store Button */}
                                 <a 

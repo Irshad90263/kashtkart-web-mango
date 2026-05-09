@@ -108,7 +108,7 @@ const About = () => {
         <div className="max-w-[1600px] 3xl:max-w-[1900px] mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight">
-              Legacy of <span className='text-[var(--color-secondary)]'>KaashtKart </span>
+              Legacy of <span className='text-[var(--color-secondary)]'>KaashtKart</span>
             </h2>
           </div>
           <div className="grid lg:grid-cols-2 gap-12 items-center">

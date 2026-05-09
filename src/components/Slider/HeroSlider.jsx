@@ -51,7 +51,8 @@ const HeroSlider = memo(() => {
     };
 
     return (
-        <section className="relative w-full slider-container overflow-hidden">
+        
+        <Link to={'/laddus'} className="relative cursor-auto w-full slider-container overflow-hidden">
             <Slider {...settings}>
                 {sliders.map((slider) => (
                     <div key={slider._id} className="relative w-full outline-none">
@@ -67,7 +68,7 @@ const HeroSlider = memo(() => {
                             />
 
                             {/* Content Overlay */}
-                            <div className="absolute inset-0 z-10 flex flex-col items-center justify-end pb-[4%] md:pb-[5%]">
+                            {/* <div className="absolute inset-0 z-10 flex flex-col items-center justify-end pb-[4%] md:pb-[5%]">
                                 <div className="px-4 flex flex-row justify-center items-center gap-3 md:gap-8 opacity-0 animate-slide-up" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
                                     <Link
                                         to="/laddus"
@@ -82,7 +83,7 @@ const HeroSlider = memo(() => {
                                         Our Story
                                     </Link>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 ))}
@@ -120,7 +121,7 @@ const HeroSlider = memo(() => {
                     animation: slide-up 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
             `}</style>
-        </section>
+        </Link>
     );
 });
 

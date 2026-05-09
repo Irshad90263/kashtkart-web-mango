@@ -3,7 +3,7 @@ import { Star, Quote } from 'lucide-react';
 
 const LovedByCustomers = () => {
     const reviews = [
-        { id: 1, name: 'Priya Sharma', rating: 5, review: 'Best mangoes ever! Fresh, juicy and delicious. Highly recommend kaashtkart!' },
+        { id: 1, name: 'Priya Sharma', rating: 5, review: 'Best mangoes ever! Fresh, juicy and delicious. Highly recommend KaashtKart!' },
         { id: 2, name: 'Rahul Verma', rating: 5, review: 'Outstanding quality. No chemicals, naturally ripened. Perfect delivery.' },
         { id: 3, name: 'Neha Gupta', rating: 4, review: 'Great taste and quick delivery. Customer support is very helpful.' },
     ];
@@ -16,7 +16,7 @@ const LovedByCustomers = () => {
                 {/* Header - Responsive */}
                 <div className="text-center mb-4 sm:mb-5 md:mb-6 lg:mb-8">
                     <h2 className="text-[16px] sm:text-[4px] md:text-2xl lg:text-3xl font-black text-[var(--color-text)]">
-                        Loved by <span className="text-[var(--color-secondary)] text-lg sm:text-xl md:text-2xl lg:text-3xl">Our Customers</span>
+                        Loved by <span className="bg-gradient-to-b from-yellow-300 via-orange-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(255,170,0,0.35)] text-lg sm:text-xl md:text-2xl lg:text-3xl">Our Customers</span>
                     </h2>
                     <div className="flex items-center justify-center gap-1 mt-1 sm:mt-1.5 md:mt-2">
                         <div className="flex gap-0.5">

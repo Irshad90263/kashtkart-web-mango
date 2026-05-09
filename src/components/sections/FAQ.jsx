@@ -26,9 +26,9 @@ const FAQ = ({ addToRefs }) => {
             <div className="h-[1px] w-8 bg-[var(--color-secondary)] opacity-60"></div>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-[var(--color-text)] font-[var(--font-heading)]">
-            Frequently Asked <span className="text-[var(--color-secondary)]">Questions</span>
+            Frequently Asked <span className="bg-gradient-to-b from-yellow-300 via-orange-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(255,170,0,0.35)]">Questions</span>
           </h2>
-        </div>
+        </div>  
 
         <div className="flex flex-col gap-3">
           {FAQS.map((faq, i) => (

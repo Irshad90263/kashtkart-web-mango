@@ -58,7 +58,7 @@ const Home = memo(() => {
       </Suspense>
 
       {/* Features Strip */}
-      <section className="bg-[var(--color-surface)] border-b border-[var(--color-secondary)]/15">
+      <section className="bg-[var(--color-surface)] border  my-2 border-yellow-400 rounded-xl mx-8">
         <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full">
           <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[var(--color-secondary)]/15">
           {[
@@ -131,17 +131,17 @@ const Home = memo(() => {
           <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight">
             Spot The
           </div>
-          <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[var(--color-secondary)] font-[var(--font-heading)] leading-tight mt-0">
+          <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black bg-gradient-to-b from-yellow-300 via-orange-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(255,170,0,0.35)] font-[var(--font-heading)] leading-tight mt-0">
             Goodness
           </div>
-          <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[var(--color-secondary)] font-[var(--font-heading)] leading-tight -mt-1 ml-1 md:ml-2">
+          <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black bg-gradient-to-b from-yellow-300 via-orange-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(255,170,0,0.35)] font-[var(--font-heading)] leading-tight -mt-1 ml-1 md:ml-2">
             Inside
           </div>
         </div>
       </div>
       <div className="md:w-1/2 flex flex-col items-start justify-start md:mt-8 lg:mt-12">
         <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">
-          At kaashtkart, every mango tells a story of purity, passion, and perfection.
+          At KaashtKart, every mango tells a story of purity, passion, and perfection.
           We bring you nature's finest, straight from the heart of trusted farms.
         </p>
         <p className="text-[var(--color-text-muted)] text-sm md:text-base mb-3">
@@ -280,10 +280,7 @@ const Home = memo(() => {
         <FAQ addToRefs={addToRefs} />
       </Suspense>
 
-      {/* Latest Blogs */}
-      <Suspense fallback={<div className="h-64 bg-[var(--color-surface)] animate-pulse"></div>}>
-        <LatestBlogs addToRefs={addToRefs} />
-      </Suspense>
+     
       
       {/* Our Priorities */}
       <section className="relative py-16 px-8 md:px-24 2xl:px-32 3xl:px-48 overflow-hidden" id="priorities" style={{ background: 'linear-gradient(to bottom, #ffffff, #fef08a)' }}>
@@ -310,7 +307,7 @@ const Home = memo(() => {
               <span className="text-[var(--color-secondary)] font-semibold uppercase tracking-wide text-sm">What We Believe</span>
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight text-center">
-              Our <span className="text-[var(--color-secondary)] inline-block">Priorities</span>
+              Our <span className="bg-gradient-to-b from-yellow-300 via-orange-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(255,170,0,0.35)] inline-block">Priorities</span>
             </h2>
             <p className="text-[var(--color-text-muted)] text-sm md:text-base mt-4 text-center max-w-2xl">
               We believe in delivering nothing but the best. Here's what matters most to us.
@@ -336,6 +333,11 @@ const Home = memo(() => {
           </div>
         </div>
       </section>
+
+       {/* Latest Blogs */}
+      <Suspense fallback={<div className="h-64 bg-[var(--color-surface)] animate-pulse"></div>}>
+        <LatestBlogs addToRefs={addToRefs} />
+      </Suspense>
 
       <Suspense fallback={<div className="h-64 bg-[var(--color-surface)] animate-pulse border-t border-[var(--color-secondary)]/10"></div>}>
         <Footer />

@@ -5,6 +5,7 @@ import { User, Mail, Phone, LogOut } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Footer from '../../components/layout/Footer';
 import Swal from 'sweetalert2';
+import { removeToken } from '../../utils/auth';
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -56,7 +57,7 @@ const Profile = () => {
         });
 
         if (result.isConfirmed) {
-            localStorage.removeItem('userToken'); // Clear token
+            removeToken(); // Clear token and user data
             toast.success('Logged out successfully!');
             navigate('/login');
         }

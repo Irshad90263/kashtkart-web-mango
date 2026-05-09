@@ -112,7 +112,7 @@ const CategoryProducts = ({ addToRefs }) => {
                   <div className="h-[2px] w-8 bg-[var(--color-secondary)]"></div>
                 </div> */}
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[var(--color-text)] font-[var(--font-heading)] leading-tight">
-                  {cat.name} <span className="text-[var(--color-secondary)]">Special</span>
+                  {cat.name} <span className="bg-gradient-to-b from-yellow-300 via-orange-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(255,170,0,0.35)]">Special</span>
                 </h2>
               </div>
 

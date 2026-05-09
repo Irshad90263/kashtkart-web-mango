@@ -281,6 +281,7 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const [isZoomed, setIsZoomed] = useState(false);
     const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
+    const [activeImage, setActiveImage] = useState('');
 
     const handleMouseMove = (e) => {
         const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -305,8 +306,10 @@ const ProductDetail = () => {
                     category: p.category?.name || 'Special',
                     ingredients: p.about?.ingredients || 'N/A',
                     shelfLife: p.about?.shelfLife || 'N/A',
-                    netWeight: p.about?.netWeight || '1kg'
+                    netWeight: p.about?.netWeight || '1kg',
+                    gallery: p.galleryImages || []
                 });
+                setActiveImage(p.mainImage?.url);
                 setLoading(false);
             } catch (err) {
                 setError(true);
@@ -392,12 +395,11 @@ const ProductDetail = () => {
                                 onMouseMove={handleMouseMove}
                             >
                                 <img 
-                                    src={product.img} 
+                                    src={activeImage || product.img} 
                                     alt={product.name} 
                                     className="w-full h-full object-contain mix-blend-multiply p-6 transition-transform duration-300"
                                 />
                                 
-                                {/* Static lens/pointer for zoom area */}
                                 {isZoomed && (
                                     <div 
                                         className="absolute border border-yellow-500/50 bg-yellow-500/10 pointer-events-none"
@@ -416,23 +418,40 @@ const ProductDetail = () => {
                                         {product.discountPercent}% OFF
                                     </span>
                                 )}
-                                {/* <button className="absolute top-3 right-3 p-1.5 bg-white rounded-full shadow hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
-                                    <Heart size={16} />
-                                </button> */}
                             </div>
+
+                            {/* Gallery Thumbnails */}
+                            {product.gallery && product.gallery.length > 0 && (
+                                <div className="flex gap-3 mt-4 overflow-x-auto pb-2 custom-scrollbar max-w-[420px] mx-auto">
+                                    <button 
+                                        onClick={() => setActiveImage(product.img)}
+                                        className={`w-16 h-16 rounded-lg border-2 overflow-hidden flex-shrink-0 transition-all ${activeImage === product.img ? 'border-yellow-500 shadow-md' : 'border-gray-100 opacity-70 hover:opacity-100'}`}
+                                    >
+                                        <img src={product.img} alt="thumbnail" className="w-full h-full object-cover" />
+                                    </button>
+                                    
+                                    {product.gallery.map((img, idx) => (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => setActiveImage(img.url)}
+                                            className={`w-16 h-16 rounded-lg border-2 overflow-hidden flex-shrink-0 transition-all ${activeImage === img.url ? 'border-yellow-500 shadow-md' : 'border-gray-100 opacity-70 hover:opacity-100'}`}
+                                        >
+                                            <img src={img.url} alt={`gallery-${idx}`} className="w-full h-full object-cover" />
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* Right: Product Info Section - Precisely matching image height (420px) */}
                     <div className="lg:w-[50%] flex flex-col pt-1 lg:pt-0 w-full lg:h-[420px] justify-between relative">
                         
-                        {/* Zoom Result Box - Shows over info when hovering */}
                         {isZoomed && (
                             <div className="absolute inset-0 z-50 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-2xl pointer-events-none">
                                 <div 
                                     className="w-full h-full"
                                     style={{
-                                        backgroundImage: `url(${product.img})`,
+                                        backgroundImage: `url(${activeImage || product.img})`,
                                         backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
                                         backgroundRepeat: 'no-repeat',
                                         backgroundSize: '250%', // Magnification level

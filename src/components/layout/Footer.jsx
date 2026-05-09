@@ -24,7 +24,7 @@ const Footer = () => {
           <div>
             <img
               src="/sks-logo.png"
-              alt="kaashtkart Logo"
+              alt="KaashtKart Logo"
               className="w-32 h-16 rounded mb-4"
             />
 
@@ -184,7 +184,7 @@ const Footer = () => {
             <span>
               © 2026{" "}
               <span className="font-bold text-[var(--color-secondary)]">
-                kaashtkart
+                KaashtKart
               </span>{" "}
               Mango.
             </span>

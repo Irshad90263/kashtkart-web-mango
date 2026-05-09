@@ -188,45 +188,48 @@ const Contact = () => {
             <section className="py-24 px-8 md:px-24 -mt-16 z-20 relative">
                 <div className="flex flex-col md:flex-row gap-12 max-w-6xl mx-auto">
                     {/* Contact Info */}
-                    <div ref={addToRefs} className="scroll-section flex-1 bg-[var(--color-muted)] p-6 md:p-12 rounded-[40px] shadow-2xl border border-[var(--color-secondary)]/10">
-                        <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-secondary)] mb-6 md:mb-10">Get In Touch</h2>
+                    <div ref={addToRefs} className="scroll-section flex-1 bg-orange-50/30 p-6 md:p-8 rounded-md shadow-sm border border-orange-200/50 transition-all duration-300">
+                        <h2 className="text-xl md:text-2xl font-bold text-orange-700 mb-6 md:mb-8 flex items-center gap-3">
+                            <span className="w-6 h-1 bg-orange-500 rounded-full"></span>
+                            Get In Touch
+                        </h2>
 
                         <div className="space-y-6 md:space-y-8">
                             <div className="flex items-start gap-3 md:gap-6">
-                                <div className="p-2 md:p-4 bg-[var(--color-primary)] rounded-2xl text-[var(--color-secondary)] flex-shrink-0 border border-[var(--color-secondary)]/20">
-                                    <Mail size={18} className="md:w-6 md:h-6" />
+                                <div className="p-2 md:p-3 bg-orange-100 rounded-md text-orange-600 flex-shrink-0 border border-orange-200">
+                                    <Mail size={16} className="md:w-5 md:h-5" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <h4 className="font-bold text-[var(--color-secondary)] text-sm md:text-base">Email Us</h4>
-                                    <a href="mailto:KaashtKart@gmail.com" className="text-[var(--color-text-muted)] hover:text-[var(--color-secondary)] transition-colors text-xs md:text-sm break-all">KaashtKart@gmail.com</a>
+                                    <h4 className="font-bold text-orange-800 text-sm md:text-base">Email Us</h4>
+                                    <a href="mailto:KaashtKart@gmail.com" className="text-orange-900/70 hover:text-orange-600 transition-colors text-xs md:text-sm break-all">KaashtKart@gmail.com</a>
                                 </div>
                             </div>
 
                             <div className="flex items-start gap-3 md:gap-6">
-                                <div className="p-2 md:p-4 bg-[var(--color-primary)] rounded-2xl text-[var(--color-secondary)] flex-shrink-0 border border-[var(--color-secondary)]/20">
-                                    <Phone size={18} className="md:w-6 md:h-6" />
+                                <div className="p-2 md:p-3 bg-orange-100 rounded-md text-orange-600 flex-shrink-0 border border-orange-200">
+                                    <Phone size={16} className="md:w-5 md:h-5" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <h4 className="font-bold text-[var(--color-secondary)] text-sm md:text-base">Call Us</h4>
+                                    <h4 className="font-bold text-orange-800 text-sm md:text-base">Call Us</h4>
                                     <div className="text-xs md:text-sm">
-                                        <a href="tel:+916307736698" className="text-[var(--color-text-muted)] hover:text-[var(--color-secondary)] transition-colors inline-block">+91 83188 99526</a>
-                                        <span className="text-[var(--color-text-muted)] opacity-50">, </span>
-                                        <a href="tel:+918467831372" className="text-[var(--color-text-muted)] hover:text-[var(--color-secondary)] transition-colors inline-block">+91 78601 14786</a>
+                                        <a href="tel:+916307736698" className="text-orange-900/70 hover:text-orange-600 transition-colors inline-block">+91 83188 99526</a>
+                                        <span className="text-orange-900/30 mx-1">,</span>
+                                        <a href="tel:+917860114786" className="text-orange-900/70 hover:text-orange-600 transition-colors inline-block">+91 78601 14786</a>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex items-start gap-3 md:gap-6">
-                                <div className="p-2 md:p-4 bg-[var(--color-primary)] rounded-2xl text-[var(--color-secondary)] flex-shrink-0 border border-[var(--color-secondary)]/20">
-                                    <MapPin size={18} className="md:w-6 md:h-6" />
+                                <div className="p-2 md:p-3 bg-orange-100 rounded-md text-orange-600 flex-shrink-0 border border-orange-200">
+                                    <MapPin size={16} className="md:w-5 md:h-5" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <h4 className="font-bold text-[var(--color-secondary)] text-sm md:text-base">Visit Us</h4>
+                                    <h4 className="font-bold text-orange-800 text-sm md:text-base">Visit Us</h4>
                                     <a
                                         href="https://www.google.com/maps/place/Sector+9+Indira+Nagar+Lucknow"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-secondary)] transition-colors underline decoration-dotted underline-offset-4 text-xs md:text-sm break-words"
+                                        className="text-orange-900/70 hover:text-orange-600 transition-colors underline decoration-dotted underline-offset-4 text-xs md:text-sm break-words"
                                     >
                                         45A Dayal Enclave, Sec-9, Indira Nagar, Lucknow 226026
                                     </a>
@@ -235,13 +238,16 @@ const Contact = () => {
                         </div>
 
                         <div className="mt-8 md:mt-12 pt-8 md:pt-12 border-t border-[var(--color-secondary)]/10 italic text-[var(--color-text-muted)] text-xs md:text-sm">
-                            "Bringing the warmth of kaashtkart to your home."
+                            "Bringing the warmth of KaashtKart to your home."
                         </div>
                     </div>
 
                     {/* Contact Form */}
-                    <div ref={addToRefs} className="scroll-section flex-[1.5] bg-[var(--color-muted)] p-6 md:p-12 rounded-[40px] shadow-2xl border border-[var(--color-secondary)]/10">
-                        <h2 className="text-3xl font-bold text-[var(--color-secondary)] mb-10">Send a Message</h2>
+                    <div ref={addToRefs} className="scroll-section flex-[1.5] bg-orange-50/30 p-6 md:p-8 rounded-md shadow-sm border border-orange-200/50">
+                        <h2 className="text-2xl md:text-3xl font-bold text-orange-700 mb-8 flex items-center gap-3">
+                            <span className="w-6 h-1 bg-orange-500 rounded-full"></span>
+                            Send a Message
+                        </h2>
                         <form className="space-y-6" onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
@@ -252,8 +258,8 @@ const Contact = () => {
                                         value={formData.name}
                                         onChange={handleChange}
                                         placeholder="Your Name"
-                                        className={`w-full px-6 py-4 bg-[var(--color-surface)] text-[var(--color-text)] rounded-xl outline-none border transition-all placeholder-gray-400 ${
-                                            errors.name ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-secondary)]/20 focus:border-[var(--color-secondary)]'
+                                        className={`w-full px-4 py-3 bg-white text-orange-950 rounded-md outline-none border transition-all duration-300 shadow-sm ${
+                                            errors.name ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-orange-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-500/5'
                                         }`}
                                         required
                                     />
@@ -267,8 +273,8 @@ const Contact = () => {
                                         value={formData.email}
                                         onChange={handleChange}
                                         placeholder="Your Email"
-                                        className={`w-full px-6 py-4 bg-[var(--color-surface)] text-[var(--color-text)] rounded-xl outline-none border transition-all placeholder-gray-400 ${
-                                            errors.email ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-secondary)]/20 focus:border-[var(--color-secondary)]'
+                                        className={`w-full px-4 py-3 bg-white text-orange-950 rounded-md outline-none border transition-all duration-300 shadow-sm ${
+                                            errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-orange-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-500/5'
                                         }`}
                                     />
                                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -283,8 +289,8 @@ const Contact = () => {
                                         value={formData.phone}
                                         onChange={handleChange}
                                         placeholder="Your Phone Number"
-                                        className={`w-full px-6 py-4 bg-[var(--color-surface)] text-[var(--color-text)] rounded-xl outline-none border transition-all placeholder-gray-400 ${
-                                            errors.phone ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-secondary)]/20 focus:border-[var(--color-secondary)]'
+                                        className={`w-full px-4 py-3 bg-white text-orange-950 rounded-md outline-none border transition-all duration-300 shadow-sm ${
+                                            errors.phone ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-orange-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-500/5'
                                         }`}
                                         required
                                     />
@@ -298,7 +304,7 @@ const Contact = () => {
                                         value={formData.subject}
                                         onChange={handleChange}
                                         placeholder="Bulk Inquiry / Ordering"
-                                        className="w-full px-6 py-4 bg-[var(--color-surface)] text-[var(--color-text)] rounded-xl outline-none border border-[var(--color-secondary)]/20 focus:border-[var(--color-secondary)] transition-all placeholder-gray-400"
+                                        className="w-full px-4 py-3 bg-white text-orange-950 rounded-md outline-none border border-orange-100 transition-all duration-300 shadow-sm"
                                     />
                                 </div>
                             </div>
