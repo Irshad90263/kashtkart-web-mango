@@ -123,7 +123,7 @@ const About = () => {
             </div>
             <div className="flex flex-col justify-center gap-6">
               <p className="text-lg text-[var(--color-text)] leading-relaxed italic border-l-4 border-[var(--color-secondary)] pl-5 bg-[var(--color-secondary)]/5 py-3 rounded-r-xl">
-                "From the orchards of India to your home — KaashtKar twas born to bring the purest, freshest mangoes directly to your table."
+                "From the orchards of India to your home — KaashtKart was born to bring the purest, freshest mangoes directly to your table."
               </p>
               <p className="text-[var(--color-text-muted)] leading-relaxed">
                 KaashtKart started with a simple belief — every family deserves farm-fresh mangoes without compromise. We work directly with farmers across Ratnagiri, Valsad, and Lucknow to source the finest Alphonso, Kesar, and Dasheri mangoes, cutting out middlemen and ensuring full freshness.

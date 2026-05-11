@@ -64,7 +64,7 @@ const Home = memo(() => {
           {[
             { icon: <Truck className="w-6 h-6" />, title: 'Home Delivery', desc: 'Fresh mangoes delivered right to your doorstep, anywhere in India' },
             { icon: <Gift className="w-6 h-6" />, title: 'Free Shipping', desc: 'Enjoy free delivery on every order, no minimum required' },
-            { icon: <Star className="w-6 h-6" />, title: 'Premium Quality', desc: 'Handpicked Alfonso & Kesar mangoes, fresh from the farm' },
+            { icon: <Star className="w-6 h-6" />, title: 'Premium Quality', desc: 'Handpicked Alphonso & Kesar mangoes, fresh from the farm' },
             { icon: <LeafIcon className="w-6 h-6" />, title: '100% Organic', desc: 'Naturally grown, chemical-free mangoes for your family' },
           ].map(({ icon, title, desc }) => (
             <div key={title} className="flex items-center gap-3 px-6 py-5 md:px-8 md:py-8 2xl:px-12 2xl:py-10">

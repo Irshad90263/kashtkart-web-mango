@@ -1,58 +1,93 @@
-import React from 'react';
-import Footer from '../../components/layout/Footer';
+import React from "react";
+import Footer from "../../components/layout/Footer";
 
 const ShippingPolicy = () => {
-    return (
-        <div>
-            <div className="bg-[var(--color-primary)] text-[var(--color-text)] font-[var(--font-main)] min-h-screen -mt-4">
-                <section className="py-20 px-8 md:px-24 bg-[var(--color-secondary)] text-[var(--color-primary)] text-center rounded-b-[50px]">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6">Shipping Policy</h1>
-                    <p className="text-xl opacity-90 max-w-2xl mx-auto italic">
-                        Delivering the taste of Sandila to your doorstep safely and swiftly.
-                    </p>
-                </section>
+  const sections = [
+    {
+      id: 1,
+      title: "Order Processing",
+      content: "All orders are processed within 1-2 business days after order confirmation. Orders placed on weekends or public holidays will be processed on the next working day."
+    },
+    {
+      id: 2,
+      title: "Shipping Locations",
+      content: "We currently ship across India. Delivery to remote or rural locations may take additional time depending on courier service availability."
+    },
+    {
+      id: 3,
+      title: "Estimated Delivery Time",
+      content: "Estimated delivery time is typically 3-7 business days from the date of dispatch. Delivery timelines may vary due to factors beyond our control, including weather conditions, courier delays, or regional restrictions."
+    },
+    {
+      id: 4,
+      title: "Shipping Charges",
+      content: "Shipping charges, if applicable, will be calculated and displayed at checkout. Any promotional free-shipping offers are subject to terms and conditions."
+    },
+    {
+      id: 5,
+      title: "Order Tracking",
+      content: "Once your order is shipped, you will receive a tracking number via email or SMS to monitor the delivery status of your package."
+    },
+    {
+      id: 6,
+      title: "Delays & Exceptions",
+      content: "While we strive to deliver orders on time, unforeseen delays may occur due to courier issues, natural events, or operational constraints. We are not responsible for delays caused by external service providers."
+    },
+    {
+      id: 7,
+      title: "Damaged or Missing Items",
+      content: "If your order arrives damaged or with missing items, please contact our support team within 48 hours of delivery with relevant order details and photographs, where applicable."
+    },
+    {
+      id: 8,
+      title: "Incorrect Address",
+      content: "Customers are responsible for providing accurate shipping information. We are not liable for delivery failures caused by incorrect or incomplete addresses provided at the time of checkout."
+    },
+    {
+      id: 9,
+      title: "Contact Information",
+      content: "For any questions regarding shipping or delivery, please reach out to our customer support team using the contact details available on our website."
+    }
+  ];
 
-                <section className="py-24 px-8 md:px-24 max-w-4xl mx-auto">
-                    <div className="bg-[var(--color-muted)] p-12 rounded-[40px] shadow-2xl border border-white/5">
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif underline decoration-[var(--color-secondary)]">Delivery Timeline</h2>
-                        <p className="mb-6 leading-relaxed text-zinc-500">
-                            We understand you're eager to taste our laddus! Our standard shipping times are as follows:
-                        </p>
-                        <ul className="list-disc pl-6 mb-8 text-zinc-500 space-y-3">
-                            <li><strong>Processing Time:</strong> 1-2 business days (We make your laddus fresh!)</li>
-                            <li><strong>Within Uttar Pradesh:</strong> 2-4 business days.</li>
-                            <li><strong>Rest of India:</strong> 4-7 business days.</li>
-                        </ul>
+  return (
+    <div className="bg-[var(--color-primary)] min-h-screen">
+      {/* Header */}
+      <section className="relative py-16 px-8 text-center bg-gradient-to-b from-yellow-50 to-transparent">
+        <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-secondary)] mb-4 font-[var(--font-heading)]">
+          Shipping Policy
+        </h1>
+        <p className="text-gray-500 max-w-3xl mx-auto text-lg leading-relaxed">
+          This Shipping Policy outlines our order processing, delivery timelines, and shipping procedures for orders placed on the platform.
+        </p>
+      </section>
 
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif underline decoration-[var(--color-secondary)]">Shipping Charges</h2>
-                        <p className="mb-6 leading-relaxed text-zinc-500">
-                            Shipping costs are calculated based on the weight of your order and your location. The exact shipping fee will be shown at checkout.
-                        </p>
+      {/* Content Section */}
+      <section className="max-w-5xl mx-auto px-6 py-12">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12">
+          <div className="mb-10">
+            <p className="text-sm font-bold text-gray-700 italic">Effective Date: 01-Jan-2026</p>
+          </div>
 
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif underline decoration-[var(--color-secondary)]">Packaging</h2>
-                        <p className="mb-6 leading-relaxed text-zinc-500">
-                            Our laddus are packed in high-quality, food-grade airtight containers. We add extra protective layers to ensure they don't break during transit and reach you in perfect condition.
-                        </p>
-
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif underline decoration-[var(--color-secondary)]">Tracking</h2>
-                        <p className="mb-6 leading-relaxed text-zinc-500">
-                            Once your order is shipped, you will receive a tracking ID via email/SMS to monitor your sweet parcel's journey.
-                        </p>
-
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif underline decoration-[var(--color-secondary)]">Cancellation Policy</h2>
-                        <p className="mb-6 leading-relaxed text-gray-300 text-red-400 font-bold">
-                            Please note: Online payment orders cannot be cancelled once placed.
-                        </p>
-
-                        <div className="mt-12 p-6 bg-[var(--color-accent)]/10 rounded-2xl italic text-gray-400 border-l-4 border-[var(--color-secondary)]">
-                            <strong>Note:</strong> During festivals or extreme weather conditions, deliveries might experience slight delays. We appreciate your patience!
-                        </div>
-                    </div>
-                </section>
-            </div>
-            <Footer />
+          <div className="space-y-10">
+            {sections.map((section) => (
+              <div key={section.id} className="group">
+                <h2 className="text-xl font-bold text-yellow-500 mb-3 flex items-start gap-2">
+                  <span className="shrink-0">{section.id}.</span>
+                  <span>{section.title}</span>
+                </h2>
+                <div className="text-gray-600 leading-relaxed pl-7 text-[15px]">
+                  {section.content}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-    );
+      </section>
+
+      <Footer />
+    </div>
+  );
 };
 
 export default ShippingPolicy;

@@ -64,12 +64,12 @@ const AppSection = () => {
                         <div className="space-y-3">
                             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                                 Download{' '}
-                                <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-b from-[#FFAE11] to-[#FF7A00] bg-clip-text text-transparent">
                                     KaashtKart
                                 </span>{' '}
                                 App
                             </h2>
-                            <div className="h-1 w-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
+                            <div className="h-1 w-20 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full"></div>
                         </div>
 
                         {/* Description */}

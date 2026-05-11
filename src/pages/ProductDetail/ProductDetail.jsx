@@ -264,7 +264,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, ArrowLeft, Star, Package, Truck, Shield, ChevronRight, Minus, Plus, Heart, Smile } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Star, Package, Truck, Shield, ChevronRight, Minus, Plus, Heart, Smile, MapPin } from 'lucide-react';
+import { checkDeliveryApi } from '../../api/delivery';
+
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { getProductApi } from '../../api/product';
@@ -282,6 +284,10 @@ const ProductDetail = () => {
     const [isZoomed, setIsZoomed] = useState(false);
     const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
     const [activeImage, setActiveImage] = useState('');
+    const [pincode, setPincode] = useState('');
+    const [deliveryStatus, setDeliveryStatus] = useState(null); // 'checking', 'available', 'unavailable'
+    const [deliveryMsg, setDeliveryMsg] = useState('');
+
 
     const handleMouseMove = (e) => {
         const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -353,6 +359,29 @@ const ProductDetail = () => {
             console.error(error);
         }
     };
+
+    const handleCheckDelivery = async (val) => {
+        if (val.length === 6) {
+            setDeliveryStatus('checking');
+            try {
+                const res = await checkDeliveryApi(val);
+                if (res.available) {
+                    setDeliveryStatus('available');
+                    setDeliveryMsg(`Delivery available. Estimated: ${res.etd || '3-5 days'}`);
+                } else {
+                    setDeliveryStatus('unavailable');
+                    setDeliveryMsg('Delivery not available for this pincode.');
+                }
+            } catch (err) {
+                setDeliveryStatus('unavailable');
+                setDeliveryMsg('Unable to check delivery status.');
+            }
+        } else {
+            setDeliveryStatus(null);
+            setDeliveryMsg('');
+        }
+    };
+
 
     if (loading) return <div className="min-h-screen flex items-center justify-center bg-white"><Loader text="Preparing your treat..." /></div>;
     if (error || !product) return <div className="min-h-screen flex flex-col items-center justify-center text-gray-800"><h2 className="text-xl font-bold mb-3">Product Not Found</h2><Link to="/laddus" className="text-yellow-600 font-medium text-sm">← Back to Shop</Link></div>;
@@ -482,10 +511,10 @@ const ProductDetail = () => {
                             </div>
 
                             <div className="py-2 border-b border-gray-100">
-                                <h3 className="text-[10px] font-bold text-gray-900 uppercase tracking-wider mb-1">Description</h3>
+                                {/* <h3 className="text-[10px] font-bold text-gray-900 uppercase tracking-wider mb-1">Description</h3> */}
                                 <div className="max-h-[60px] overflow-y-auto pr-2 custom-scrollbar">
                                     <p className="text-gray-600 text-[12px] leading-snug italic">
-                                        "{product.description}"
+                                        {product.description}
                                     </p>
                                 </div>
                             </div>
@@ -572,6 +601,41 @@ const ProductDetail = () => {
                                     Buy It Now
                                 </button>
                             </div>
+
+                            {/* New Delivery & Policy Section */}
+                            <div className="mt-6 space-y-4">
+                                {/* Check Delivery Availability */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 text-gray-900 font-bold text-sm">
+                                        <MapPin size={18} className="text-[#FF8A00]" />
+                                        <span>Check Delivery Availability</span>
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            placeholder="Enter pincode"
+                                            value={pincode}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                                                setPincode(val);
+                                                handleCheckDelivery(val);
+                                            }}
+                                            className="w-full h-11 px-4 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#FF8A00] transition-colors placeholder:text-gray-400"
+                                        />
+                                        {deliveryStatus === 'checking' && (
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                <div className="w-4 h-4 border-2 border-[#FF8A00] border-t-transparent rounded-full animate-spin"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {deliveryMsg && (
+                                        <p className={`text-[10px] font-bold ${deliveryStatus === 'available' ? 'text-green-600' : 'text-red-500'}`}>
+                                            {deliveryMsg}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
                         </div>
 
                         {/* Bottom Content (Trust Badges) - pushed down by justify-between */}

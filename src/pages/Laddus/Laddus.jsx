@@ -5,7 +5,8 @@ import React, {
   useTransition,
   useCallback,
 } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import {
   Shield,
   Truck,
@@ -30,8 +31,10 @@ const Laddus = () => {
   const [isPending, startTransition] = useTransition();
   const [sortBy, setSortBy] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Listen for category selection from navigation state (Navbar dropdown)
+
+  // Listen for category selection from navigation state (Navbar dropdown or Footer)
   useEffect(() => {
     if (location.state?.categoryId) {
       const catId = location.state.categoryId;
@@ -40,10 +43,11 @@ const Laddus = () => {
       } else {
         setSelectedCategories([catId]);
       }
-      // Clear location state to prevent re-applying filter on back/forward
-      window.history.replaceState({}, document.title);
+      // Clear location state using navigate to prevent re-applying filter on back/forward
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state]);
+  }, [location.state, navigate, location.pathname]);
+
 
   // Mobile filter modal states
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -130,10 +134,9 @@ const Laddus = () => {
 
   // Fetch products when selectedCategories or sortBy changes
   useEffect(() => {
-    startTransition(() => {
-      fetchProducts();
-    });
+    fetchProducts();
   }, [fetchProducts]);
+
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);

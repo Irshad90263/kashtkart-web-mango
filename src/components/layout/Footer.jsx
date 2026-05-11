@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Mail,
   Phone,
@@ -8,88 +9,72 @@ import {
   Youtube,
   Instagram,
   MessageCircle,
+  Facebook,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ccswLogo from "../../assets/images/ccws.png";
+import { listCategoriesApi } from "../../api/categories";
+
+
 
 const Footer = () => {
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    listCategoriesApi()
+      .then((data) => {
+        const cats = data.categories || (Array.isArray(data) ? data : []);
+        setCategories(cats);
+      })
+
+      .catch((err) =>
+        console.error("Failed to fetch categories for footer", err),
+      );
+  }, []);
+
+  const handleCategoryClick = (categoryId) => {
+    navigate("/laddus", { state: { categoryId: categoryId } });
+    window.scrollTo(0, 0);
+  };
+
+  const chunkArray = (arr, size) => {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += size) {
+      chunks.push(arr.slice(i, i + size));
+    }
+    return chunks;
+  };
+
+  const categoryChunks = chunkArray(categories, 5);
+
+
   return (
     <footer className="bg-[var(--color-dark)] text-gray-300 pt-8 px-8 md:px-24 2xl:px-32 3xl:px-48 relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--color-secondary)] to-transparent opacity-50"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* 4-Column Grid: Logo Section | Quick Links | Legal | Contact */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-          {/* Column 1: Logo + Address + Social Icons */}
-          <div>
-            <img
-              src="/sks-logo.png"
-              alt="KaashtKart Logo"
-              className="w-32 h-16 rounded mb-4"
-            />
-
-            {/* Address */}
-            <div className="mb-4">
-              <a
-                href="https://www.google.com/maps/place/Sector+9+Indira+Nagar+Lucknow"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm flex items-start gap-2"
-              >
-                45A Dayal Enclave, Sec-9, Indira Nagar, Lucknow 226026
-              </a>
-            </div>
-
-            {/* Social Icons */}
-            <div className="flex gap-3">
-              <a
-                href="https://www.instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-white/5 hover:bg-[var(--color-secondary)] text-white hover:text-[var(--color-dark)] rounded-full flex items-center justify-center transition-all duration-300 border border-white/10"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="https://m.youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-white/5 hover:bg-[var(--color-secondary)] text-white hover:text-[var(--color-dark)] rounded-full flex items-center justify-center transition-all duration-300 border border-white/10"
-              >
-                <Youtube className="w-4 h-4" />
-              </a>
-              <a
-                href="https://wa.me/916307736698"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-white/5 hover:bg-[var(--color-secondary)] text-white hover:text-[var(--color-dark)] rounded-full flex items-center justify-center transition-all duration-300 border border-white/10"
-              >
-                <svg
-                  className="w-4 h-4 fill-current"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 0 5.414 0 12.05c0 2.123.552 4.197 1.598 6.011L0 24l6.135-1.609a11.782 11.782 0 005.91 1.595h.005c6.635 0 12.05-5.414 12.05-12.05a11.81 11.81 0 00-3.535-8.513" />
-                </svg>
-              </a>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:flex lg:flex-wrap lg:justify-between gap-8 mb-10">
           {/* Column 2: Quick Links */}
           <div>
             <h4
               style={{ color: "#F2B705" }}
-              className="font-bold text-sm uppercase tracking-widest mb-5 flex items-center gap-2"
+              className="font-semibold text-[20px] mb-5 flex items-center gap-2"
             >
-              <LinkIcon className="w-4 h-4" /> Quick Links
+              {/* <LinkIcon className="w-4 h-4" />  */}
+              Useful Links
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1.5">
               {[
-                { label: "Home", to: "/" },
+                // { label: "Home", to: "/" },
                 { label: "About Us", to: "/about" },
-                { label: "Our Laddus", to: "/laddus" },
-                { label: "Shop", to: "/shop" },
                 { label: "Contact", to: "/contact" },
+                { label: "Blogs", to: "/blogs" },
+                { label: "Orchard", to: "/orchard" },
+                { label: "Support Center", to: "/support" },
               ].map(({ label, to }) => (
                 <li key={to}>
                   <Link
@@ -103,83 +88,226 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 3: Legal */}
+          {/* Column 3: Quick Links */}
           <div>
             <h4
               style={{ color: "#F2B705" }}
-              className="font-bold text-sm uppercase tracking-widest mb-5 flex items-center gap-2"
+              className="font-bold mt-5 text-sm uppercase tracking-widest mb-5 flex items-center gap-2"
             >
-              <Shield className="w-4 h-4" /> Legal
+              {/* <LinkIcon className="w-4 h-4" />  */}
+              {/* Useful Links */}
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1.5">
               {[
+                { label: "Privacy Policy", to: "/privacy-policy" },
+                { label: "Term & Condition", to: "/terms-of-service" },
+
+                { label: "Cancellation & Returns", to: "/cancellation-policy" },
                 { label: "Shipping Policy", to: "/shipping-policy" },
-                { label: "Return Policy", to: "/return-policy" },
-                { label: "Terms of Service", to: "/terms-of-service" },
+
+                // { label: "Shiping", to: "/refund-policy" },
               ].map(({ label, to }) => (
                 <li key={to}>
                   <Link
                     to={to}
-                    className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm flex items-center gap-2"
+                    className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm"
                   >
-                    <FileText className="w-3.5 h-3.5 opacity-60" /> {label}
+                    {label}
                   </Link>
                 </li>
               ))}
+              <li><a href="https://www.dtdc.com/track-your-shipment/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm">Track Order</a></li>
             </ul>
           </div>
+
+          {/* Column(s): Varieties */}
+          {categoryChunks.length > 0 ? (
+            categoryChunks.map((chunk, idx) => (
+              <div key={idx}>
+                <h4
+                  style={{ color: "#F2B705" }}
+                  className="font-semibold text-[20px] mb-5 h-5 flex items-center gap-2"
+                >
+                  {idx === 0 ? "Our Varieties" : ""}
+                </h4>
+                <ul className="space-y-2.5">
+                  {chunk.map((cat) => (
+                    <li key={cat._id}>
+                      <button
+                        onClick={() => handleCategoryClick(cat._id)}
+                        className="text-gray-400 cursor-pointer hover:text-[var(--color-secondary)] transition-colors text-sm flex items-center gap-2 text-left"
+                      >
+                        {/* <div className="w-1 h-1 rounded-full bg-[var(--color-secondary)] opacity-40"></div> */}
+                        {cat.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <div>
+              <h4
+                style={{ color: "#F2B705" }}
+                className="font-bold text-sm uppercase tracking-widest mb-5 flex items-center gap-2"
+              >
+                Our Varieties
+              </h4>
+              <p className="text-gray-500 text-xs italic">Loading varieties...</p>
+            </div>
+          )}
+
+
 
           {/* Column 4: Contact */}
           <div>
             <h4
               style={{ color: "#F2B705" }}
-              className="font-bold text-sm uppercase tracking-widest mb-5 flex items-center gap-2"
+              className="font-semibold text-[20px] mb-5 flex items-center gap-2"
             >
-              <Phone className="w-4 h-4" /> Contact
+              {/* <Phone className="w-4 h-4" />  */}
+              Get in Touch
             </h4>
+             <div className="mb-4">
+              <a
+                href="https://www.google.com/maps/place/Sector+9+Indira+Nagar+Lucknow"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm flex items-start gap-2"
+              >
+                45A Dayal Enclave, Sec-9, Indira Nagar, Lucknow 226026
+              </a>
+            </div>
             <ul className="space-y-3">
               <li>
-                <a
-                  href="tel:+918318899526"
-                  className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm flex items-start gap-2"
-                >
+                <div className="text-gray-400 text-sm flex items-start gap-2">
                   <Phone className="w-4 h-4 text-[var(--color-secondary)] flex-shrink-0 mt-0.5" />
-                  +91 83188 99526
-                </a>
+                  <div className="flex flex-wrap gap-x-1">
+                    <a
+                      href="tel:+918318899526"
+                      className="hover:text-[var(--color-secondary)] transition-colors"
+                    >
+                      +91 83188 99526
+                    </a>
+                    <span>,</span>
+                    <a
+                      href="tel:+917860114786"
+                      className="hover:text-[var(--color-secondary)] transition-colors"
+                    >
+                      +91 78601 14786
+                    </a>
+                  </div>
+                </div>
               </li>
-              <li>
+
+              {/* <li>
                 <a
                   href="tel:+917860114786"
                   className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm flex items-start gap-2"
                 >
                   <Phone className="w-4 h-4 text-[var(--color-secondary)] flex-shrink-0 mt-0.5" />
-                  +91 78601 14786
+                  
                 </a>
-              </li>
+              </li> */}
               <li>
-                <a
-                  href="mailto:KaashtKart@gmail.com"
-                  className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm flex items-start gap-2"
-                >
+                <div className="text-gray-400 text-sm flex items-start gap-2">
                   <Mail className="w-4 h-4 text-[var(--color-secondary)] flex-shrink-0 mt-0.5" />
-                  KaashtKart@gmail.com
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:info@KaashtKart.com"
-                  className="text-gray-400 hover:text-[var(--color-secondary)] transition-colors text-sm flex items-start gap-2"
-                >
-                  <Mail className="w-4 h-4 text-[var(--color-secondary)] flex-shrink-0 mt-0.5" />
-                  info@KaashtKart.com
-                </a>
+                  <div className="flex flex-wrap gap-x-1">
+                    <a
+                      href="mailto:KaashtKart@gmail.com"
+                      className="hover:text-[var(--color-secondary)] transition-colors"
+                    >
+                      KaashtKart@gmail.com
+                    </a>
+                    <span>,</span>
+                    <a
+                      href="mailto:info@KaashtKart.com"
+                      className="hover:text-[var(--color-secondary)] transition-colors"
+                    >
+                      info@KaashtKart.com
+                    </a>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
         </div>
 
+
+        {/* Social, Apps & Payments Section */}
+        <div className="border-t border-white/5 pt-8 flex flex-col lg:flex-row justify-between items-center gap-8 px-4">
+          {/* Follow Us */}
+          <div className="flex items-center gap-4">
+            <span className="text-[14px] text-[#F2B705]">Follow Us:</span>
+            <div className="flex gap-4 items-center">
+              {[
+                { icon: Facebook, href: "https://www.facebook.com/Kaashtkart/" },
+                { icon: Instagram, href: "https://www.instagram.com/#" },
+                { icon: Youtube, href: "https://www.youtube.com/@KaashtKart " },
+                { icon: MessageCircle, href: "https://api.whatsapp.com/send?phone=918318899526" },
+                { icon: Linkedin, href: "https://www.linkedin.com/company/KaashtKart-marketplace-pvt-ltd/" },
+                { icon: Twitter, href: "https://x.com/KaashtKart" },
+              ].map(({ icon: Icon, href }, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-[var(--color-secondary)] transition-all duration-300 hover:scale-110"
+                >
+                  <Icon size={18} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Download App */}
+          <div className="flex items-center gap-4">
+            <span className="text-[14px] text-[#F2B705]">Download App:</span>
+            <div className="flex gap-3 items-center">
+              <a href="#" className="transition-transform hover:scale-105">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
+                  alt="App Store" 
+                  className="h-8 w-auto"
+                />
+              </a>
+              <a href="#" className="transition-transform hover:scale-105">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
+                  alt="Google Play" 
+                  className="h-8 w-auto"
+                />
+              </a>
+            </div>
+          </div>
+
+          {/* Payment Accepts */}
+          <div className="flex items-center gap-4">
+            <span className="text-[14px] text-[#F2B705]">Payment Accepts:</span>
+            <div className="flex gap-4 items-center grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+              <img 
+                src="	https://kaashtkart.com/Content/assets/images/upi-icon.jpg" 
+                alt="UPI" 
+                className="h-4 sm:h-5 w-auto bg-white/10 p-0.5 rounded-sm"
+              />
+              <img 
+                src="	https://img.icons8.com/color/36/rupay.png" 
+                alt="RuPay" 
+                className="h-4 sm:h-6 w-auto bg-white/10 p-0.5 rounded-sm"
+              />
+              <img 
+                src="https://img.icons8.com/color/36/visa.png" 
+                alt="Visa" 
+                className="h-4 sm:h-7 w-auto bg-white/10 p-0.5 rounded-sm"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Copyright */}
-        <div className="border-t border-white/5 pt-6 pb-4 text-center">
+
+        <div className="border-white/5 pt-6 pb-6 text-center -mt-2">
           <p className="text-gray-500 text-sm flex flex-col md:flex-row items-center justify-center gap-2">
             <span>
               © 2026{" "}

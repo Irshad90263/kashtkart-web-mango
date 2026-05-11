@@ -20,11 +20,19 @@ const Profile = lazy(() => import("../pages/auth/Profile"));
 const Shop = lazy(() => import("../pages/Shop/Shop"));
 const Orders = lazy(() => import("../pages/Orders/Orders"));
 const ReturnPolicy = lazy(() => import("../pages/Policies/ReturnPolicy"));
+const PrivacyPolicy = lazy(() => import("../pages/Policies/PrivacyPolicy"));
 const ShippingPolicy = lazy(() => import("../pages/Policies/ShippingPolicy"));
+
 const TermsOfService = lazy(() => import("../pages/Policies/TermsOfService"));
+const CancellationPolicy = lazy(() => import("../pages/Policies/CancellationPolicy"));
 const Blogs = lazy(() => import("../pages/Blogs"));
+
 const BlogDetail = lazy(() => import("../pages/BlogDetail"));
+const Orchard = lazy(() => import("../pages/Orchard/Orchard"));
+const SupportCenter = lazy(() => import("../pages/SupportCenter/SupportCenter"));
 const ErrorPage = lazy(() => import("../components/common/ErrorPage"));
+
+
 
 export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -47,10 +55,18 @@ export const router = createBrowserRouter([
       { path: "contact", element: <Contact /> },
       { path: "profile", element: <Profile /> },
       { path: "return-policy", element: <ReturnPolicy /> },
+      { path: "privacy-policy", element: <PrivacyPolicy /> },
       { path: "shipping-policy", element: <ShippingPolicy /> },
+
       { path: "terms-of-service", element: <TermsOfService /> },
+      { path: "cancellation-policy", element: <CancellationPolicy /> },
       { path: "CarporateGifting", element: <CarporateGifting /> },
+
+      { path: "orchard", element: <Orchard /> },
+      { path: "support", element: <SupportCenter /> },
       { path: "*", element: <NotFound /> },
+
+
     ],
   },
 ]);

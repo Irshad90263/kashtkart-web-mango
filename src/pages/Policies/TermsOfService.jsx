@@ -1,53 +1,134 @@
-import React from 'react';
-import Footer from '../../components/layout/Footer';
+import React from "react";
+import Footer from "../../components/layout/Footer";
 
 const TermsOfService = () => {
-    return (
-        <div>
-            <div className="bg-[var(--color-primary)] text-[var(--color-text)] font-[var(--font-main)] min-h-screen -mt-4">
-                <section className="py-20 px-8 md:px-24 bg-[var(--color-secondary)] text-[var(--color-primary)] text-center rounded-b-[50px]">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6">Terms of Service</h1>
-                    <p className="text-xl opacity-90 max-w-2xl mx-auto italic">
-                        Defining our commitment and your engagement with SKS Sandila Laddu.
-                    </p>
-                </section>
+  const sections = [
+    {
+      id: 1,
+      title: "Eligibility",
+      content: "You must be at least 18 years of age and legally competent under Indian law to use the Platform and place orders."
+    },
+    {
+      id: 2,
+      title: "Nature of Platform",
+      content: "KaashtKart acts solely as a digital marketplace facilitating transactions between customers and independent sellers."
+    },
+    {
+      id: 3,
+      title: "Customer Account",
+      content: "You agree to provide accurate information, maintain confidentiality of credentials, and accept responsibility for all activities conducted under your account."
+    },
+    {
+      id: 4,
+      title: "Product Information",
+      content: "Product details are provided by sellers. Minor variations may occur due to agricultural and seasonal factors."
+    },
+    {
+      id: 5,
+      title: "Orders & Acceptance",
+      content: "Orders are confirmed only after successful payment and seller acceptance. KaashtKart reserves the right to cancel orders when necessary."
+    },
+    {
+      id: 6,
+      title: "Payments",
+      content: "Payments are processed through secure third-party gateways. KaashtKart does not store sensitive banking information."
+    },
+    {
+      id: 7,
+      title: "Delivery",
+      content: "Delivery timelines are indicative and may vary due to logistics or force majeure events."
+    },
+    {
+      id: 8,
+      title: "Return, Refund & Cancellation",
+      content: "Policies vary depending on product type and seller. Perishable goods may not be eligible for return."
+    },
+    {
+      id: 9,
+      title: "Customer Responsibilities",
+      content: "You agree not to misuse the Platform or engage in unlawful activities."
+    },
+    {
+      id: 10,
+      title: "Intellectual Property",
+      content: "All platform content is owned by KaashtKart and protected under applicable laws."
+    },
+    {
+      id: 11,
+      title: "Limitation of Liability",
+      content: "KaashtKart shall not be liable for indirect or consequential damages to the extent permitted by law."
+    },
+    {
+      id: 12,
+      title: "Governing Law",
+      content: "These Terms are governed by the laws of India. Courts at Lucknow shall have exclusive jurisdiction."
+    },
+    {
+      id: 13,
+      title: "Contact Information",
+      content: (
+        <>
+          <div className="font-bold text-gray-800">
+            KaashtKart Marketplace Pvt. Ltd.<br />
+            Email : <span className="text-gray-500 font-normal">KaashtKart@gmail.com</span>
+          </div>
+        </>
+      )
+    }
+  ];
 
-                <section className="py-24 px-8 md:px-24 max-w-4xl mx-auto">
-                    <div className="bg-[var(--color-muted)] p-12 rounded-[40px] shadow-2xl border border-white/5">
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif">1. Use of Website</h2>
-                        <p className="mb-8 leading-relaxed text-zinc-500">
-                            By accessing this website, you agree to use it only for lawful purposes. You are prohibited from using the site in a way that damages its functionality or interferes with other users.
-                        </p>
+  return (
+    <div className="bg-[var(--color-primary)] min-h-screen">
+      {/* Header */}
+      <section className="relative py-16 px-8 text-center bg-gradient-to-b from-yellow-50 to-transparent">
+        <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-secondary)] mb-4 font-[var(--font-heading)]">
+          Terms & Conditions
+        </h1>
 
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif">2. Product Accuracy</h2>
-                        <p className="mb-8 leading-relaxed text-zinc-500">
-                            We strive for precision in our product photos and descriptions. However, as our laddus are artisanal and handmade, slight variations in appearance and texture are natural and a mark of authenticity.
-                        </p>
+        <p className="text-gray-500 max-w-3xl mx-auto text-lg leading-relaxed">
+          These Terms govern your access and use of the KaashtKart platform. Please read them carefully before using our services.
+        </p>
+      </section>
 
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif">3. Pricing and Payment</h2>
-                        <p className="mb-8 leading-relaxed text-zinc-500">
-                            All prices are in INR. We reserve the right to change prices without prior notice. Payments must be made in full before an order is processed for shipping. <span className="text-red-400 font-bold">Online payment orders cannot be cancelled once placed.</span>
-                        </p>
+      {/* Content Section */}
+      <section className="max-w-5xl mx-auto px-6 py-12">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12">
+          <div className="mb-10 space-y-6">
+            <p className="text-sm font-bold text-gray-700">Effective Date: 01-Jan-2026</p>
+            <p className="text-gray-600 leading-relaxed text-[15px]">
+              These Customer Terms & Conditions ("Terms") govern your access to and use of the website and digital platforms operated by <span className="font-bold">KaashtKart Marketplace Pvt. Ltd.</span> ("KaashtKart", "We", "Our", "Us").
+            </p>
+            <p className="text-gray-600 leading-relaxed text-[15px]">
+              KaashtKart is a farmer-focused digital marketplace enabling customers to purchase products directly from farmers and verified sellers. By using the Platform, you agree to these Terms.
+            </p>
+          </div>
 
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif">4. Intellectual Property</h2>
-                        <p className="mb-8 leading-relaxed text-zinc-500">
-                            The SKS Sandila Laddu brand name, logo, images, and content are the exclusive property of SKS Sandila Laddu. Unauthorized use of these materials is strictly prohibited.
-                        </p>
+          <div className="space-y-8">
+            {sections.map((section) => (
+              <div key={section.id} className="group">
+                <h2 className="text-lg font-bold text-[var(--color-secondary)] mb-2 flex items-start gap-2">
+                  <span className="shrink-0">{section.id}.</span>
+                  <span>{section.title}</span>
+                </h2>
+                <div className="text-gray-600 leading-relaxed pl-8 text-[14px]">
+                  {section.content}
+                </div>
+              </div>
+            ))}
+          </div>
 
-                        <h2 className="text-2xl font-bold text-[var(--color-secondary)] mb-6 font-serif">5. Changes to Terms</h2>
-                        <p className="mb-8 leading-relaxed text-zinc-500">
-                            We reserve the right to modify these terms at any time. Your continued use of the site following any changes constitutes acceptance of the new terms.
-                        </p>
-
-                        <div className="mt-12 text-sm text-gray-400 text-center">
-                            Last updated: January 2026
-                        </div>
-                    </div>
-                </section>
-            </div>
-            <Footer />
+          {/* Last Updated Box */}
+          <div className="mt-16 bg-yellow-50/50 border-l-4 border-[var(--color-secondary)] p-6 rounded-r-lg">
+            <p className="text-gray-500 font-medium text-sm">
+              Last Updated: January 2026
+            </p>
+          </div>
         </div>
-    );
+      </section>
+
+      <Footer />
+    </div>
+  );
 };
 
 export default TermsOfService;
