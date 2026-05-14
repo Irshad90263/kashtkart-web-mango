@@ -422,7 +422,7 @@ const ProductDetail = () => {
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4a004; }
             `}} />
 
-            <nav className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center gap-1.5 text-xs text-gray-500 border-b border-gray-100 mb-6">
+            <nav className="max-w-6xl mx-auto px-4 md:px-6 py-3 mt-5 flex items-center gap-1.5 text-xs text-gray-500 border-b border-gray-100 mb-6">
                 <Link to="/" className="hover:text-yellow-600 transition-colors">Home</Link>
                 <ChevronRight size={12} className="text-gray-300" />
                 <Link to="/shop" className="hover:text-yellow-600 transition-colors">Products</Link>
