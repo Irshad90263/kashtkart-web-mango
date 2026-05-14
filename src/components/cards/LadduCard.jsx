@@ -79,7 +79,7 @@ const LadduCard = memo(({ product }) => {
     const fullStarsCount = Math.floor(ratingValue);
     const hasHalf = ratingValue % 1 >= 0.5;
 
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 1; i++) {
       if (i <= fullStarsCount) {
         stars.push(<Star key={i} size={14} className="text-yellow-400 fill-yellow-400" />);
       } else if (i === fullStarsCount + 1 && hasHalf) {
@@ -132,9 +132,9 @@ const LadduCard = memo(({ product }) => {
 
         {/* Rating Section */}
         <div className="flex items-center mt-1 mb-2 gap-1">
-          {/* <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-0.5">
             {renderStars(parseFloat(rating))}
-          </div> */}
+          </div>
           <span className="text-xs font-semibold text-gray-700 ml-1">{rating}</span>
           <span className="text-[10px] text-gray-400 ml-1">({reviewCount.toLocaleString()} reviews)</span>
         </div>
@@ -150,7 +150,7 @@ const LadduCard = memo(({ product }) => {
         {/* Price and Action Section */}
         <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between gap-2">
           <div className="flex flex-col">
-            <span className="text-xl sm:text-2xl font-black text-[#FF6B00] leading-tight">
+            <span className="text-xl sm:text-2xl font-black text-[var(--color-secondary)] leading-tight">
               ₹{displayPrice}
             </span>
             {discount > 0 && (

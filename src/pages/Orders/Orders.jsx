@@ -223,14 +223,14 @@ const OrderDetailsModal = ({ order, isOpen, onClose, onCancel, getStatusColor, f
 
     const handleCancelClick = () => {
         const status = order.status?.toLowerCase();
-        const method = order.paymentMethod?.toLowerCase();
 
-        if (status === 'pending' && method === 'cod') {
+        // Match backend logic: allow if not shipped/delivered/cancelled
+        if (!['shipped', 'delivered', 'cancelled'].includes(status)) {
             onCancel(order._id);
         } else {
             Swal.fire({
-                title: 'Cancellation Policy',
-                text: 'This order cannot be cancelled as per our policy. Once an order is paid or processed, cancellation is not available.',
+                title: 'Cancellation Not Available',
+                text: `This order cannot be cancelled because it is already ${status}.`,
                 icon: 'info',
                 confirmButtonColor: 'var(--color-secondary)',
                 background: '#fff',
@@ -271,6 +271,21 @@ const OrderDetailsModal = ({ order, isOpen, onClose, onCancel, getStatusColor, f
                             <p className="text-sm text-gray-900 font-bold">{formatDate(order.createdAt)}</p>
                         </div>
                     </div>
+
+                    {order.status === 'cancelled' && order.cancelledAt && (
+                        <div className="flex flex-wrap items-center justify-between gap-4 p-5 bg-red-50 rounded-2xl border border-red-100">
+                            <div className="space-y-1">
+                                <p className="text-[10px] uppercase tracking-wider text-red-400 font-black">Cancelled By</p>
+                                <p className="text-sm text-red-900 font-bold">
+                                    {order.cancelledBy === order.userId ? "You (User)" : "Admin"}
+                                </p>
+                            </div>
+                            <div className="space-y-1 text-right">
+                                <p className="text-[10px] uppercase tracking-wider text-red-400 font-black">Cancelled On</p>
+                                <p className="text-sm text-red-900 font-bold">{new Date(order.cancelledAt).toLocaleString('en-IN')}</p>
+                            </div>
+                        </div>
+                    )}
 
                     <div>
                         <h3 className="text-[10px] font-black text-gray-400 mb-4 px-1 uppercase tracking-[0.2em] flex items-center gap-2">

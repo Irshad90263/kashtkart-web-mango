@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { getCartApi } from "../../api/cart";
-import { ShoppingCart, User, Menu, X, ChevronDown } from "lucide-react";
+import { ShoppingCart, User, Menu, X, ChevronDown, Package } from "lucide-react";
 import { listCategoriesApi } from "../../api/categories";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [categories, setCategories] = useState([]);
@@ -49,6 +50,30 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("cart-updated", fetchCartCount);
     };
+  }, [location.pathname]);
+
+  // Check auth status
+  useEffect(() => {
+    const checkAuth = () => {
+      const tokenData = localStorage.getItem("userToken");
+      if (tokenData) {
+        try {
+          const parsed = JSON.parse(tokenData);
+          if (Date.now() < parsed.expiresAt) {
+            setIsLoggedIn(true);
+            return;
+          }
+        } catch (e) {
+          console.error("Token parse error", e);
+        }
+      }
+      setIsLoggedIn(false);
+    };
+
+    checkAuth();
+    // Re-check on every navigation or custom event
+    window.addEventListener("user-logged-in", checkAuth);
+    return () => window.removeEventListener("user-logged-in", checkAuth);
   }, [location.pathname]);
 
   // Close menu and dropdown when route changes
@@ -192,6 +217,17 @@ const Navbar = () => {
 
         {/* Actions & Mobile Toggle */}
         <div className="flex items-center gap-4 md:gap-6">
+          {/* My Orders Icon — Only if logged in */}
+          {isLoggedIn && (
+            <div
+              onClick={() => navigate("/orders")}
+              className="flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110 relative"
+              title="My Orders"
+            >
+              <Package size={24} className="md:w-7 md:h-7" />
+            </div>
+          )}
+
           {/* Cart Icon */}
           <div
             onClick={() => navigate("/shop")}
@@ -254,6 +290,18 @@ const Navbar = () => {
               {link.label}
             </NavLink>
           ))}
+
+          {isLoggedIn && (
+            <NavLink
+              to="/orders"
+              onClick={() => setIsMenuOpen(false)}
+              className={({ isActive }) =>
+                `text-base font-bold no-underline py-3 px-6 rounded-2xl transition-all duration-300 ${isActive ? "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] shadow-sm" : "text-[var(--color-text)] hover:bg-[var(--color-secondary)]/5"}`
+              }
+            >
+              My Orders
+            </NavLink>
+          )}
 
           <div className="mt-auto pt-6 border-t border-[var(--color-secondary)]/10 flex items-center justify-between">
             <div

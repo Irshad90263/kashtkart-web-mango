@@ -364,10 +364,32 @@ const ProductDetail = () => {
         if (val.length === 6) {
             setDeliveryStatus('checking');
             try {
-                const res = await checkDeliveryApi(val);
-                if (res.available) {
+                const weight = parseFloat(product?.netWeight) || 1;
+                const res = await checkDeliveryApi(val, weight);
+                
+                // New API returns { success, availableCouriers: [...] }
+                const couriers = res?.availableCouriers || [];
+                
+                if (res?.success && couriers.length > 0) {
+                    // Pick fastest courier (first in list)
+                    const fastest = couriers.reduce((a, b) => 
+                        (a.estimatedDays || 99) <= (b.estimatedDays || 99) ? a : b
+                    );
+                    
                     setDeliveryStatus('available');
-                    setDeliveryMsg(`Delivery available. Estimated: ${res.etd || '3-5 days'}`);
+
+                    let displayEtd = fastest.etd || `${fastest.estimatedDays} days`;
+                    // If ETD is a date string, format it nicely
+                    if (fastest.etd && fastest.etd.includes('-')) {
+                        try {
+                            const date = new Date(fastest.etd);
+                            displayEtd = date.toLocaleDateString('en-IN', { 
+                                day: 'numeric', month: 'short', year: 'numeric' 
+                            });
+                        } catch (_) {}
+                    }
+
+                    setDeliveryMsg(`✅ Delivery available via ${fastest.courierName} by ${displayEtd}`);
                 } else {
                     setDeliveryStatus('unavailable');
                     setDeliveryMsg('Delivery not available for this pincode.');
@@ -592,10 +614,11 @@ const ProductDetail = () => {
                                     </button>
                                 </div>
                                 <button
-                                    onClick={async () => {
-                                        const isAuth = await checkAuth();
-                                        if (isAuth) navigate('/checkout');
-                                    }}
+                                    // onClick={async () => {
+                                    //     const isAuth = await checkAuth();
+                                    //     if (isAuth) navigate('/checkout');
+                                    // }}
+                                    onClick={handleAddToCart}
                                     className="w-full h-9 cursor-pointer border border-black text-black font-bold rounded-lg hover:bg-black hover:text-white transition-all duration-300 uppercase tracking-widest text-[10px]"
                                 >
                                     Buy It Now
