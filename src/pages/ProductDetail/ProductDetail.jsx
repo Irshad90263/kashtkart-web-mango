@@ -287,6 +287,7 @@ const ProductDetail = () => {
     const [pincode, setPincode] = useState('');
     const [deliveryStatus, setDeliveryStatus] = useState(null); // 'checking', 'available', 'unavailable'
     const [deliveryMsg, setDeliveryMsg] = useState('');
+    const [adding, setAdding] = useState(false);
 
 
     const handleMouseMove = (e) => {
@@ -351,12 +352,16 @@ const ProductDetail = () => {
     const handleAddToCart = async () => {
         const isAuth = await checkAuth();
         if (!isAuth) return;
+        setAdding(true);
         try {
             await addToCartApi({ productId: product.id, quantity });
             window.dispatchEvent(new Event('cart-updated'));
             toast.success(`${product.name} added to cart!`);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to add item to cart. Please try again.");
+        } finally {
+            setAdding(false);
         }
     };
 
@@ -389,7 +394,7 @@ const ProductDetail = () => {
                         } catch (_) {}
                     }
 
-                    setDeliveryMsg(`✅ Delivery available via ${fastest.courierName} by ${displayEtd}`);
+                    setDeliveryMsg(`✅ Delivery available via ${fastest.courierName} by ${fastest.etd}`);
                 } else {
                     setDeliveryStatus('unavailable');
                     setDeliveryMsg('Delivery not available for this pincode.');
@@ -607,19 +612,21 @@ const ProductDetail = () => {
                                     </div>
                                     <button
                                         onClick={handleAddToCart}
-                                        className="flex-1 h-9 cursor-pointer bg-[#F2B705] text-black font-bold rounded-lg hover:bg-black hover:text-white transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-sm"
+                                        disabled={adding}
+                                        className={`flex-1 h-9 bg-[#F2B705] text-black font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-sm ${adding ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-black hover:text-white'}`}
                                     >
-                                        <ShoppingCart size={15} />
-                                        Add to Cart
+                                        {adding ? (
+                                            <div className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full"></div>
+                                        ) : (
+                                            <ShoppingCart size={15} />
+                                        )}
+                                        {adding ? 'Adding...' : 'Add to Cart'}
                                     </button>
                                 </div>
                                 <button
-                                    // onClick={async () => {
-                                    //     const isAuth = await checkAuth();
-                                    //     if (isAuth) navigate('/checkout');
-                                    // }}
                                     onClick={handleAddToCart}
-                                    className="w-full h-9 cursor-pointer border border-black text-black font-bold rounded-lg hover:bg-black hover:text-white transition-all duration-300 uppercase tracking-widest text-[10px]"
+                                    disabled={adding}
+                                    className={`w-full h-9 border border-black text-black font-bold rounded-lg transition-all duration-300 uppercase tracking-widest text-[10px] ${adding ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-black hover:text-white'}`}
                                 >
                                     Buy It Now
                                 </button>
@@ -686,7 +693,7 @@ const ProductDetail = () => {
             </main>
 
             {/* About This Product Section */}
-            <section className="max-w-6xl mx-auto px-4 md:px-6 mb-16">
+            <section className="max-w-6xl mx-auto px-4 md:px-6 mt-10 mb-16">
                 <div className="bg-white rounded-[32px] p-8 md:p-12 border border-gray-100 shadow-sm">
                     <h2 className="text-2xl font-black text-gray-900 mb-8">About This Product</h2>
                     

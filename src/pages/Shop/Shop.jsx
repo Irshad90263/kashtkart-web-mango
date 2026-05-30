@@ -570,8 +570,8 @@ const Shop = () => {
           key: orderData.key_id,
           amount: orderData.order.amount,
           currency: orderData.order.currency,
-          name: "SKS Laddu",
-          description: "Order for Delicious Laddus",
+          name: "KaashtKart Mango",
+          description: "Order for Delicious Mango",
           order_id: orderData.order.id,
           handler: async function (response) {
             try {

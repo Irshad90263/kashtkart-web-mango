@@ -153,7 +153,7 @@ const Home = memo(() => {
 
     <div className="md:pl-12 lg:pl-70 xl:pl-70">
       {/* Row 1 */}
-      <div className="grid grid-cols-3 gap-6 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
         <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
           <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
             <Leaf className="w-5 h-5" />
@@ -180,7 +180,7 @@ const Home = memo(() => {
       </div>
 
       {/* Row 2 - shifted right */}
-      <div className="grid grid-cols-3 gap-6 md:ml-12 lg:ml-24 xl:ml-32">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:ml-12 lg:ml-24 xl:ml-32">
         <div className="group flex flex-col items-start text-left gap-2 p-4 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-500/30 hover:border-yellow-500/60 hover:-translate-y-1 transition-all duration-300 shadow-sm">
           <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500/30 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300">
             <HeartPulse className="w-5 h-5" />

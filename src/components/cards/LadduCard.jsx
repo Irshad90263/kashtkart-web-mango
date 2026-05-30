@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 const LadduCard = memo(({ product }) => {
   const navigate = useNavigate();
   const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   // Random rating between 4.2 and 4.9
   const rating = (Math.random() * (4.9 - 4.2) + 4.2).toFixed(1);
@@ -58,6 +59,7 @@ const LadduCard = memo(({ product }) => {
     const isAuth = await checkAuth();
     if (!isAuth) return;
 
+    setAdding(true);
     try {
       await addToCartApi({ productId: id, quantity: 1 });
       window.dispatchEvent(new Event('cart-updated'));
@@ -66,6 +68,9 @@ const LadduCard = memo(({ product }) => {
       setTimeout(() => setAdded(false), 2000);
     } catch (error) {
       console.error("Failed to add to cart:", error);
+      toast.error("Failed to add to cart. Please try again.", { position: "top-right" });
+    } finally {
+      setAdding(false);
     }
   };
 
@@ -162,7 +167,7 @@ const LadduCard = memo(({ product }) => {
 
           <button
             onClick={handleAddToCart}
-            disabled={added}
+            disabled={added || adding}
             className={`
               flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-sm border
               transition-all duration-300 active:scale-95
@@ -170,10 +175,16 @@ const LadduCard = memo(({ product }) => {
                 ? 'bg-green-600 border-green-600 text-white' 
                 : 'bg-white border text-[#FF6B00] hover:bg-yellow-50'
               }
+              ${adding ? 'cursor-not-allowed opacity-70' : ''}
               text-xs sm:text-sm font-bold
             `}
           >
-            {added ? (
+            {adding ? (
+              <>
+                <div className="animate-spin w-4 h-4 border-2 border-[#FF6B00] border-t-transparent rounded-full"></div>
+                <span>Adding...</span>
+              </>
+            ) : added ? (
               <>
                 <CheckCircle size={16} />
                 <span className="hidden sm:inline">Added</span>
