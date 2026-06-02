@@ -30,6 +30,7 @@ const Blogs = lazy(() => import("../pages/Blogs"));
 const BlogDetail = lazy(() => import("../pages/BlogDetail"));
 const Orchard = lazy(() => import("../pages/Orchard/Orchard"));
 const SupportCenter = lazy(() => import("../pages/SupportCenter/SupportCenter"));
+const BookingProducts = lazy(() => import("../pages/Booking/BookingProducts"));
 const ErrorPage = lazy(() => import("../components/common/ErrorPage"));
 
 
@@ -53,6 +54,7 @@ export const router = createBrowserRouter([
       { path: "product/:id", element: <ProductDetail /> },
       { path: "testimonials", element: <Testimonials /> },
       { path: "contact", element: <Contact /> },
+      { path: "booking", element: <BookingProducts /> },
       { path: "profile", element: <Profile /> },
       { path: "return-policy", element: <ReturnPolicy /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },

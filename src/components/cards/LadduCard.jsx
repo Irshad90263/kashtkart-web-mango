@@ -5,7 +5,7 @@ import { ShoppingCart, Star, CheckCircle, Heart } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
-const LadduCard = memo(({ product }) => {
+const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
   const navigate = useNavigate();
   const [added, setAdded] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -165,37 +165,49 @@ const LadduCard = memo(({ product }) => {
             )}
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            disabled={added || adding}
-            className={`
-              flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-sm border
-              transition-all duration-300 active:scale-95
-              ${added 
-                ? 'bg-green-600 border-green-600 text-white' 
-                : 'bg-white border text-[#FF6B00] hover:bg-yellow-50'
-              }
-              ${adding ? 'cursor-not-allowed opacity-70' : ''}
-              text-xs sm:text-sm font-bold
-            `}
-          >
-            {adding ? (
-              <>
-                <div className="animate-spin w-4 h-4 border-2 border-[#FF6B00] border-t-transparent rounded-full"></div>
-                <span>Adding...</span>
-              </>
-            ) : added ? (
-              <>
-                <CheckCircle size={16} />
-                <span className="hidden sm:inline">Added</span>
-              </>
-            ) : (
-              <>
-                <ShoppingCart size={16} />
-                <span>Add to Cart</span>
-              </>
-            )}
-          </button>
+          {isBookingPage ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onBookNow) onBookNow(product);
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F2B705] hover:bg-[#e0a904] text-white font-bold text-xs sm:text-sm transition-colors active:scale-95 duration-200"
+            >
+              <span>Book Now</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              disabled={added || adding}
+              className={`
+                flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-sm border
+                transition-all duration-300 active:scale-95
+                ${added 
+                  ? 'bg-green-600 border-green-600 text-white' 
+                  : 'bg-white border text-[#FF6B00] hover:bg-yellow-50'
+                }
+                ${adding ? 'cursor-not-allowed opacity-70' : ''}
+                text-xs sm:text-sm font-bold
+              `}
+            >
+              {adding ? (
+                <>
+                  <div className="animate-spin w-4 h-4 border-2 border-[#FF6B00] border-t-transparent rounded-full"></div>
+                  <span>Adding...</span>
+                </>
+              ) : added ? (
+                <>
+                  <CheckCircle size={16} />
+                  <span className="hidden sm:inline">Added</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} />
+                  <span>Add to Cart</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>

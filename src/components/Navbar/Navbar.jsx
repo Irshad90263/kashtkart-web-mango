@@ -217,6 +217,21 @@ const Navbar = () => {
 
         {/* Actions & Mobile Toggle */}
         <div className="flex items-center gap-4 md:gap-6">
+          {/* Booking Button (Highlighted Green) */}
+          <NavLink
+            to="/booking"
+            className={({ isActive }) =>
+              `no-underline font-extrabold text-xs px-4 py-2 rounded-full transition-all duration-300 transform hover:-translate-y-0.5 shadow-md flex items-center gap-1.5 ${
+                isActive
+                  ? "bg-[#008222] text-white shadow-[#008222]/30"
+                  : "bg-[#008222] hover:bg-[#008222] text-white shadow-[#008222]/20 hover:shadow-[#008222]/30"
+              }`
+            }
+          >
+            {/* <span className="w-2 h-2 rounded-full bg-white animate-ping"></span> */}
+            Booking
+          </NavLink>
+
           {/* My Orders Icon — Only if logged in */}
           {isLoggedIn && (
             <div
