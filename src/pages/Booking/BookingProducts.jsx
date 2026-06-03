@@ -340,7 +340,11 @@ const BookingProducts = () => {
                       key={laddu._id}
                       isBookingPage={true}
                       onBookNow={(prod) => {
-                        setSelectedProductForBooking(prod);
+                        setSelectedProductForBooking({
+                          ...prod,
+                          categoryId: laddu.category?._id || laddu.category,
+                          productId: laddu._id
+                        });
                         setIsModalOpen(true);
                       }}
                       product={{
@@ -584,28 +588,19 @@ const BookingProducts = () => {
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl animate-fadeIn cursor-default"
+            className="bg-[#F8FAFC] rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden relative shadow-2xl animate-fadeIn cursor-default"
           >
-            {/* Close button */}
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-[2050] font-black text-sm cursor-pointer"
-              title="Close modal"
-            >
-              ✕
-            </button>
-
             {/* Render Booking Form */}
-            <div className="p-2">
-              <Booking 
-                preselectedVariety={selectedProductForBooking?.category} 
-                preselectedName={selectedProductForBooking?.name} 
-                preselectedWeight={selectedProductForBooking?.about?.netWeight} 
-                preselectedPrice={selectedProductForBooking?.finalPrice || selectedProductForBooking?.price} 
-                isModalMode={true} 
-                onCloseModal={() => setIsModalOpen(false)} 
-              />
-            </div>
+            <Booking 
+              preselectedVariety={selectedProductForBooking?.category} 
+              preselectedName={selectedProductForBooking?.name} 
+              preselectedWeight={selectedProductForBooking?.about?.netWeight} 
+              preselectedPrice={selectedProductForBooking?.finalPrice || selectedProductForBooking?.price} 
+              categoryId={selectedProductForBooking?.categoryId}
+              productId={selectedProductForBooking?.productId}
+              isModalMode={true} 
+              onCloseModal={() => setIsModalOpen(false)} 
+            />
           </div>
         </div>
       )}
