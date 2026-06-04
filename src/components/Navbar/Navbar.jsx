@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { getCartApi } from "../../api/cart";
-import { ShoppingCart, User, Menu, X, ChevronDown, Package } from "lucide-react";
+import {
+  ShoppingCart,
+  User,
+  Menu,
+  X,
+  ChevronDown,
+  Package,
+} from "lucide-react";
 import { listCategoriesApi } from "../../api/categories";
 
 const Navbar = () => {
@@ -216,20 +223,20 @@ const Navbar = () => {
         </ul>
 
         {/* Actions & Mobile Toggle */}
-        <div className="flex items-center gap-4 md:gap-6">
+        <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
           {/* Booking Button (Highlighted Green) */}
           <NavLink
             to="/booking"
             className={({ isActive }) =>
-              `no-underline font-extrabold text-xs px-4 py-2 rounded-full transition-all duration-300 transform hover:-translate-y-0.5 shadow-md flex items-center gap-1.5 ${
+              `no-underline font-extrabold text-[10px] sm:text-xs px-2.5 py-1.5 sm:px-4 sm:py-2 rounded transition-all duration-300 transform hover:-translate-y-0.5 shadow-md flex items-center gap-1.5 ${
                 isActive
-                  ? "bg-[#008222] text-white shadow-[#008222]/30"
-                  : "bg-[#008222] hover:bg-[#008222] text-white shadow-[#008222]/20 hover:shadow-[#008222]/30"
+                  ? "bg-[#FD9C03] text-white shadow-[#008222]/30"
+                  : "bg-[#FD9C03] hover:bg-[#FD9C03] text-white shadow-[#008222]/20 hover:shadow-[#008222]/30"
               }`
             }
           >
             {/* <span className="w-2 h-2 rounded-full bg-white animate-ping"></span> */}
-            Booking
+            <span className="sm:inline">Advance</span>Booking
           </NavLink>
 
           {/* My Orders Icon — Only if logged in */}
@@ -239,7 +246,7 @@ const Navbar = () => {
               className="flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110 relative"
               title="My Orders"
             >
-              <Package size={24} className="md:w-7 md:h-7" />
+              <Package size={20} className="sm:w-6 sm:h-6 md:w-7 md:h-7" />
             </div>
           )}
 
@@ -249,9 +256,9 @@ const Navbar = () => {
             className="flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110 relative"
             title="View Order"
           >
-            <ShoppingCart size={24} className="md:w-7 md:h-7" />
+            <ShoppingCart size={20} className="sm:w-6 sm:h-6 md:w-7 md:h-7" />
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[var(--color-secondary)] text-[var(--color-primary)] text-[10px] font-extrabold w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full shadow-md animate-bounce">
+              <span className="absolute -top-1.5 -right-1.5 bg-[var(--color-secondary)] text-[var(--color-primary)] text-[9px] sm:text-[10px] font-extrabold w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full shadow-md animate-bounce">
                 {cartCount}
               </span>
             )}
@@ -262,16 +269,20 @@ const Navbar = () => {
             className="hidden sm:flex items-center text-[var(--color-secondary)] cursor-pointer transition-transform duration-200 hover:scale-110"
             title="Customer Profile"
           >
-            <User size={24} className="md:w-7 md:h-7" />
+            <User size={20} className="sm:w-6 sm:h-6 md:w-7 md:h-7" />
           </div>
 
           {/* Hamburger Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden flex flex-col justify-center text-[var(--color-secondary)] focus:outline-none z-[1001] bg-[var(--color-surface)] p-2 rounded-xl shadow-sm border border-[var(--color-secondary)]/10 transition-transform active:scale-95"
+            className="lg:hidden flex flex-col justify-center p-0 -ml-5 text-[var(--color-secondary)] focus:outline-none z-[1001] rounded sm:rounded-xl cursor-pointer transition-transform active:scale-95"
             aria-label="Toggle Menu"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? (
+              <X size={20} className="sm:w-6 sm:h-6" />
+            ) : (
+              <Menu size={20} className="sm:w-6 sm:h-6" />
+            )}
           </button>
         </div>
       </div>

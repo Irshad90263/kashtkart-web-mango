@@ -2,12 +2,28 @@ import React, { useEffect, useState, useRef, useCallback, memo } from 'react';
 import { listCategoriesApi } from '../../api/categories';
 import { listProductsApi } from '../../api/product';
 
+const bgColors = [
+  // '#FFE1E1', // Light Red/Pink
+  // '#FFF1D8', // Light Peach/Orange
+  // '#FFE3F3', // Light Magenta/Pink
+  // '#E3F4E1', // Light Green
+  // '#E2E6FF', // Light Indigo/Blue
+  // '#F4E2FF', // Light Violet/Purple
+  '#FDD26D',
+  '#FDD26D',
+  '#FDD26D',
+  '#FDD26D',
+  '#FDD26D',
+  '#FDD26D',
+];
+
 const OurCategories = memo(({ addToRefs }) => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const scrollRef = useRef(null);
   const animFrameRef = useRef(null);
   const posRef = useRef(0);
+  const isHoveredRef = useRef(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -15,11 +31,14 @@ const OurCategories = memo(({ addToRefs }) => {
       const cats = catData.categories || (Array.isArray(catData) ? catData : []);
       const prods = prodData.products || (Array.isArray(prodData) ? prodData : []);
 
-      const catsWithImage = cats
-  .map(cat => ({
-    ...cat,
-    image: cat.image?.url || null  // Category ki image URL direct use
-  }));
+      const catsWithImage = cats.map(cat => {
+        const count = prods.filter(p => (p.category?._id || p.category) === cat._id).length;
+        return {
+          ...cat,
+          image: cat.image?.url || null,
+          productCount: count
+        };
+      });
 
       setCategories(catsWithImage);
     } catch (err) {
@@ -37,9 +56,13 @@ const OurCategories = memo(({ addToRefs }) => {
     if (!container || categories.length === 0) return;
 
     const tick = () => {
+      if (isHoveredRef.current) {
+        animFrameRef.current = requestAnimationFrame(tick);
+        return;
+      }
       posRef.current += 0.8; // Constant speed
       const totalWidth = container.scrollWidth;
-      const oneSetWidth = totalWidth / 3;
+      const oneSetWidth = totalWidth / 5;
 
       // Reset to maintain seamless loop
       if (posRef.current >= oneSetWidth) {
@@ -58,11 +81,11 @@ const OurCategories = memo(({ addToRefs }) => {
   }, [categories]);
 
   // Triple duplicate for seamless loop even on wide screens
-  const allCats = [...categories, ...categories, ...categories];
+  const allCats = [...categories];
 
   return (
     <section
-      className="py-14 bg-[var(--color-secondary)]/20 overflow-hidden"
+      className="py-14 bg-[var(--color-secondary)]/5 overflow-hidden"
       id="our-categories"
     >
       <div className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 w-full">
@@ -78,43 +101,57 @@ const OurCategories = memo(({ addToRefs }) => {
 
         {/* Skeleton */}
         {isLoading ? (
-          <div className="flex gap-6 overflow-x-hidden">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex-shrink-0 flex flex-col items-center gap-3">
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gray-200 animate-pulse"></div>
-                <div className="h-3 w-16 bg-gray-200 rounded animate-pulse"></div>
+          <div className="flex gap-4 md:gap-6 overflow-x-hidden">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-4.5rem)/4)] lg:w-[calc((100%-6rem)/5)] xl:w-[calc((100%-7.5rem)/6)] flex flex-col items-center pt-8 pb-6 px-4 rounded-2xl bg-gray-100 animate-pulse"
+              >
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-xl bg-gray-200 mb-5"></div>
+                <div className="h-4 w-20 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 w-12 bg-gray-200 rounded"></div>
               </div>
             ))}
           </div>
         ) : (
           <div
             ref={scrollRef}
-            className="flex gap-6 md:gap-10 overflow-x-auto pb-2 no-scrollbar"
+            className="flex gap-4 md:gap-6 overflow-x-auto pb-2 no-scrollbar"
+            onMouseEnter={() => { isHoveredRef.current = true; }}
+            onMouseLeave={() => { isHoveredRef.current = false; }}
           >
-            {allCats.map((cat, index) => (
-              <div
-                key={`${cat._id}-${index}`}
-                className="flex-shrink-0 flex flex-col items-center gap-3 cursor-pointer group"
-              >
-                {/* Circle Image */}
-                <div className="w-20 h-20 md:w-24 md:h-24 2xl:w-28 2xl:h-28 rounded-full overflow-hidden border-2 border-[var(--color-secondary)]/30 group-hover:border-[var(--color-secondary)] transition-all duration-300 bg-[var(--color-primary)] flex items-center justify-center shadow-md group-hover:shadow-[0_0_16px_rgba(242,183,5,0.35)]">
-                  {cat.image ? (
-                    <img
-                      src={cat.image}
-                      alt={cat.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="text-1xl">kaashtkart</span>
-                  )}
+            {allCats.map((cat, index) => {
+              const originalIndex = index % categories.length;
+              return (
+                <div
+                  key={`${cat._id}-${index}`}
+                  className="flex-shrink-0 w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-4.5rem)/4)] lg:w-[calc((100%-6rem)/5)] xl:w-[calc((100%-7.5rem)/6)] flex flex-col items-center pt-6 pb-0 px-4 rounded-2xl cursor-pointer group transition-all duration-300 hover:scale-[1.03] hover:shadow-lg"
+                  style={{ backgroundColor: bgColors[originalIndex % bgColors.length] }}
+                >
+                  {/* Card Image */}
+                  <div className="w-24 h-24 md:w-32 md:h-32 flex items-center justify-center mb-5 overflow-hidden">
+                    {cat.image ? (
+                      <img
+                        src={cat.image}
+                        alt={cat.name}
+                        className="max-w-full max-h-full object-contain group-hover:scale-110 scale-110 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="text-sm font-semibold text-gray-500">Kashtkart</span>
+                    )}
+                  </div>
+                  {/* Name */}
+                  <h3 className="text-sm font-bold text-slate-800 text-center mb-1 group-hover:text-[var(--color-secondary)] transition-colors duration-300 w-full px-1 whitespace-normal break-words">
+                    {cat.name}
+                  </h3>
+                  {/* Count */}
+                  {/* <p className="text-xs md:text-sm font-semibold text-emerald-700 text-center">
+                    {cat.productCount !== undefined ? `${cat.productCount} items` : '0 items'}
+                  </p> */}
                 </div>
-                {/* Name */}
-                <p className="text-xs md:text-sm font-semibold text-[var(--color-text)] group-hover:text-[var(--color-secondary)] transition-colors duration-300 text-center max-w-[80px] md:max-w-[96px] leading-tight">
-                  {cat.name}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

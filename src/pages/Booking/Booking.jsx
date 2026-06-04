@@ -56,12 +56,70 @@ const Booking = ({
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingNo, setBookingNo] = useState("");
   const [errors, setErrors] = useState({});
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false);
 
   useEffect(() => {
     if (!isModalMode) {
       window.scrollTo(0, 0);
     }
   }, [isModalMode]);
+
+  useEffect(() => {
+    const fetchCityState = async () => {
+      if (formData.pincode && formData.pincode.length === 6) {
+        setIsFetchingLocation(true);
+        setFormData(prev => ({
+          ...prev,
+          city: "Fetching...",
+          state: "Fetching..."
+        }));
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${formData.pincode}`);
+          const data = await res.json();
+          if (data && data[0] && data[0].Status === "Success") {
+            const postOffice = data[0].PostOffice[0];
+            if (postOffice) {
+              const district = postOffice.District;
+              const stateName = postOffice.State;
+              setFormData(prev => ({
+                ...prev,
+                city: district,
+                state: stateName
+              }));
+              setErrors(prev => ({
+                ...prev,
+                city: "",
+                state: ""
+              }));
+            } else {
+              setFormData(prev => ({
+                ...prev,
+                city: "",
+                state: ""
+              }));
+            }
+          } else {
+            setFormData(prev => ({
+              ...prev,
+              city: "",
+              state: ""
+            }));
+          }
+        } catch (error) {
+          console.error("Error fetching location from pincode:", error);
+          setFormData(prev => ({
+            ...prev,
+            city: "",
+            state: ""
+          }));
+        } finally {
+          setIsFetchingLocation(false);
+        }
+      }
+    };
+
+    fetchCityState();
+  }, [formData.pincode]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -429,7 +487,7 @@ const Booking = ({
         )}
 
         {/* Limited Harvest Banner */}
-        <div className="bg-[#FFF8EE] border border-[#FED7AA] rounded-xl p-4 flex gap-3 text-sm shadow-sm">
+        <div className="bg-[#FFF8EE] border border-[#FED7AA] rounded p-4 flex gap-3 text-sm shadow-sm">
           <div className="mt-0.5 text-[#F97316] flex-shrink-0">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -446,7 +504,7 @@ const Booking = ({
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Section 1: Customer Details */}
-          <div className="bg-white border border-[#F1F5F9] rounded-2xl p-5 md:p-6 space-y-4.5 shadow-sm">
+          <div className="bg-white border border-[#F1F5F9] rounded p-5 md:p-6 space-y-4.5 shadow-sm">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
               <svg className="w-5 h-5 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -454,9 +512,9 @@ const Booking = ({
               <h2 className="text-[14px] md:text-[15px] font-bold text-slate-800 tracking-wide font-sans">Customer Details</h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-4 pt-2">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -465,15 +523,15 @@ const Booking = ({
                   value={formData.fullName}
                   onChange={handleInputChange}
                   placeholder="Enter your full name"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
                     errors.fullName ? "border-red-500 bg-red-50/10" : "border-slate-200"
                   }`}
                 />
                 {errors.fullName && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.fullName}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Mobile Number <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -482,15 +540,15 @@ const Booking = ({
                   value={formData.mobileNumber}
                   onChange={handleInputChange}
                   placeholder="10 digit mobile number"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
                     errors.mobileNumber ? "border-red-500 bg-red-50/10" : "border-slate-200"
                   }`}
                 />
                 {errors.mobileNumber && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.mobileNumber}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Alternate Mobile
                 </label>
                 <input
@@ -499,15 +557,15 @@ const Booking = ({
                   value={formData.alternateMobileNumber}
                   onChange={handleInputChange}
                   placeholder="Optional"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
                     errors.alternateMobileNumber ? "border-red-500 bg-red-50/10" : "border-slate-200"
                   }`}
                 />
                 {errors.alternateMobileNumber && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.alternateMobileNumber}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Email ID
                 </label>
                 <input
@@ -516,7 +574,7 @@ const Booking = ({
                   value={formData.emailId}
                   onChange={handleInputChange}
                   placeholder="you@example.com"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
                     errors.emailId ? "border-red-500 bg-red-50/10" : "border-slate-200"
                   }`}
                 />
@@ -526,7 +584,7 @@ const Booking = ({
           </div>
 
           {/* Section 2: Delivery Details */}
-          <div className="bg-white border border-[#F1F5F9] rounded-2xl p-5 md:p-6 space-y-4.5 shadow-sm">
+          <div className="bg-white border border-[#F1F5F9] rounded p-5 md:p-6 space-y-4.5 shadow-sm">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
               <svg className="w-5 h-5 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -535,60 +593,10 @@ const Booking = ({
               <h2 className="text-[14px] md:text-[15px] font-bold text-slate-800 tracking-wide font-sans">Delivery Details</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-1.5 col-span-full">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
-                  Complete Address <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="completeAddress"
-                  value={formData.completeAddress}
-                  onChange={handleInputChange}
-                  placeholder="House no., Street, Area"
-                  rows="2"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm resize-none placeholder:text-slate-400 ${
-                    errors.completeAddress ? "border-red-500 bg-red-50/10" : "border-slate-200"
-                  }`}
-                />
-                {errors.completeAddress && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.completeAddress}</p>}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-4 pt-2">
 
-              <div className="space-y-1.5 col-span-1">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
-                  City <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  placeholder="City name"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
-                    errors.city ? "border-red-500 bg-red-50/10" : "border-slate-200"
-                  }`}
-                />
-                {errors.city && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.city}</p>}
-              </div>
-
-              <div className="space-y-1.5 col-span-1">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
-                  State <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
-                  placeholder="State name"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
-                    errors.state ? "border-red-500 bg-red-50/10" : "border-slate-200"
-                  }`}
-                />
-                {errors.state && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.state}</p>}
-              </div>
-
-              <div className="space-y-1.5 col-span-1">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative col-span-1">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Pincode <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -597,16 +605,69 @@ const Booking = ({
                   value={formData.pincode}
                   onChange={handleInputChange}
                   placeholder="Pincode"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
                     errors.pincode ? "border-red-500 bg-red-50/10" : "border-slate-200"
                   }`}
                 />
                 {errors.pincode && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.pincode}</p>}
               </div>
 
-              <div className="space-y-1.5 col-span-1">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
-                  Landmark
+              <div className="relative col-span-1">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
+                  City <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="City name"
+                  disabled={isFetchingLocation}
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                    errors.city ? "border-red-500 bg-red-50/10" : "border-slate-200"
+                  } ${isFetchingLocation ? "bg-slate-50 text-slate-400 cursor-not-allowed" : ""}`}
+                />
+                {errors.city && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.city}</p>}
+              </div>
+
+              <div className="relative col-span-1">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
+                  State <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  placeholder="State name"
+                  disabled={isFetchingLocation}
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                    errors.state ? "border-red-500 bg-red-50/10" : "border-slate-200"
+                  } ${isFetchingLocation ? "bg-slate-50 text-slate-400 cursor-not-allowed" : ""}`}
+                />
+                {errors.state && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.state}</p>}
+              </div>
+
+              <div className="relative col-span-full">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
+                  Flat, House no. , floor, building <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  name="completeAddress"
+                  value={formData.completeAddress}
+                  onChange={handleInputChange}
+                  placeholder="House no., Street, Area"
+                  rows="2"
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm resize-none placeholder:text-slate-400 ${
+                    errors.completeAddress ? "border-red-500 bg-red-50/10" : "border-slate-200"
+                  }`}
+                />
+                {errors.completeAddress && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.completeAddress}</p>}
+              </div>
+
+              <div className="relative col-span-full">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
+                  Area, Street, Sector, Village
                 </label>
                 <input
                   type="text"
@@ -614,14 +675,14 @@ const Booking = ({
                   value={formData.landmark}
                   onChange={handleInputChange}
                   placeholder="Near metro, etc."
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400"
+                  className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400"
                 />
               </div>
             </div>
           </div>
 
           {/* Section 3: Order Details */}
-          <div className="bg-white border border-[#F1F5F9] rounded-2xl p-5 md:p-6 space-y-4.5 shadow-sm">
+          <div className="bg-white border border-[#F1F5F9] rounded p-5 md:p-6 space-y-4.5 shadow-sm">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
               <svg className="w-5 h-5 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -629,9 +690,9 @@ const Booking = ({
               <h2 className="text-[14px] md:text-[15px] font-bold text-slate-800 tracking-wide font-sans">Order Details</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-4 pt-2">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 px-1 text-[10px] bg-white tracking-wider text-slate-500 font-bold capitalize z-10">
                   Mango Variety <span className="text-red-500">*</span>
                 </label>
                 {isModalMode ? (
@@ -640,14 +701,14 @@ const Booking = ({
                     name="mangoVariety"
                     value={formData.mangoVariety}
                     readOnly
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-gray-50 text-slate-500 text-sm outline-none"
+                    className="w-full px-4 py-2 border border-slate-200 rounded text-slate-500 text-sm outline-none"
                   />
                 ) : (
                   <select
                     name="mangoVariety"
                     value={formData.mangoVariety}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
+                    className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
                   >
                     <option value="Dussehri">Dussehri</option>
                     <option value="Langra">Langra</option>
@@ -658,8 +719,8 @@ const Booking = ({
                 )}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Mango Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -669,15 +730,15 @@ const Booking = ({
                   onChange={handleInputChange}
                   placeholder="Enter mango product name"
                   readOnly={isModalMode}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
-                    isModalMode ? "border-slate-200 bg-gray-50 text-slate-500 outline-none" : "border-slate-200"
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                    isModalMode ? "border-slate-200 text-slate-500 outline-none" : "border-slate-200"
                   }`}
                 />
                 {errors.mangoName && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.mangoName}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Box Size / Quantity <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -685,12 +746,12 @@ const Booking = ({
                   name="boxSize"
                   value={formData.boxSize}
                   readOnly
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-gray-50 text-slate-500 text-sm outline-none"
+                  className="w-full px-4 py-2 border border-slate-200 rounded text-slate-500 text-sm outline-none"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Number of Boxes <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -700,22 +761,22 @@ const Booking = ({
                   value={formData.numberOfBoxes}
                   onChange={handleInputChange}
                   placeholder="Enter number of boxes"
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2 border rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400 ${
                     errors.numberOfBoxes ? "border-red-500 bg-red-50/10" : "border-slate-200"
                   }`}
                 />
                 {errors.numberOfBoxes && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.numberOfBoxes}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Preferred Delivery Week <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="preferredDeliveryWeek"
                   value={formData.preferredDeliveryWeek}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
+                  className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
                 >
                   <option value="Any Week">Any Week</option>
                   <option value="1st Week of June">1st Week of June</option>
@@ -727,8 +788,8 @@ const Booking = ({
               </div>
             </div>
 
-            <div className="space-y-1.5 pt-2">
-              <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+            <div className="relative mt-4">
+              <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                 Any Special Instructions
               </label>
               <textarea
@@ -737,13 +798,13 @@ const Booking = ({
                 onChange={handleInputChange}
                 placeholder="Any special requests?"
                 rows="2"
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm resize-none placeholder:text-slate-400"
+                className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm resize-none placeholder:text-slate-400"
               />
             </div>
           </div>
 
           {/* Combined Card: Payment & Additional Info */}
-          <div className="bg-white border border-[#F1F5F9] rounded-2xl p-5 md:p-6 space-y-4.5 shadow-sm">
+          <div className="bg-white border border-[#F1F5F9] rounded p-5 md:p-6 space-y-4.5 shadow-sm">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
               <svg className="w-5 h-5 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -751,31 +812,31 @@ const Booking = ({
               <h2 className="text-[14px] md:text-[15px] font-bold text-slate-800 tracking-wide font-sans">Payment & Additional Info</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-4 pt-2">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Payment Mode
                 </label>
                 <select
                   name="paymentMode"
                   value={formData.paymentMode}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
+                  className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
                 >
                   <option value="UPI">UPI (Google Pay, PhonePe)</option>
                   <option value="Bank Transfer">Bank Transfer</option>
                 </select>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   How did you hear about us?
                 </label>
                 <select
                   name="referralSource"
                   value={formData.referralSource}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
+                  className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
                 >
                   <option value="">Select</option>
                   <option value="Instagram">Instagram</option>
@@ -787,8 +848,8 @@ const Booking = ({
                 </select>
               </div>
 
-              <div className="space-y-1.5 col-span-full">
-                <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+              <div className="relative col-span-full">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold capitalize z-10">
                   Transaction ID (if already paid)
                 </label>
                 <input
@@ -797,13 +858,13 @@ const Booking = ({
                   value={formData.transactionId}
                   onChange={handleInputChange}
                   placeholder="Enter transaction reference"
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400"
+                  className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400"
                 />
               </div>
 
               {!isModalMode && (
-                <div className="space-y-1.5 col-span-full">
-                  <label className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+                <div className="relative col-span-full">
+                  <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] tracking-wider text-slate-500 font-bold z-10">
                     Booking Amount Paid (if applicable)
                   </label>
                   <input
@@ -812,7 +873,7 @@ const Booking = ({
                     value={formData.bookingAmountPaid}
                     onChange={handleInputChange}
                     placeholder="Enter amount paid"
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400"
+                    className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm placeholder:text-slate-400"
                   />
                 </div>
               )}
@@ -820,7 +881,7 @@ const Booking = ({
           </div>
 
           {/* Section 6: Consent */}
-          <div className="bg-[#ECFDF5] border border-emerald-100/50 p-4 rounded-xl shadow-sm">
+          <div className="bg-[#ECFDF5] border border-emerald-100/50 p-4 rounded shadow-sm">
             <label className="flex items-start gap-3 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -838,7 +899,7 @@ const Booking = ({
 
           {/* Price & Booking Fee Summary */}
           {preselectedPrice && (
-            <div className="bg-[#F8FAFC] border border-[#F1F5F9] rounded-2xl p-5 space-y-3.5 text-xs text-slate-500 shadow-sm">
+            <div className="bg-[#F8FAFC] border border-[#F1F5F9] rounded p-5 space-y-3.5 text-xs text-slate-500 shadow-sm">
               <div className="flex justify-between">
                 <span>Total Product Price:</span>
                 <span className="font-semibold text-slate-700">₹{totalProductPrice}</span>
@@ -862,7 +923,7 @@ const Booking = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 bg-[#5EA343] hover:bg-[#508d37] active:scale-[0.98] text-white rounded-xl font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full py-3.5 bg-[#5EA343] hover:bg-[#508d37] active:scale-[0.98] text-white rounded font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
