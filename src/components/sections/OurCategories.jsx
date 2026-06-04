@@ -126,7 +126,8 @@ const OurCategories = memo(({ addToRefs }) => {
                 <div
                   key={`${cat._id}-${index}`}
                   className="flex-shrink-0 w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-4.5rem)/4)] lg:w-[calc((100%-6rem)/5)] xl:w-[calc((100%-7.5rem)/6)] flex flex-col items-center pt-6 pb-0 px-4 rounded-2xl cursor-pointer group transition-all duration-300 hover:scale-[1.03] hover:shadow-lg"
-                  style={{ backgroundColor: bgColors[originalIndex % bgColors.length] }}
+                  // style={{ backgroundColor: bgColors[originalIndex % bgColors.length] }}
+                  style={{ backgroundColor: 'rgb(255 218 132 / 49%)' }}
                 >
                   {/* Card Image */}
                   <div className="w-24 h-24 md:w-32 md:h-32 flex items-center justify-center mb-5 overflow-hidden">
