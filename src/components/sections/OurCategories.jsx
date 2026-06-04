@@ -50,6 +50,9 @@ const OurCategories = memo(({ addToRefs }) => {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  // Triple duplicate for seamless loop even on wide screens
+  const allCats = [...categories];
+
   // Smooth RAF-based infinite autoscroll
   useEffect(() => {
     const container = scrollRef.current;
@@ -62,11 +65,14 @@ const OurCategories = memo(({ addToRefs }) => {
       }
       posRef.current += 0.8; // Constant speed
       const totalWidth = container.scrollWidth;
-      const oneSetWidth = totalWidth / 5;
+      const duplicateCount = allCats.length / (categories.length || 1);
+      const oneSetWidth = totalWidth / (duplicateCount || 1);
 
-      // Reset to maintain seamless loop
-      if (posRef.current >= oneSetWidth) {
+      // Reset to maintain seamless loop if duplicated, or scroll reset otherwise
+      if (duplicateCount > 1 && posRef.current >= oneSetWidth) {
         posRef.current -= oneSetWidth;
+      } else if (duplicateCount <= 1 && posRef.current >= totalWidth - container.clientWidth) {
+        posRef.current = 0;
       }
       
       container.scrollLeft = posRef.current;
@@ -78,10 +84,7 @@ const OurCategories = memo(({ addToRefs }) => {
     return () => {
       cancelAnimationFrame(animFrameRef.current);
     };
-  }, [categories]);
-
-  // Triple duplicate for seamless loop even on wide screens
-  const allCats = [...categories];
+  }, [categories, allCats]);
 
   return (
     <section
@@ -130,7 +133,7 @@ const OurCategories = memo(({ addToRefs }) => {
                   style={{ backgroundColor: 'rgb(255 218 132 / 49%)' }}
                 >
                   {/* Card Image */}
-                  <div className="w-24 h-24 md:w-32 md:h-32 flex items-center justify-center mb-5 overflow-hidden">
+                  <div className="w-24 h-24 md:w-40 md:h-40 flex items-center justify-center mb-3">
                     {cat.image ? (
                       <img
                         src={cat.image}
