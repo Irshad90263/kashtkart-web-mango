@@ -133,7 +133,7 @@ const OurCategories = memo(({ addToRefs }) => {
                   style={{ backgroundColor: 'rgb(255 218 132 / 49%)' }}
                 >
                   {/* Card Image */}
-                  <div className="w-24 h-24 md:w-40 md:h-40 flex items-center justify-center mb-3">
+                  <div className="w-24 h-24 md:w-36 md:h-36 flex items-center justify-center mb-3">
                     {cat.image ? (
                       <img
                         src={cat.image}
