@@ -146,7 +146,7 @@ const OurCategories = memo(({ addToRefs }) => {
                     )}
                   </div>
                   {/* Name */}
-                  <h3 className="text-sm font-bold text-slate-800 text-center mb-1 group-hover:text-[var(--color-secondary)] transition-colors duration-300 w-full px-1 whitespace-normal break-words">
+                  <h3 className="text-sm font-bold text-slate-800 text-center mb-3 group-hover:text-[var(--color-secondary)] transition-colors duration-300 w-full px-1 leading-[1] whitespace-normal break-words">
                     {cat.name}
                   </h3>
                   {/* Count */}
