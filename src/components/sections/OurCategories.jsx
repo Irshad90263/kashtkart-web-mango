@@ -9,12 +9,12 @@ const bgColors = [
   // '#E3F4E1', // Light Green
   // '#E2E6FF', // Light Indigo/Blue
   // '#F4E2FF', // Light Violet/Purple
-  '#FDD26D',
-  '#FDD26D',
-  '#FDD26D',
-  '#FDD26D',
-  '#FDD26D',
-  '#FDD26D',
+  '#FFDA84',
+  '#FFDA84',
+  '#FFDA84',
+  '#FFDA84',
+  '#FFDA84',
+  '#FFDA84',
 ];
 
 const OurCategories = memo(({ addToRefs }) => {
