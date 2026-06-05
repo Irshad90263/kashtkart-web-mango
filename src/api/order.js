@@ -11,3 +11,9 @@ export const cancelOrderApi = async (orderId) => {
     const res = await api.put(`/api/user-orders/${orderId}/cancel`);
     return res.data;
 };
+
+// track order
+export const trackShiprocketOrderApi = async (awbCode) => {
+    const res = await api.get(`/api/shiprocket/track/${awbCode}`);
+    return res.data;
+};

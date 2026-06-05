@@ -6,6 +6,8 @@ import {
   createBookingPaymentOrderApi,
   verifyBookingPaymentApi
 } from "../../api/booking";
+import { isTokenValid } from "../../utils/auth";
+import LoginModal from "../../components/auth/LoginModal";
 
 const loadRazorpay = () => {
   return new Promise((resolve) => {
@@ -60,6 +62,7 @@ const Booking = ({
   const [bookingNo, setBookingNo] = useState("");
   const [errors, setErrors] = useState({});
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Refs for auto-focus on validation errors
   const fullNameRef = useRef(null);
@@ -288,6 +291,15 @@ const Booking = ({
       return;
     }
 
+    if (!isTokenValid()) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    processPayment();
+  };
+
+  const processPayment = async () => {
     setIsSubmitting(true);
 
     try {
@@ -1079,6 +1091,13 @@ const Booking = ({
           <Footer />
         </>
       )}
+
+      {/* Login Modal Overlay */}
+      <LoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
+        onSuccess={processPayment} 
+      />
     </div>
   );
 };
