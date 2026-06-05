@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import Footer from "../../components/layout/Footer";
 import { 
@@ -18,11 +18,13 @@ const loadRazorpay = () => {
 };
 
 const Booking = ({ 
+  preselectedCategory,
   preselectedVariety, 
   preselectedName, 
   preselectedWeight, 
   preselectedPrice,
   categoryId,
+  varietyId,
   productId,
   isModalMode = false, 
   onCloseModal 
@@ -38,6 +40,7 @@ const Booking = ({
     state: "",
     pincode: "",
     landmark: "",
+    mangoCategory: preselectedCategory || "Mangoes",
     mangoVariety: preselectedVariety || "Dussehri",
     mangoName: preselectedName || "",
     boxSize: preselectedWeight ? (preselectedWeight.toString().toLowerCase().includes("kg") ? preselectedWeight : `${preselectedWeight} KG`) : "3 KG",
@@ -57,6 +60,33 @@ const Booking = ({
   const [bookingNo, setBookingNo] = useState("");
   const [errors, setErrors] = useState({});
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+
+  // Refs for auto-focus on validation errors
+  const fullNameRef = useRef(null);
+  const mobileNumberRef = useRef(null);
+  const alternateMobileNumberRef = useRef(null);
+  const emailIdRef = useRef(null);
+  const pincodeRef = useRef(null);
+  const cityRef = useRef(null);
+  const stateRef = useRef(null);
+  const completeAddressRef = useRef(null);
+  const mangoNameRef = useRef(null);
+  const numberOfBoxesRef = useRef(null);
+  const consentRef = useRef(null);
+
+  const fieldRefs = {
+    fullName: fullNameRef,
+    mobileNumber: mobileNumberRef,
+    alternateMobileNumber: alternateMobileNumberRef,
+    emailId: emailIdRef,
+    pincode: pincodeRef,
+    city: cityRef,
+    state: stateRef,
+    completeAddress: completeAddressRef,
+    mangoName: mangoNameRef,
+    numberOfBoxes: numberOfBoxesRef,
+    consent: consentRef,
+  };
 
   useEffect(() => {
     if (!isModalMode) {
@@ -150,47 +180,104 @@ const Booking = ({
   };
 
   const validateForm = () => {
+    // Ordered validation checks — first error gets focus + toast
+    const checks = [
+      {
+        field: "fullName",
+        test: () => !formData.fullName.trim(),
+        msg: "Please enter your Full Name",
+      },
+      {
+        field: "mobileNumber",
+        test: () => !formData.mobileNumber,
+        msg: "Please enter your Mobile Number",
+      },
+      {
+        field: "mobileNumber",
+        test: () => formData.mobileNumber && !/^[6-9]\d{9}$/.test(formData.mobileNumber),
+        msg: "Mobile Number must be a valid 10-digit number starting with 6-9",
+      },
+      {
+        field: "alternateMobileNumber",
+        test: () => formData.alternateMobileNumber && !/^[6-9]\d{9}$/.test(formData.alternateMobileNumber),
+        msg: "Alternate Mobile must be a valid 10-digit number starting with 6-9",
+      },
+      {
+        field: "emailId",
+        test: () => formData.emailId && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailId),
+        msg: "Please enter a valid Email Address (e.g. name@example.com)",
+      },
+      {
+        field: "pincode",
+        test: () => !formData.pincode,
+        msg: "Please enter your Pincode",
+      },
+      {
+        field: "pincode",
+        test: () => formData.pincode && formData.pincode.length !== 6,
+        msg: "Pincode must be exactly 6 digits",
+      },
+      {
+        field: "city",
+        test: () => !formData.city.trim(),
+        msg: "Please enter your City",
+      },
+      {
+        field: "state",
+        test: () => !formData.state.trim(),
+        msg: "Please enter your State",
+      },
+      {
+        field: "completeAddress",
+        test: () => !formData.completeAddress.trim(),
+        msg: "Please enter your Complete Address",
+      },
+      {
+        field: "mangoName",
+        test: () => !formData.mangoName.trim(),
+        msg: "Please enter the Mango Name / Product",
+      },
+      {
+        field: "numberOfBoxes",
+        test: () => !formData.numberOfBoxes || parseInt(formData.numberOfBoxes) <= 0,
+        msg: "Number of Boxes must be at least 1",
+      },
+      {
+        field: "consent",
+        test: () => !formData.consent,
+        msg: "Please accept the booking terms to proceed",
+      },
+    ];
+
     const newErrors = {};
+    let firstErrorField = null;
 
-    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
-    
-    if (!formData.mobileNumber) {
-      newErrors.mobileNumber = "Mobile number is required";
-    } else if (!/^[6-9]\d{9}$/.test(formData.mobileNumber)) {
-      newErrors.mobileNumber = "Please enter a valid 10-digit mobile number starting with 6-9";
-    }
-
-    if (formData.alternateMobileNumber && !/^[6-9]\d{9}$/.test(formData.alternateMobileNumber)) {
-      newErrors.alternateMobileNumber = "Please enter a valid 10-digit mobile number starting with 6-9";
-    }
-
-    if (formData.emailId && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailId)) {
-      newErrors.emailId = "Please enter a valid email address (e.g. name@example.com)";
-    }
-
-    if (!formData.completeAddress.trim()) newErrors.completeAddress = "Complete address is required";
-    if (!formData.city.trim()) newErrors.city = "City is required";
-    if (!formData.state.trim()) newErrors.state = "State is required";
-    
-    if (!formData.pincode) {
-      newErrors.pincode = "Pincode is required";
-    } else if (formData.pincode.length !== 6) {
-      newErrors.pincode = "Pincode must be 6 digits";
-    }
-
-    if (!formData.mangoName.trim()) {
-      newErrors.mangoName = "Mango name is required";
-    }
-
-    if (!formData.numberOfBoxes || parseInt(formData.numberOfBoxes) <= 0) {
-      newErrors.numberOfBoxes = "Number of boxes must be at least 1";
-    }
-
-    if (!formData.consent) {
-      newErrors.consent = "You must accept the booking terms to proceed";
+    for (const check of checks) {
+      if (check.test()) {
+        // Only store the first error per field
+        if (!newErrors[check.field]) {
+          newErrors[check.field] = check.msg;
+        }
+        if (!firstErrorField) {
+          firstErrorField = check.field;
+        }
+      }
     }
 
     setErrors(newErrors);
+
+    if (firstErrorField) {
+      // Show exact error in toast
+      toast.error(newErrors[firstErrorField]);
+
+      // Focus the first invalid field
+      const ref = fieldRefs[firstErrorField];
+      if (ref?.current) {
+        ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => ref.current.focus(), 350);
+      }
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -198,7 +285,6 @@ const Booking = ({
     e.preventDefault();
 
     if (!validateForm()) {
-      toast.error("Please fill in all required fields!");
       return;
     }
 
@@ -251,7 +337,8 @@ const Booking = ({
                 state: formData.state,
                 pincode: formData.pincode,
                 landmark: formData.landmark,
-                mangoVariety: categoryId, // Category ObjectId
+                mangoCategory: categoryId, // Category ObjectId
+                mangoVariety: varietyId, // Variety ObjectId
                 mangoName: productId, // Product ObjectId
                 boxSize: formData.boxSize,
                 numberOfBoxes: Number(formData.numberOfBoxes),
@@ -375,7 +462,8 @@ const Booking = ({
               <p><strong>Booking ID:</strong> <span className="text-green-700 font-bold">{bookingNo}</span></p>
               <p><strong>Customer Name:</strong> {formData.fullName}</p>
               <p><strong>Mobile Number:</strong> {formData.mobileNumber}</p>
-              <p><strong>Mango Variety (Category):</strong> {formData.mangoVariety}</p>
+              <p><strong>Mango Category:</strong> {formData.mangoCategory}</p>
+              <p><strong>Mango Variety:</strong> {formData.mangoVariety}</p>
               <p><strong>Mango Name (Product):</strong> {formData.mangoName}</p>
               <p><strong>Quantity:</strong> {formData.numberOfBoxes} Box(es) ({formData.boxSize})</p>
               <p><strong>Preferred Week:</strong> {formData.preferredDeliveryWeek}</p>
@@ -401,6 +489,7 @@ const Booking = ({
                     state: "",
                     pincode: "",
                     landmark: "",
+                    mangoCategory: preselectedCategory || "Mangoes",
                     mangoVariety: preselectedVariety || "Dussehri",
                     mangoName: preselectedName || "",
                     boxSize: preselectedWeight ? (preselectedWeight.toString().toLowerCase().includes("kg") ? preselectedWeight : `${preselectedWeight} KG`) : "3 KG",
@@ -518,6 +607,7 @@ const Booking = ({
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={fullNameRef}
                   type="text"
                   name="fullName"
                   value={formData.fullName}
@@ -535,6 +625,7 @@ const Booking = ({
                   Mobile Number <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={mobileNumberRef}
                   type="tel"
                   name="mobileNumber"
                   value={formData.mobileNumber}
@@ -552,6 +643,7 @@ const Booking = ({
                   Alternate Mobile
                 </label>
                 <input
+                  ref={alternateMobileNumberRef}
                   type="tel"
                   name="alternateMobileNumber"
                   value={formData.alternateMobileNumber}
@@ -569,6 +661,7 @@ const Booking = ({
                   Email ID
                 </label>
                 <input
+                  ref={emailIdRef}
                   type="email"
                   name="emailId"
                   value={formData.emailId}
@@ -600,6 +693,7 @@ const Booking = ({
                   Pincode <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={pincodeRef}
                   type="text"
                   name="pincode"
                   value={formData.pincode}
@@ -617,6 +711,7 @@ const Booking = ({
                   City <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={cityRef}
                   type="text"
                   name="city"
                   value={formData.city}
@@ -635,6 +730,7 @@ const Booking = ({
                   State <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={stateRef}
                   type="text"
                   name="state"
                   value={formData.state}
@@ -653,6 +749,7 @@ const Booking = ({
                   Flat, House no. , floor, building <span className="text-red-500">*</span>
                 </label>
                 <textarea
+                  ref={completeAddressRef}
                   name="completeAddress"
                   value={formData.completeAddress}
                   onChange={handleInputChange}
@@ -693,6 +790,31 @@ const Booking = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-4 pt-2">
               <div className="relative">
                 <label className="absolute -top-2 left-3 px-1 text-[10px] bg-white tracking-wider text-slate-500 font-bold capitalize z-10">
+                  Mango Category <span className="text-red-500">*</span>
+                </label>
+                {isModalMode ? (
+                  <input
+                    type="text"
+                    name="mangoCategory"
+                    value={formData.mangoCategory}
+                    readOnly
+                    className="w-full px-4 py-2 border border-slate-200 rounded text-slate-500 text-sm outline-none"
+                  />
+                ) : (
+                  <select
+                    name="mangoCategory"
+                    value={formData.mangoCategory}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-slate-200 rounded focus:outline-none focus:border-[#008222] focus:ring-1 focus:ring-[#008222]/20 text-sm bg-white cursor-pointer"
+                  >
+                    <option value="Mangoes">Mangoes</option>
+                    <option value="Laddus">Laddus</option>
+                  </select>
+                )}
+              </div>
+
+              <div className="relative">
+                <label className="absolute -top-2 left-3 px-1 text-[10px] bg-white tracking-wider text-slate-500 font-bold capitalize z-10">
                   Mango Variety <span className="text-red-500">*</span>
                 </label>
                 {isModalMode ? (
@@ -724,6 +846,7 @@ const Booking = ({
                   Mango Name <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={mangoNameRef}
                   type="text"
                   name="mangoName"
                   value={formData.mangoName}
@@ -755,6 +878,7 @@ const Booking = ({
                   Number of Boxes <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={numberOfBoxesRef}
                   type="number"
                   name="numberOfBoxes"
                   min="1"
@@ -884,6 +1008,7 @@ const Booking = ({
           <div className="bg-[#ECFDF5] border border-emerald-100/50 p-4 rounded shadow-sm">
             <label className="flex items-start gap-3 cursor-pointer select-none">
               <input
+                ref={consentRef}
                 type="checkbox"
                 name="consent"
                 checked={formData.consent}

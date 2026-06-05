@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useRef,
   useTransition,
-  useCallback,
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -21,41 +20,43 @@ import LadduCard from "../../components/cards/LadduCard";
 import Footer from "../../components/layout/Footer";
 import Booking from "./Booking";
 
-import { listCategoriesApi } from "../../api/categories";
+import { listCategoriesApi, listVarietiesApi } from "../../api/categories";
 import { listProductsApi, listProductsByCategoryApi } from "../../api/product";
 
 const BookingProducts = () => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Initialize selectedCategory directly from navigation state to avoid race condition
+  const initialCategoryId = location.state?.categoryId && location.state.categoryId !== "all"
+    ? location.state.categoryId
+    : null;
+
+  const [selectedVarieties, setSelectedVarieties] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategoryId);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [varieties, setVarieties] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [sortBy, setSortBy] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductForBooking, setSelectedProductForBooking] = useState(null);
-  const location = useLocation();
-  const navigate = useNavigate();
 
-
-  // Listen for category selection from navigation state (Navbar dropdown or Footer)
+  // Clear location state on mount so back/forward navigation doesn't re-apply filter
   useEffect(() => {
     if (location.state?.categoryId) {
-      const catId = location.state.categoryId;
-      if (catId === "all") {
-        setSelectedCategories([]);
-      } else {
-        setSelectedCategories([catId]);
-      }
-      // Clear location state using navigate to prevent re-applying filter on back/forward
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, navigate, location.pathname]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   // Mobile filter modal states
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [mobileSelectedTab, setMobileSelectedTab] = useState("categories");
-  const [tempSelectedCategories, setTempSelectedCategories] = useState([]);
+  const [mobileSelectedTab, setMobileSelectedTab] = useState("varieties");
+  const [tempSelectedVarieties, setTempSelectedVarieties] = useState([]);
+  const [tempSelectedCategory, setTempSelectedCategory] = useState(null);
   const [tempSortBy, setTempSortBy] = useState("");
 
   // Products section end detect
@@ -64,23 +65,27 @@ const BookingProducts = () => {
 
   // Clear all filters function
   const clearAllFilters = () => {
-    setSelectedCategories([]);
+    setSelectedVarieties([]);
+    setSelectedCategory(null);
     setSortBy("");
   };
 
-  // Fetch categories on mount
+  // Fetch varieties and categories on mount
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchFiltersData = async () => {
       try {
-        const data = await listCategoriesApi();
-        setCategories(
-          data.categories.map((c) => ({ ...c, id: c._id || c.id })),
+        const [varData, catData] = await Promise.all([listVarietiesApi(), listCategoriesApi()]);
+        setVarieties(
+          (varData.varieties || varData.categories || []).map((v) => ({ ...v, id: v._id || v.id }))
+        );
+        setCategoriesList(
+          (catData.categories || catData || []).map((c) => ({ ...c, id: c._id || c.id }))
         );
       } catch (error) {
-        console.error("Failed to fetch categories:", error);
+        console.error("Failed to fetch filters data:", error);
       }
     };
-    fetchCategories();
+    fetchFiltersData();
   }, []);
 
   // Detect when products section end is reached
@@ -99,46 +104,65 @@ const BookingProducts = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Handle category checkbox change
-  const handleCategoryToggle = (categoryId) => {
-    setSelectedCategories((prev) => {
-      if (prev.includes(categoryId)) {
-        return prev.filter((id) => id !== categoryId);
+  // Filter varieties by selectedCategory / tempSelectedCategory
+  const displayedVarieties = React.useMemo(() => {
+    if (!selectedCategory) return varieties;
+    return varieties.filter(v => (v.category?._id || v.category || "").toString() === selectedCategory.toString());
+  }, [varieties, selectedCategory]);
+
+  const tempDisplayedVarieties = React.useMemo(() => {
+    if (!tempSelectedCategory) return varieties;
+    return varieties.filter(v => (v.category?._id || v.category || "").toString() === tempSelectedCategory.toString());
+  }, [varieties, tempSelectedCategory]);
+
+  // Handle variety checkbox change
+  const handleVarietyToggle = (varietyId) => {
+    setSelectedVarieties((prev) => {
+      if (prev.includes(varietyId)) {
+        return prev.filter((id) => id !== varietyId);
       } else {
-        return [...prev, categoryId];
+        return [...prev, varietyId];
       }
     });
   };
 
-  // Fetch products with filters
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    try {
-      let data;
-
-      if (selectedCategories.length === 0) {
-        data = await listProductsApi(sortBy);
-        setProducts(data.products || (Array.isArray(data) ? data : []));
-      } else if (selectedCategories.length === 1) {
-        data = await listProductsByCategoryApi(selectedCategories[0], sortBy);
-        setProducts(data.products || (Array.isArray(data) ? data : []));
-      } else {
-        const categoryIds = selectedCategories.join(",");
-        data = await listProductsByCategoryApi(categoryIds, sortBy);
-        setProducts(data.products || (Array.isArray(data) ? data : []));
-      }
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedCategories, sortBy]);
-
-  // Fetch products when selectedCategories or sortBy changes
+  // Fetch products with filters - uses cancelled flag to prevent stale responses
   useEffect(() => {
+    let cancelled = false;
+
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let data;
+
+        if (selectedVarieties.length > 0) {
+          const varietyIds = selectedVarieties.join(",");
+          data = await listProductsByCategoryApi(varietyIds, sortBy);
+        } else if (selectedCategory) {
+          data = await listProductsByCategoryApi(selectedCategory, sortBy);
+        } else {
+          data = await listProductsApi(sortBy);
+        }
+
+        if (!cancelled) {
+          setProducts(data.products || (Array.isArray(data) ? data : []));
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to fetch products:", error);
+          setProducts([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
     fetchProducts();
-  }, [fetchProducts]);
+
+    return () => { cancelled = true; };
+  }, [selectedCategory, selectedVarieties, sortBy]);
 
 
   const handleSortChange = (e) => {
@@ -147,7 +171,8 @@ const BookingProducts = () => {
 
   // Mobile filter handlers
   const openFilterModal = () => {
-    setTempSelectedCategories([...selectedCategories]);
+    setTempSelectedVarieties([...selectedVarieties]);
+    setTempSelectedCategory(selectedCategory);
     setTempSortBy(sortBy);
     setIsFilterModalOpen(true);
   };
@@ -157,20 +182,33 @@ const BookingProducts = () => {
   };
 
   const applyFilters = () => {
-    setSelectedCategories(tempSelectedCategories);
+    setSelectedVarieties(tempSelectedVarieties);
+    setSelectedCategory(tempSelectedCategory);
     setSortBy(tempSortBy);
     setIsFilterModalOpen(false);
   };
 
-  const handleTempCategoryToggle = (categoryId) => {
-    setTempSelectedCategories((prev) => {
-      if (prev.includes(categoryId)) {
-        return prev.filter((id) => id !== categoryId);
+  const handleTempVarietyToggle = (varietyId) => {
+    setTempSelectedVarieties((prev) => {
+      if (prev.includes(varietyId)) {
+        return prev.filter((id) => id !== varietyId);
       } else {
-        return [...prev, categoryId];
+        return [...prev, varietyId];
       }
     });
   };
+
+  const handleClearCategory = () => {
+    setSelectedCategory(null);
+    setSelectedVarieties([]);
+  };
+
+  const handleClearTempCategory = () => {
+    setTempSelectedCategory(null);
+    setTempSelectedVarieties([]);
+  };
+
+  const activeCategoryName = categoriesList.find(c => c.id === selectedCategory)?.name || "Selected Category";
 
   return (
     <div className="bg-[var(--color-primary)] text-[var(--color-text)] font-[var(--font-body)] min-h-screen">
@@ -222,35 +260,51 @@ const BookingProducts = () => {
           {/* Sidebar - Desktop only */}
           <div className="hidden md:block col-span-2">
             <div className="sticky top-[120px] self-start space-y-4 z-10">
-              {/* Categories Section */}
+              {/* Selected Category Alert */}
+              {selectedCategory && (
+                <div className="bg-[var(--color-surface)] border border-amber-500/30 rounded-xl p-4 flex justify-between items-center mb-4">
+                  <div className="flex-1 min-w-0 pr-2">
+                    <p className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">Category</p>
+                    <p className="text-sm font-bold text-[var(--color-secondary)] truncate">{activeCategoryName}</p>
+                  </div>
+                  <button
+                    onClick={handleClearCategory}
+                    className="text-xs text-red-500 hover:underline font-semibold flex-shrink-0"
+                  >
+                    Clear
+                  </button>
+                </div>
+              )}
+
+              {/* Varieties Section */}
               <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-base font-bold text-[var(--color-secondary)] uppercase">
-                    Categories
+                    Varieties
                   </h3>
-                  {(selectedCategories.length > 0 || sortBy) && (
+                  {(selectedVarieties.length > 0 || selectedCategory || sortBy) && (
                     <button
                       onClick={clearAllFilters}
-                      className="text-xs text-red-500 hover:underline"
+                      className="text-xs text-red-500 hover:underline font-semibold"
                     >
                       Clear All
                     </button>
                   )}
                 </div>
                 <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
-                  {categories.map((cat) => (
+                  {displayedVarieties.map((v) => (
                     <label
-                      key={cat.id}
+                      key={v.id}
                       className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10 transition-all"
                     >
                       <input
                         type="checkbox"
-                        checked={selectedCategories.includes(cat.id)}
-                        onChange={() => handleCategoryToggle(cat.id)}
+                        checked={selectedVarieties.includes(v.id)}
+                        onChange={() => handleVarietyToggle(v.id)}
                         className="w-4 h-4 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
                       />
                       <span className="text-sm text-[var(--color-text-muted)]">
-                        {cat.name}
+                        {v.name}
                       </span>
                     </label>
                   ))}
@@ -305,9 +359,9 @@ const BookingProducts = () => {
                 >
                   <Filter className="w-5 h-5" />
                   Filters
-                  {(selectedCategories.length > 0 || sortBy) && (
+                  {(selectedVarieties.length > 0 || selectedCategory || sortBy) && (
                     <span className="ml-1 px-2 py-0.5 text-xs bg-[var(--color-secondary)] text-[var(--color-primary)] rounded-full">
-                      {selectedCategories.length + (sortBy ? 1 : 0)}
+                      {selectedVarieties.length + (selectedCategory ? 1 : 0) + (sortBy ? 1 : 0)}
                     </span>
                   )}
                 </button>
@@ -339,10 +393,16 @@ const BookingProducts = () => {
                     <LadduCard
                       key={laddu._id}
                       isBookingPage={true}
-                      onBookNow={(prod) => {
+                      onBookNow={() => {
                         setSelectedProductForBooking({
-                          ...prod,
+                          name: laddu.name,
+                          about: laddu.about,
+                          price: laddu.price,
+                          finalPrice: laddu.finalPrice,
+                          categoryName: laddu.category?.name || "Mangoes",
                           categoryId: laddu.category?._id || laddu.category,
+                          varietyName: laddu.variety?.name || "Dussehri",
+                          varietyId: laddu.variety?._id || laddu.variety,
                           productId: laddu._id
                         });
                         setIsModalOpen(true);
@@ -380,13 +440,14 @@ const BookingProducts = () => {
                 Filters
               </h3>
               <div className="flex gap-3">
-                {(tempSelectedCategories.length > 0 || tempSortBy) && (
+                {(tempSelectedVarieties.length > 0 || tempSelectedCategory || tempSortBy) && (
                   <button
                     onClick={() => {
-                      setTempSelectedCategories([]);
+                      setTempSelectedVarieties([]);
+                      setTempSelectedCategory(null);
                       setTempSortBy("");
                     }}
-                    className="text-sm text-red-500"
+                    className="text-sm text-red-500 font-semibold"
                   >
                     Clear All
                   </button>
@@ -402,14 +463,14 @@ const BookingProducts = () => {
               {/* Left Sidebar Tabs */}
               <div className="w-1/3 bg-[var(--color-surface)] border-r border-[var(--color-secondary)]/10">
                 <button
-                  onClick={() => setMobileSelectedTab("categories")}
+                  onClick={() => setMobileSelectedTab("varieties")}
                   className={`w-full p-4 text-left font-medium transition-all ${
-                    mobileSelectedTab === "categories"
+                    mobileSelectedTab === "varieties"
                       ? "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]"
                       : "text-[var(--color-text-muted)]"
                   }`}
                 >
-                  Categories
+                  Varieties
                 </button>
                 <button
                   onClick={() => setMobileSelectedTab("price")}
@@ -425,25 +486,39 @@ const BookingProducts = () => {
 
               {/* Right Side Content */}
               <div className="flex-1 overflow-y-auto p-4">
-                {mobileSelectedTab === "categories" && (
+                {mobileSelectedTab === "varieties" && (
                   <div>
+                    {tempSelectedCategory && (
+                      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex justify-between items-center">
+                        <div className="min-w-0 flex-1 pr-2">
+                          <span className="text-[10px] uppercase text-amber-700 block">Category Active</span>
+                          <span className="text-sm font-bold text-[var(--color-secondary)] truncate block">{activeCategoryName}</span>
+                        </div>
+                        <button
+                          onClick={handleClearTempCategory}
+                          className="text-xs text-red-500 hover:underline font-semibold flex-shrink-0"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    )}
                     <span className="text-sm text-[var(--color-text-muted)] block mb-4">
-                      Select Categories
+                      Select Varieties
                     </span>
                     <div className="space-y-3">
-                      {categories.map((cat) => (
+                      {tempDisplayedVarieties.map((v) => (
                         <label
-                          key={cat.id}
+                          key={v.id}
                           className="flex items-center gap-3 cursor-pointer"
                         >
                           <input
                             type="checkbox"
-                            checked={tempSelectedCategories.includes(cat.id)}
-                            onChange={() => handleTempCategoryToggle(cat.id)}
+                            checked={tempSelectedVarieties.includes(v.id)}
+                            onChange={() => handleTempVarietyToggle(v.id)}
                             className="w-5 h-5 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
                           />
                           <span className="text-sm text-[var(--color-text)]">
-                            {cat.name}
+                            {v.name}
                           </span>
                         </label>
                       ))}
@@ -592,11 +667,13 @@ const BookingProducts = () => {
           >
             {/* Render Booking Form */}
             <Booking 
-              preselectedVariety={selectedProductForBooking?.category} 
+              preselectedCategory={selectedProductForBooking?.categoryName}
+              preselectedVariety={selectedProductForBooking?.varietyName} 
               preselectedName={selectedProductForBooking?.name} 
               preselectedWeight={selectedProductForBooking?.about?.netWeight} 
               preselectedPrice={selectedProductForBooking?.finalPrice || selectedProductForBooking?.price} 
               categoryId={selectedProductForBooking?.categoryId}
+              varietyId={selectedProductForBooking?.varietyId}
               productId={selectedProductForBooking?.productId}
               isModalMode={true} 
               onCloseModal={() => setIsModalOpen(false)} 
