@@ -39,7 +39,7 @@ const Footer = () => {
     listCategoriesApi()
       .then((data) => {
         const cats = data.categories || (Array.isArray(data) ? data : []);
-        setCategories(cats);
+        setCategories(cats.reverse());
       })
 
       .catch((err) =>
@@ -140,7 +140,7 @@ const Footer = () => {
                   style={{ color: "#F2B705" }}
                   className="font-semibold text-[20px] mb-5 h-5 flex items-center gap-2"
                 >
-                  {idx === 0 ? "Our Varieties" : ""}
+                  {idx === 0 ? "Our Categories" : ""}
                 </h4>
                 <ul className="space-y-2.5">
                   {chunk.map((cat) => (

@@ -27,7 +27,7 @@ const Navbar = () => {
     listCategoriesApi()
       .then((data) => {
         const cats = data.categories || (Array.isArray(data) ? data : []);
-        setCategories(cats);
+        setCategories([...cats].reverse());
       })
       .catch((err) =>
         console.error("Failed to fetch categories for navbar", err),

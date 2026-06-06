@@ -393,7 +393,7 @@ const BookingProducts = () => {
                     <LadduCard
                       key={laddu._id}
                       isBookingPage={true}
-                      onBookNow={() => {
+                      onBookNow={(prod) => {
                         setSelectedProductForBooking({
                           name: laddu.name,
                           about: laddu.about,
@@ -403,7 +403,8 @@ const BookingProducts = () => {
                           categoryId: laddu.category?._id || laddu.category,
                           varietyName: laddu.variety?.name || "Dussehri",
                           varietyId: laddu.variety?._id || laddu.variety,
-                          productId: laddu._id
+                          productId: laddu._id,
+                          selectedWeight: prod?.selectedWeight || (Array.isArray(laddu.about?.netWeight) ? laddu.about.netWeight[0] : laddu.about?.netWeight)
                         });
                         setIsModalOpen(true);
                       }}
@@ -670,7 +671,7 @@ const BookingProducts = () => {
               preselectedCategory={selectedProductForBooking?.categoryName}
               preselectedVariety={selectedProductForBooking?.varietyName} 
               preselectedName={selectedProductForBooking?.name} 
-              preselectedWeight={selectedProductForBooking?.about?.netWeight} 
+              preselectedWeight={selectedProductForBooking?.selectedWeight} 
               preselectedPrice={selectedProductForBooking?.finalPrice || selectedProductForBooking?.price} 
               categoryId={selectedProductForBooking?.categoryId}
               varietyId={selectedProductForBooking?.varietyId}

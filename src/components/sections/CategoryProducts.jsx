@@ -41,7 +41,8 @@ const CategoryProducts = ({ addToRefs }) => {
         prods.some(p => (p.category?._id || p.category) === cat._id)
       );
       
-      setCategories(catsWithProducts);
+      // setCategories(catsWithProducts);
+      setCategories(catsWithProducts.reverse());
       setProducts(prods);
     } catch (err) {
       console.error('CategoryProducts fetch error:', err);

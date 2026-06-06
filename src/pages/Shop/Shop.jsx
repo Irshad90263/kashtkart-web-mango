@@ -84,9 +84,15 @@ const Shop = () => {
 
   const calculateTotalWeight = () => {
     return cartItems.reduce((total, item) => {
-      const weightStr = (item.netWeight || "0.5").toLowerCase();
+      let rawWeight = item.selectedWeight;
+      if (!rawWeight) {
+        rawWeight = Array.isArray(item.netWeight) ? item.netWeight[0] : item.netWeight;
+      }
+      const weightStr = (rawWeight || "0.5").toString().toLowerCase();
       let weightNum = parseFloat(weightStr.replace(/[^0-9.]/g, "")) || 0.5;
-      if (weightStr.includes("gm") || weightStr.includes("g")) {
+      // Check for grams ONLY — "gm", "gram" etc but NOT "kg" (which also contains "g")
+      const isGrams = /^[\d.]+\s*(gm|gram|g)$/i.test(weightStr.trim()) && !weightStr.includes("kg");
+      if (isGrams) {
         weightNum = weightNum / 1000;
       }
       return total + (weightNum * (item.quantity || 1));
@@ -161,6 +167,7 @@ const Shop = () => {
           discountPercent: item.product.discountPercent,
           ingredients: item.product.about?.ingredients,
           netWeight: item.product.about?.netWeight,
+          selectedWeight: item.selectedWeight,
           quantity: item.quantity,
           description: item.product.description,
         }));
@@ -486,7 +493,7 @@ const Shop = () => {
           items: cartItems.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
-            size: "Standard",
+            size: item.selectedWeight || "Standard",
             color: "Default",
           })),
           shippingAddress: {
@@ -549,7 +556,7 @@ const Shop = () => {
           items: cartItems.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
-            size: "Standard",
+            size: item.selectedWeight || "Standard",
             color: "Default",
           })),
           notes: {
@@ -589,7 +596,7 @@ const Shop = () => {
                 items: cartItems.map((item) => ({
                   productId: item.productId,
                   quantity: item.quantity,
-                  size: "Standard",
+                  size: item.selectedWeight || "Standard",
                   color: "Default",
                 })),
                 shippingAddress: {

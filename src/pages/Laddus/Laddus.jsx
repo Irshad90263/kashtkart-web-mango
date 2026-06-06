@@ -276,7 +276,7 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
       <section className="px-4 md:px-12 mb-4 pb-10">
         <div className="grid grid-cols-12 gap-6">
           {/* Sidebar - Desktop only */}
-          <div className="hidden md:block col-span-2">
+          <div className="hidden md:block col-span-3">
             <div className="sticky top-[120px] self-start space-y-4 z-10">
               {/* Selected Category Alert */}
               {selectedCategory && (
@@ -373,7 +373,7 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
           </div>
 
           {/* Products */}
-          <div className="col-span-12 md:col-span-10">
+          <div className="col-span-12 md:col-span-9">
             {/* Mobile Filter Button - Only visible in products section */}
             {!isProductsEndReached && (
               <div className="md:hidden mb-4">
@@ -399,7 +399,7 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
             {/* Loading Skeleton */}
             {loading || isPending ? (
               <div className="animate-fadeIn">
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div
                       key={i}
@@ -416,7 +416,7 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
               </div>
             ) : (
               <div className="animate-fadeIn">
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
                   {products.map((laddu) => (
                     <LadduCard
                       key={laddu._id}

@@ -425,6 +425,7 @@ const Orders = () => {
         if (s === 'processing') return 'bg-yellow-100 text-yellow-700 border-yellow-200';
         if (s === 'confirmed') return 'bg-purple-100 text-purple-700 border-purple-200';
         if (s === 'cancelled') return 'bg-red-100 text-red-700 border-red-200';
+        if (s === 'order placed') return 'bg-amber-100 text-amber-700 border-amber-200';
         return 'bg-gray-100 text-gray-600 border-gray-200';
     };
 
@@ -434,6 +435,7 @@ const Orders = () => {
         if (s === 'shipped') return <Truck size={14} />;
         if (s === 'processing') return <Clock size={14} />;
         if (s === 'cancelled') return <X size={14} />;
+        if (s === 'order placed') return <Clock size={14} />;
         return <Package size={14} />;
     };
 
@@ -655,6 +657,7 @@ const Orders = () => {
                                             <p className="text-xs text-gray-500">
                                                 {selectedOrder.status?.toLowerCase() === 'delivered' ? 'Your order has been delivered successfully!' :
                                                 selectedOrder.status?.toLowerCase() === 'cancelled' ? `Cancelled on ${new Date(selectedOrder.cancelledAt).toLocaleDateString()}` :
+                                                selectedOrder.status?.toLowerCase() === 'order placed' ? 'Your order has been placed successfully! We are processing it.' :
                                                 'Your order is being processed'}
                                             </p>
                                         </div>
