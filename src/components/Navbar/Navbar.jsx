@@ -143,13 +143,13 @@ const Navbar = () => {
           <img
             src="/sks-logo.png"
             alt="SKS Logo"
-            className="w-24 h-16 md:w-32 md:h-20 hover:scale-105 transition-transform cursor-pointer"
+            className="w-24 h-16 transition-transform cursor-pointer md:w-32 md:h-20 hover:scale-105"
             onClick={() => navigate("/")}
           />
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden lg:flex list-none gap-8 m-0 p-0">
+        <ul className="hidden gap-8 p-0 m-0 list-none lg:flex">
           {navLinks.map((link) => {
             if (link.to === "/laddus") {
               return (
@@ -181,7 +181,7 @@ const Navbar = () => {
                   <div
                     className={`absolute left-0 mt-2 w-56 bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 overflow-hidden ${isDropdownOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"}`}
                   >
-                    <div className="py-2 flex flex-col">
+                    <div className="flex flex-col py-2">
                       <div
                         className="px-4 py-2.5 hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-sm cursor-pointer text-[var(--color-text)] transition-colors font-medium"
                         onClick={() => handleCategoryClick("all")}
@@ -195,7 +195,7 @@ const Navbar = () => {
                           onClick={() => handleCategoryClick(cat._id)}
                         >
                           <img
-                            className="h-6 w-6"
+                            className="w-6 h-6"
                             src={cat.image?.url || "KK"}
                           />
                           <div>{cat.name}</div>
@@ -235,8 +235,9 @@ const Navbar = () => {
               }`
             }
           >
-            {/* <span className="w-2 h-2 rounded-full bg-white animate-ping"></span> */}
-            <span className="sm:inline">Advance</span>Booking
+            {/* <span className="w-2 h-2 bg-white rounded-full animate-ping"></span> */}
+            {/* <span className="sm:inline">Advance</span> */}
+            Booking
           </NavLink>
 
           {/* My Orders Icon — Only if logged in */}
@@ -296,7 +297,7 @@ const Navbar = () => {
       <div
         className={`lg:hidden fixed top-24 right-4 h-[80vh] w-[80%] max-w-[300px] bg-[var(--color-surface)]/95 backdrop-blur-2xl z-[1000] shadow-2xl transition-all duration-500 ease-in-out rounded-[45px] border border-[var(--color-secondary)]/10 overflow-hidden ${isMenuOpen ? "translate-x-0 opacity-100" : "translate-x-[120%] opacity-0"}`}
       >
-        <div className="flex flex-col h-full p-8 py-10 gap-3">
+        <div className="flex flex-col h-full gap-3 p-8 py-10">
           <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[var(--color-text-muted)] opacity-50 mb-4 px-2">
             Navigation Menu
           </p>
@@ -338,7 +339,7 @@ const Navbar = () => {
               className="flex items-center gap-3 text-[var(--color-secondary)] font-bold cursor-pointer hover:bg-[var(--color-secondary)]/10 p-2 rounded-xl transition-all duration-300"
             >
               <User size={18} />
-              <span className="text-sm uppercase tracking-wider">Profile</span>
+              <span className="text-sm tracking-wider uppercase">Profile</span>
             </div>
           </div>
         </div>
