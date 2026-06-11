@@ -36,13 +36,23 @@ const Laddus = () => {
   const [isPending, startTransition] = useTransition();
   const [sortBy, setSortBy] = useState("");
 
-  // Clear location state on mount so back/forward navigation doesn't re-apply filter
+  // location.state change hone par bhi category filter update ho
+  // (same page par navbar dropdown se category click karne par bhi kaam kare)
   useEffect(() => {
+    const catId = location.state?.categoryId;
+    if (catId && catId !== "all") {
+      setSelectedCategory(catId);
+      setSelectedVarieties([]); // pehle wale variety filters clear karo
+    } else if (catId === "all") {
+      setSelectedCategory(null);
+      setSelectedVarieties([]);
+    }
+    // State clear karo taaki back/forward navigation re-apply na kare
     if (location.state?.categoryId) {
       navigate(location.pathname, { replace: true, state: {} });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [location.state?.categoryId]);
 
   // Mobile filter modal states
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -108,20 +118,26 @@ const Laddus = () => {
   // Filter varieties by selectedCategory / tempSelectedCategory
   const displayedVarieties = React.useMemo(() => {
     if (!selectedCategory) return varieties;
-    return varieties.filter(
-      (v) =>
-        (v.category?._id || v.category || "").toString() ===
-        selectedCategory.toString(),
-    );
+    return varieties.filter((v) => {
+      if (Array.isArray(v.category)) {
+        return v.category.some(
+          (c) => (c?._id || c || "").toString() === selectedCategory.toString()
+        );
+      }
+      return (v.category?._id || v.category || "").toString() === selectedCategory.toString();
+    });
   }, [varieties, selectedCategory]);
 
   const tempDisplayedVarieties = React.useMemo(() => {
     if (!tempSelectedCategory) return varieties;
-    return varieties.filter(
-      (v) =>
-        (v.category?._id || v.category || "").toString() ===
-        tempSelectedCategory.toString(),
-    );
+    return varieties.filter((v) => {
+      if (Array.isArray(v.category)) {
+        return v.category.some(
+          (c) => (c?._id || c || "").toString() === tempSelectedCategory.toString()
+        );
+      }
+      return (v.category?._id || v.category || "").toString() === tempSelectedCategory.toString();
+    });
   }, [varieties, tempSelectedCategory]);
 
   // Handle variety checkbox change
@@ -278,44 +294,56 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
           {/* Sidebar - Desktop only */}
           <div className="hidden md:block col-span-3">
             <div className="sticky top-[120px] self-start space-y-4 z-10">
-              {/* Selected Category Alert */}
-              {selectedCategory && (
-                <div className="bg-[var(--color-surface)] border border-amber-500/30 rounded-xl p-4 flex justify-between items-center">
-                  <div className="flex-1 min-w-0 pr-2">
-                    <p className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">
-                      Category
-                    </p>
-                    <p className="text-sm font-bold text-[var(--color-secondary)] truncate">
-                      {activeCategoryName}
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleClearCategory}
-                    className="text-xs text-red-500 hover:underline font-semibold flex-shrink-0"
-                  >
-                    Clear
-                  </button>
-                </div>
-              )}
 
-              {/* Varieties Section */}
+              {/* ── Category Section ── */}
+              <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-base font-bold text-[var(--color-secondary)] uppercase">Category</h3>
+                  {selectedCategory && (
+                    <button onClick={handleClearCategory} className="text-xs text-red-500 hover:underline font-semibold">
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1 max-h-[220px] overflow-y-auto">
+                  {categoriesList.map((cat) => (
+                    <label
+                      key={cat.id || cat._id}
+                      className={`flex items-center gap-2 cursor-pointer p-2 rounded-lg transition-all ${
+                        selectedCategory === (cat.id || cat._id)
+                          ? "bg-[var(--color-secondary)]/15 font-semibold"
+                          : "hover:bg-[var(--color-secondary)]/10"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="category"
+                        checked={selectedCategory === (cat.id || cat._id)}
+                        onChange={() => {
+                          setSelectedCategory(cat.id || cat._id);
+                          setSelectedVarieties([]);
+                        }}
+                        className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                      />
+                      <span className="text-sm text-[var(--color-text-muted)]">{cat.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Varieties Section ── */}
               <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-base font-bold text-[var(--color-secondary)] uppercase">
                     Varieties
                   </h3>
-                  {(selectedVarieties.length > 0 ||
-                    selectedCategory ||
-                    sortBy) && (
-                    <button
-                      onClick={clearAllFilters}
-                      className="text-xs text-red-500 hover:underline font-semibold"
-                    >
+                  {(selectedVarieties.length > 0 || selectedCategory || sortBy) && (
+                    <button onClick={clearAllFilters} className="text-xs text-red-500 hover:underline font-semibold">
                       Clear All
                     </button>
                   )}
                 </div>
-                <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+                <div className="flex flex-col gap-2 max-h-[260px] overflow-y-auto">
                   {displayedVarieties.map((v) => (
                     <label
                       key={v.id}
@@ -327,48 +355,27 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
                         onChange={() => handleVarietyToggle(v.id)}
                         className="w-4 h-4 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
                       />
-                      <span className="text-sm text-[var(--color-text-muted)]">
-                        {v.name}
-                      </span>
+                      <span className="text-sm text-[var(--color-text-muted)]">{v.name}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
-              {/* Sort Section - Desktop */}
+              {/* ── Price Sort - Desktop ── */}
               <div className="bg-[var(--color-surface)] border border-[var(--color-secondary)]/20 rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-secondary)] uppercase mb-3">
-                  Price
-                </h3>
+                <h3 className="text-sm font-bold text-[var(--color-secondary)] uppercase mb-3">Price</h3>
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
-                    <input
-                      type="radio"
-                      name="sort"
-                      value="price_asc"
-                      checked={sortBy === "price_asc"}
-                      onChange={handleSortChange}
-                      className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
-                    />
-                    <span className="text-sm text-[var(--color-text-muted)]">
-                      Low to High
-                    </span>
+                    <input type="radio" name="sort" value="price_asc" checked={sortBy === "price_asc"} onChange={handleSortChange} className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]" />
+                    <span className="text-sm text-[var(--color-text-muted)]">Low to High</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-[var(--color-secondary)]/10">
-                    <input
-                      type="radio"
-                      name="sort"
-                      value="price_desc"
-                      checked={sortBy === "price_desc"}
-                      onChange={handleSortChange}
-                      className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
-                    />
-                    <span className="text-sm text-[var(--color-text-muted)]">
-                      High to Low
-                    </span>
+                    <input type="radio" name="sort" value="price_desc" checked={sortBy === "price_desc"} onChange={handleSortChange} className="w-4 h-4 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]" />
+                    <span className="text-sm text-[var(--color-text-muted)]">High to Low</span>
                   </label>
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -422,10 +429,10 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
                       key={laddu._id}
                       product={{
                         id: laddu._id,
+                        slug: laddu.slug,
                         name: laddu.name,
                         img: laddu.mainImage?.url || besanLaddu,
-                        price: laddu.price,
-                        finalPrice: laddu.finalPrice,
+                        weightOptions: laddu.weightOptions,
                         discountPercent: laddu.discountPercent,
                         description: laddu.description,
                         category: laddu.category?.name || "Special",
@@ -478,8 +485,18 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
               {/* Left Sidebar Tabs */}
               <div className="w-1/3 bg-[var(--color-surface)] border-r border-[var(--color-secondary)]/10">
                 <button
+                  onClick={() => setMobileSelectedTab("category")}
+                  className={`w-full p-4 text-left font-medium transition-all text-sm ${
+                    mobileSelectedTab === "category"
+                      ? "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]"
+                      : "text-[var(--color-text-muted)]"
+                  }`}
+                >
+                  Category
+                </button>
+                <button
                   onClick={() => setMobileSelectedTab("varieties")}
-                  className={`w-full p-4 text-left font-medium transition-all ${
+                  className={`w-full p-4 text-left font-medium transition-all text-sm ${
                     mobileSelectedTab === "varieties"
                       ? "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]"
                       : "text-[var(--color-text-muted)]"
@@ -489,7 +506,7 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
                 </button>
                 <button
                   onClick={() => setMobileSelectedTab("price")}
-                  className={`w-full p-4 text-left font-medium transition-all ${
+                  className={`w-full p-4 text-left font-medium transition-all text-sm ${
                     mobileSelectedTab === "price"
                       ? "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] border-r-2 border-[var(--color-secondary)]"
                       : "text-[var(--color-text-muted)]"
@@ -501,44 +518,55 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
 
               {/* Right Side Content */}
               <div className="flex-1 overflow-y-auto p-4">
-                {mobileSelectedTab === "varieties" && (
+                {/* Category Tab Content */}
+                {mobileSelectedTab === "category" && (
                   <div>
-                    {tempSelectedCategory && (
-                      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex justify-between items-center">
-                        <div className="min-w-0 flex-1 pr-2">
-                          <span className="text-[10px] uppercase text-amber-700 block">
-                            Category Active
-                          </span>
-                          <span className="text-sm font-bold text-[var(--color-secondary)] truncate block">
-                            {activeCategoryName}
-                          </span>
-                        </div>
-                        <button
-                          onClick={handleClearTempCategory}
-                          className="text-xs text-red-500 hover:underline font-semibold flex-shrink-0"
-                        >
-                          Clear
-                        </button>
-                      </div>
-                    )}
-                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">
-                      Select Varieties
-                    </span>
+                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">Select Category</span>
                     <div className="space-y-3">
-                      {tempDisplayedVarieties.map((v) => (
+                      {categoriesList.map((cat) => (
                         <label
-                          key={v.id}
+                          key={cat.id || cat._id}
                           className="flex items-center gap-3 cursor-pointer"
                         >
+                          <input
+                            type="radio"
+                            name="mobileCategory"
+                            checked={tempSelectedCategory === (cat.id || cat._id)}
+                            onChange={() => {
+                              setTempSelectedCategory(cat.id || cat._id);
+                              setTempSelectedVarieties([]);
+                            }}
+                            className="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
+                          />
+                          <span className="text-sm text-[var(--color-text)]">{cat.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {tempSelectedCategory && (
+                      <button
+                        onClick={handleClearTempCategory}
+                        className="mt-4 text-xs text-red-500 hover:underline font-semibold"
+                      >
+                        Clear Category
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Varieties Tab Content */}
+                {mobileSelectedTab === "varieties" && (
+                  <div>
+                    <span className="text-sm text-[var(--color-text-muted)] block mb-4">Select Varieties</span>
+                    <div className="space-y-3">
+                      {tempDisplayedVarieties.map((v) => (
+                        <label key={v.id} className="flex items-center gap-3 cursor-pointer">
                           <input
                             type="checkbox"
                             checked={tempSelectedVarieties.includes(v.id)}
                             onChange={() => handleTempVarietyToggle(v.id)}
                             className="w-5 h-5 rounded border-[var(--color-secondary)] text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]"
                           />
-                          <span className="text-sm text-[var(--color-text)]">
-                            {v.name}
-                          </span>
+                          <span className="text-sm text-[var(--color-text)]">{v.name}</span>
                         </label>
                       ))}
                     </div>

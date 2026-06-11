@@ -156,21 +156,37 @@ const Shop = () => {
     try {
       const data = await getCartApi();
       if (data && data.items) {
-        const mappedItems = data.items.map((item) => ({
-          uniqueId: item.product._id,
-          cartItemId: item._id,
-          productId: item.product._id,
-          name: item.product.name,
-          img: item.product.mainImage?.url,
-          price: item.product.finalPrice,
-          originalPrice: item.product.price,
-          discountPercent: item.product.discountPercent,
-          ingredients: item.product.about?.ingredients,
-          netWeight: item.product.about?.netWeight,
-          selectedWeight: item.selectedWeight,
-          quantity: item.quantity,
-          description: item.product.description,
-        }));
+        const mappedItems = data.items.map((item) => {
+          let itemPrice = 0;
+          let originalPrice = 0;
+          
+          if (item.product.weightOptions && item.product.weightOptions.length > 0) {
+            let opt = item.product.weightOptions.find(wo => wo.weight === item.selectedWeight);
+            if (!opt) opt = item.product.weightOptions[0]; // fallback
+            
+            if (opt) {
+              originalPrice = opt.price;
+              const discount = item.product.discountPercent || 0;
+              itemPrice = Math.round(opt.price * (1 - discount / 100));
+            }
+          }
+
+          return {
+            uniqueId: item.product._id,
+            cartItemId: item._id,
+            productId: item.product._id,
+            name: item.product.name,
+            img: item.product.mainImage?.url,
+            price: itemPrice,
+            originalPrice: originalPrice,
+            discountPercent: item.product.discountPercent,
+            ingredients: item.product.about?.ingredients,
+            netWeight: item.product.about?.netWeight,
+            selectedWeight: item.selectedWeight,
+            quantity: item.quantity,
+            description: item.product.description,
+          };
+        });
         setCartItems(mappedItems);
         if (data.totalAmount !== undefined && data.totalAmount !== null) {
           setCartTotal(data.totalAmount);

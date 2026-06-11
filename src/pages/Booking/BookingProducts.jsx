@@ -107,12 +107,26 @@ const BookingProducts = () => {
   // Filter varieties by selectedCategory / tempSelectedCategory
   const displayedVarieties = React.useMemo(() => {
     if (!selectedCategory) return varieties;
-    return varieties.filter(v => (v.category?._id || v.category || "").toString() === selectedCategory.toString());
+    return varieties.filter((v) => {
+      if (Array.isArray(v.category)) {
+        return v.category.some(
+          (c) => (c?._id || c || "").toString() === selectedCategory.toString()
+        );
+      }
+      return (v.category?._id || v.category || "").toString() === selectedCategory.toString();
+    });
   }, [varieties, selectedCategory]);
 
   const tempDisplayedVarieties = React.useMemo(() => {
     if (!tempSelectedCategory) return varieties;
-    return varieties.filter(v => (v.category?._id || v.category || "").toString() === tempSelectedCategory.toString());
+    return varieties.filter((v) => {
+      if (Array.isArray(v.category)) {
+        return v.category.some(
+          (c) => (c?._id || c || "").toString() === tempSelectedCategory.toString()
+        );
+      }
+      return (v.category?._id || v.category || "").toString() === tempSelectedCategory.toString();
+    });
   }, [varieties, tempSelectedCategory]);
 
   // Handle variety checkbox change
@@ -397,8 +411,8 @@ const BookingProducts = () => {
                         setSelectedProductForBooking({
                           name: laddu.name,
                           about: laddu.about,
-                          price: laddu.price,
-                          finalPrice: laddu.finalPrice,
+                          weightOptions: laddu.weightOptions,
+                          discountPercent: laddu.discountPercent,
                           categoryName: laddu.category?.name || "Mangoes",
                           categoryId: laddu.category?._id || laddu.category,
                           varietyName: laddu.variety?.name || "Dussehri",
@@ -412,8 +426,7 @@ const BookingProducts = () => {
                         id: laddu._id,
                         name: laddu.name,
                         img: laddu.mainImage?.url,
-                        price: laddu.price,
-                        finalPrice: laddu.finalPrice,
+                        weightOptions: laddu.weightOptions,
                         discountPercent: laddu.discountPercent,
                         description: laddu.description,
                         category: laddu.category?.name || "Special",
@@ -672,7 +685,18 @@ const BookingProducts = () => {
               preselectedVariety={selectedProductForBooking?.varietyName} 
               preselectedName={selectedProductForBooking?.name} 
               preselectedWeight={selectedProductForBooking?.selectedWeight} 
-              preselectedPrice={selectedProductForBooking?.finalPrice || selectedProductForBooking?.price} 
+              preselectedPrice={() => {
+                let p = 0;
+                if (selectedProductForBooking?.weightOptions && selectedProductForBooking.weightOptions.length > 0) {
+                  let option = selectedProductForBooking.weightOptions.find(wo => wo.weight === selectedProductForBooking.selectedWeight);
+                  if (!option) option = selectedProductForBooking.weightOptions[0];
+                  if (option) {
+                    const discount = selectedProductForBooking.discountPercent || 0;
+                    p = Math.round(option.price * (1 - discount / 100));
+                  }
+                }
+                return p;
+              }()}
               categoryId={selectedProductForBooking?.categoryId}
               varietyId={selectedProductForBooking?.varietyId}
               productId={selectedProductForBooking?.productId}

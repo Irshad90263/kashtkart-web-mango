@@ -190,7 +190,7 @@ const CarporateGifting = () => {
               <div className="w-16 h-16 bg-[#FDEFC8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#C97E1A]">
                 <item.icon className="w-8 h-8" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold text-[#855D1E] mb-2">
+              <h3 className="text-xl md:text-xl font-bold text-[#855D1E] mb-2">
                 {item.title}
               </h3>
               <p className="text-[#7A6233] font-medium text-sm md:text-base">

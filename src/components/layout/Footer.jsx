@@ -10,7 +10,6 @@ import {
   Instagram,
   Facebook,
   Linkedin,
-  Twitter,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import ccswLogo from "../../assets/images/ccws.png";
@@ -29,6 +28,18 @@ const Whatsapp = ({ size = 18, ...props }) => (
   </svg>
 );
 
+// Custom X (Twitter) Logo
+const XLogo = ({ size = 18, ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    {...props}
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 
 
 const Footer = () => {
@@ -253,12 +264,12 @@ const Footer = () => {
             <span className="text-[14px] text-[#F2B705]">Follow Us:</span>
             <div className="flex gap-4 items-center">
               {[
-                { icon: Facebook, href: "https://www.facebook.com/Kaashtkart/" },
-                { icon: Instagram, href: "https://instagram.com/kaashtkart" },
-                { icon: Youtube, href: "https://www.youtube.com/@KaashtKart" },
+                { icon: Facebook, href: "https://www.facebook.com/kaashtkartmarketplacepvtltd/" },
+                { icon: Instagram, href: "https://www.instagram.com/kaashtkartmarketplacepvtltd/" },
+                { icon: Youtube, href: "https://www.youtube.com/@Kaashtkartmarketplacepvtltd" },
                 { icon: Whatsapp, href: "https://api.whatsapp.com/send?phone=918318899526" },
-                { icon: Linkedin, href: "https://www.linkedin.com/company/KaashtKart-marketplace-pvt-ltd/" },
-                { icon: Twitter, href: "https://x.com/KaashtKart" },
+                { icon: Linkedin, href: "https://www.linkedin.com/company/kaashtkart-marketplace-pvt-ltd/" },
+                { icon: XLogo, href: "https://x.com/kaashtkart" },
               ].map(({ icon: Icon, href }, i) => (
                 <a
                   key={i}

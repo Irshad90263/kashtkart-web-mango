@@ -15,7 +15,6 @@ const ProductDetail = lazy(
   () => import("../pages/ProductDetail/ProductDetail"),
 );
 const Login = lazy(() => import("../pages/auth/Login"));
-const Registration = lazy(() => import("../pages/auth/Registration"));
 const Profile = lazy(() => import("../pages/auth/Profile"));
 const Shop = lazy(() => import("../pages/Shop/Shop"));
 const Orders = lazy(() => import("../pages/Orders/Orders"));
@@ -37,7 +36,6 @@ const ErrorPage = lazy(() => import("../components/common/ErrorPage"));
 
 export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
-  { path: "/register", element: <Registration /> },
   {
     path: "/",
     element: <Layout />,
@@ -47,11 +45,11 @@ export const router = createBrowserRouter([
       { path: "shop", element: <Shop /> },
       { path: "orders", element: <Orders /> },
       { path: "about", element: <About /> },
-      { path: "laddus", element: <Laddus /> },
+      { path: "mangos", element: <Laddus /> },
       { path: "faqs", element: <FaqPage /> },
       { path: "blogs", element: <Blogs /> },
       { path: "blog/:slug", element: <BlogDetail /> },
-      { path: "product/:id", element: <ProductDetail /> },
+      { path: "product/:slug", element: <ProductDetail /> },
       { path: "testimonials", element: <Testimonials /> },
       { path: "contact", element: <Contact /> },
       { path: "booking", element: <BookingProducts /> },
@@ -62,7 +60,7 @@ export const router = createBrowserRouter([
 
       { path: "terms-of-service", element: <TermsOfService /> },
       { path: "cancellation-policy", element: <CancellationPolicy /> },
-      { path: "CarporateGifting", element: <CarporateGifting /> },
+      { path: "carporate-gifting", element: <CarporateGifting /> },
 
       { path: "orchard", element: <Orchard /> },
       { path: "support", element: <SupportCenter /> },

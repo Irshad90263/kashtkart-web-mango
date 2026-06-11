@@ -23,10 +23,7 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
   const name = product?.name;
   const img = product?.img;
   const id = product?.id || product?._id;
-  const displayPrice = product?.finalPrice || product?.price;
-  const originalPrice = product?.price;
-  const discount = product?.discountPercent;
-  
+  const slug = product?.slug || id;  // slug prefer karo, fallback id
   const rawNetWeight = product?.about?.netWeight;
   const netWeightArray = Array.isArray(rawNetWeight) 
     ? rawNetWeight 
@@ -34,6 +31,20 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
     
   const [selectedWeight, setSelectedWeight] = useState(netWeightArray[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  let displayPrice = 0;
+  let originalPrice = 0;
+  const discount = product?.discountPercent || 0;
+
+  if (product?.weightOptions && product.weightOptions.length > 0) {
+    let opt = product.weightOptions.find(wo => wo.weight === selectedWeight);
+    if (!opt) opt = product.weightOptions[0];
+    if (opt) {
+      originalPrice = opt.price;
+      displayPrice = Math.round(opt.price * (1 - (discount || 0) / 100));
+    }
+  }
+
 
   const checkAuth = async () => {
     const token = localStorage.getItem('userToken');
@@ -86,7 +97,7 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
   };
 
   const handleViewDetails = () => {
-    navigate(`/product/${id}`);
+    navigate(`/product/${slug}`);
   };
 
   // Function to render stars based on rating
@@ -140,6 +151,13 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
 
       {/* CONTENT SECTION */}
       <div className="p-3 sm:p-4 flex flex-col flex-1 bg-white/80 rounded-b-xl">
+
+        {/* Category */}
+        {product?.category && (
+          <p className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+            {product.category}
+          </p>
+        )}
 
         {/* Product Name */}
         <h3 className="text-sm sm:text-base md:text-md font-semibold text-gray-800 line-clamp-2 mb-2">

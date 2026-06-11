@@ -52,7 +52,7 @@ const HeroSlider = memo(() => {
 
     return (
         
-        <Link to={'/laddus'} className="relative cursor-auto w-full slider-container overflow-hidden">
+        <Link to={'/mangos'} className="relative cursor-auto w-full slider-container overflow-hidden">
             <Slider {...settings}>
                 {sliders.map((slider) => (
                     <div key={slider._id} className="relative w-full outline-none">

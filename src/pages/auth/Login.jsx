@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Phone } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -15,6 +15,10 @@ const Login = () => {
     const [showOtpButton, setShowOtpButton] = useState(false);
     const [otpSent, setOtpSent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const handlePhoneChange = (e) => {
         const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
@@ -97,8 +101,8 @@ const Login = () => {
             <div className="min-h-screen bg-[var(--color-primary)] flex items-center justify-center px-4 -mb-20">
                 <div className="max-w-md w-full bg-[var(--color-muted)] rounded-3xl shadow-2xl p-8 border border-[var(--color-secondary)]/20">
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-[var(--color-secondary)] mb-2">Welcome Back</h2>
-                        <p className="text-gray-400">Sign in with your phone number</p>
+                        <h2 className="text-3xl font-bold text-[var(--color-secondary)] mb-2">Welcome</h2>
+                        <p className="text-gray-400">Login or create an account with your phone number</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -173,14 +177,6 @@ const Login = () => {
                         )}
                     </form>
 
-                    <div className="mt-6 text-center">
-                        <p className="text-gray-400">
-                            Don't have an account?{' '}
-                            <Link to="/register" className="text-[var(--color-secondary)] font-bold hover:underline">
-                                Create Account
-                            </Link>
-                        </p>
-                    </div>
                 </div>
             </div>
             <Footer />

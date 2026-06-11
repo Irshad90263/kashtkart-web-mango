@@ -287,7 +287,7 @@ import Loader from "../../components/common/Loader";
 import LadduCard from "../../components/cards/LadduCard";
 
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -321,14 +321,13 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const data = await getProductApi(id);
+        const data = await getProductApi(slug);
         const p = data.product;
         setProduct({
           id: p._id,
           name: p.name,
           img: p.mainImage?.url,
-          price: p.price,
-          finalPrice: p.finalPrice,
+
           discountPercent: p.discountPercent,
           description: p.description,
           category: p.category?.name || "Special",
@@ -338,6 +337,15 @@ const ProductDetail = () => {
           gallery: p.galleryImages || [],
           relatedProducts: p.relatedProducts || [],
           aboutHtml: p.about?.aboutHtml || "",
+          weightOptions: p.weightOptions || [],
+          vendor: p.vendor_id
+            ? {
+                name: p.vendor_id.name,
+                designation: p.vendor_id.vendorDesignation || "",
+                address: p.vendor_id.residentialAddress?.address || "",
+                photo: p.vendor_id.photo?.url || "",
+              }
+            : null,
         });
         setActiveImage(p.mainImage?.url);
 
@@ -355,11 +363,11 @@ const ProductDetail = () => {
         setLoading(false);
       }
     };
-    if (id) {
+    if (slug) {
       fetchProduct();
       window.scrollTo(0, 0);
     }
-  }, [id]);
+  }, [slug]);
 
   useEffect(() => {
     if (pincode.length === 6) {
@@ -531,7 +539,7 @@ const ProductDetail = () => {
         }}
       />
 
-      <nav className="max-w-6xl mx-auto px-4 md:px-6 py-3 mt-5 flex items-center gap-1.5 text-xs text-gray-500 border-b border-gray-100 mb-6">
+      <nav className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 py-3 mt-5 flex items-center gap-1.5 text-xs text-gray-500 border-b border-gray-100 mb-6">
         <Link to="/" className="hover:text-yellow-600 transition-colors">
           Home
         </Link>
@@ -545,11 +553,11 @@ const ProductDetail = () => {
         </span>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-4 md:px-6 pb-12">
+      <main className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 pb-12">
         {/* items-start added to help with sticky alignment */}
-        <div className="flex flex-col lg:flex-row lg:gap-10 gap-8 items-start">
-          {/* Left: Image Section - Made slightly larger */}
-          <div className="lg:w-[50%] flex-shrink-0 w-full flex justify-center lg:justify-end">
+        <div className="flex flex-col lg:flex-row lg:gap-8 gap-8 items-start">
+          {/* Left: Image Section */}
+          <div className="lg:w-[420px] flex-shrink-0 w-full">
             {/* Adjusted sticky top to match right content better */}
             <div className="sticky top-24 lg:pr-4">
               {/* max-w-[420px] - Image container height increased slightly */}
@@ -617,7 +625,7 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <div className="lg:w-[50%] flex flex-col pt-1 lg:pt-0 w-full lg:h-[420px] justify-between relative">
+          <div className="flex-1 flex flex-col pt-1 lg:pt-0 min-w-0 lg:max-w-[500px] lg:h-[420px] justify-between relative">
             {isZoomed && (
               <div className="absolute inset-0 z-50 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-2xl pointer-events-none">
                 <div
@@ -663,7 +671,7 @@ const ProductDetail = () => {
               </div>
 
               {/* Feature Cards Row */}
-              <div className="flex items-center gap-2 py-3  border-b border-gray-100">
+              <div className="flex items-center gap-3 py-3  border-b border-gray-100">
                 {[
                   {
                     icon: <Smile className="text-[#FF8A00]" size={18} />,
@@ -680,7 +688,7 @@ const ProductDetail = () => {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="w-16 h-16 flex flex-col items-center justify-center gap-1 bg-[#FFF9F3] border border-[#FFD9B2]/40 rounded-xl p-1"
+                    className="w-20 h-16 flex flex-col items-center justify-center gap-1 bg-[#FFF9F3] border border-[#FFD9B2]/40 rounded-xl p-1"
                   >
                     <div className="">{item.icon}</div>
                     <span className="text-[8px] font-bold text-[#55606B] text-center leading-tight uppercase">
@@ -691,127 +699,93 @@ const ProductDetail = () => {
               </div>
 
               <div className="py-2 border-b border-gray-100">
-                <div className="flex items-baseline gap-3 mb-2 flex-wrap">
-                  <span className="text-3xl font-black text-gray-900">
-                    ₹{product.finalPrice}
-                  </span>
-                  {product.discountPercent > 0 && (
-                    <>
-                      <span className="text-lg text-gray-400 line-through">
-                        ₹{product.price}
+                {(() => {
+                  let displayPrice = 0;
+                  let displayFinalPrice = 0;
+                  if (product.weightOptions && product.weightOptions.length > 0) {
+                    let opt = product.weightOptions.find(wo => wo.weight === selectedWeight);
+                    if (!opt) opt = product.weightOptions[0];
+                    if (opt) {
+                      displayPrice = opt.price;
+                      displayFinalPrice = Math.round(opt.price * (1 - (product.discountPercent || 0) / 100));
+                    }
+                  }
+                  
+                  return (
+                    <div className="flex items-baseline gap-3 mb-2 flex-wrap">
+                      <span className="text-3xl font-black text-gray-900">
+                        ₹{displayFinalPrice}
                       </span>
-                      <span className="text-green-600 text-xs font-black bg-green-50 px-2 py-1 rounded">
-                        {product.discountPercent}% OFF
-                      </span>
-                    </>
-                  )}
-                </div>
+                      {product.discountPercent > 0 && (
+                        <>
+                          <span className="text-lg text-gray-400 line-through">
+                            ₹{displayPrice}
+                          </span>
+                          <span className="text-green-600 text-xs font-black bg-green-50 px-2 py-1 rounded">
+                            {product.discountPercent}% OFF
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  );
+                })()}
                 <div className="flex items-center gap-2">
                   <span className="text-gray-500 text-xs font-medium italic">
                     Net Weight:
                   </span>
-                  {netWeightArray.length > 1 ? (
-                    <div className="relative">
+                  <div className="flex flex-wrap gap-3">
+                    {netWeightArray.map((weight, idx) => (
                       <button
-                        onClick={() =>
-                          setIsWeightDropdownOpen(!isWeightDropdownOpen)
-                        }
-                        className="flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200 rounded-lg text-sm font-bold text-amber-700 hover:bg-amber-100/50 transition-colors cursor-pointer"
+                        key={idx}
+                        onClick={() => setSelectedWeight(weight)}
+                        className={`px-4 py-2 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
+                          selectedWeight === weight
+                            ? "bg-amber-100 border-amber-400 text-amber-700 shadow-sm"
+                            : "bg-white border-gray-200 text-gray-600 hover:border-amber-300 hover:bg-amber-50"
+                        }`}
                       >
-                        <span>{selectedWeight}</span>
-                        <svg
-                          className={`w-3 h-3 text-amber-600 transition-transform duration-300 ${isWeightDropdownOpen ? "rotate-180" : ""}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2.5}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
+                        {weight}
                       </button>
-
-                      {isWeightDropdownOpen && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-30"
-                            onClick={() => setIsWeightDropdownOpen(false)}
-                          />
-                          <div className="absolute left-0 mt-1 w-32 bg-white border border-amber-200 rounded-lg shadow-xl z-40 overflow-hidden animate-fadeIn">
-                            {netWeightArray.map((weight, idx) => (
-                              <div
-                                key={idx}
-                                onClick={() => {
-                                  setSelectedWeight(weight);
-                                  setIsWeightDropdownOpen(false);
-                                }}
-                                className={`px-3 py-2 text-xs sm:text-sm cursor-pointer transition-colors ${selectedWeight === weight ? "bg-amber-100 text-amber-700 font-bold" : "hover:bg-amber-50 text-gray-700 font-medium"}`}
-                              >
-                                {weight}
-                              </div>
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-gray-900 text-sm font-bold decoration-[var(--color-secondary)] decoration-2 underline-offset-4">
-                      {selectedWeight}
-                    </span>
-                  )}
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              {/* <div className="grid grid-cols-2 gap-2 py-3">
-                                <div className="bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                    <p className="text-[8px] text-gray-400 uppercase font-bold mb-0">Shelf Life</p>
-                                    <p className="text-[12px] font-semibold text-gray-800">{product.shelfLife}</p>
-                                </div>
-                                <div className="bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                    <p className="text-[8px] text-gray-400 uppercase font-bold mb-0">Type</p>
-                                    <p className="text-[12px] font-semibold text-gray-800">100% Veg</p>
-                                </div>
-                            </div> */}
-
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden h-9 bg-white">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-2 cursor-pointer hover:bg-gray-100 transition-colors text-gray-500"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="px-1 font-bold w-8 text-center text-sm text-gray-900 tabular-nums">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="px-2 cursor-pointer hover:bg-gray-100 transition-colors text-gray-500"
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden h-9 bg-white">
                   <button
-                    onClick={handleAddToCart}
-                    disabled={adding}
-                    className={`flex-1 h-9 bg-[#F2B705] text-black font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-sm ${adding ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-2 cursor-pointer hover:bg-gray-100 transition-colors text-gray-500"
                   >
-                    {adding ? (
-                      <div className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full"></div>
-                    ) : (
-                      <ShoppingCart size={15} />
-                    )}
-                    {adding ? "Adding..." : "Add to Cart"}
+                    <Minus size={14} />
+                  </button>
+                  <span className="px-1 font-bold w-8 text-center text-sm text-gray-900 tabular-nums">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-2 cursor-pointer hover:bg-gray-100 transition-colors text-gray-500"
+                  >
+                    <Plus size={14} />
                   </button>
                 </div>
+                
+                <button
+                  onClick={handleAddToCart}
+                  disabled={adding}
+                  className={`flex-1 h-9 bg-[#F2B705] text-black font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-sm ${adding ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                >
+                  {adding ? (
+                    <div className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full"></div>
+                  ) : (
+                    <ShoppingCart size={15} />
+                  )}
+                  {adding ? "Adding..." : "Add to Cart"}
+                </button>
+                
                 <button
                   onClick={handleBuyNow}
                   disabled={adding}
-                  className={`w-full h-9 border border-black text-black font-bold rounded-lg transition-all duration-300 uppercase tracking-widest text-[10px] ${adding ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                  className={`flex-1 h-9 border border-black text-black font-bold rounded-lg transition-all duration-300 uppercase tracking-widest text-[10px] ${adding ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-black hover:text-white"}`}
                 >
                   Buy It Now
                 </button>
@@ -880,15 +854,83 @@ const ProductDetail = () => {
         </div>
       </main>
 
+      {/* ── Seller Details Section ── */}
+      {product.vendor && (
+        <section className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 mt-8 mb-4">
+          <div className="bg-white rounded-2xl border border-[#F2B705]/30 shadow-[0_4px_24px_-8px_rgba(242,183,5,0.15)] overflow-hidden">
+            {/* Header */}
+            <div className="px-5 py-3 border-b border-[#F2B705]/20 bg-gradient-to-r from-[#fffbeb] to-white">
+              <p className="text-xs font-bold text-[#F2B705] uppercase tracking-widest flex items-center gap-1.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 7H4C2.9 7 2 7.9 2 9v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-9 8H5v-2h6v2zm8-4H5v-2h14v2z"/>
+                </svg>
+                Seller Details
+              </p>
+            </div>
+            {/* 3-card row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#F2B705]/15 px-2 py-2">
+              {/* Card 1 — Seller Name */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="w-9 h-9 rounded-lg bg-[#FFF8E1] flex items-center justify-center flex-shrink-0">
+                  {product.vendor.photo ? (
+                    <img src={product.vendor.photo} alt={product.vendor.name} className="w-9 h-9 rounded-lg object-cover" />
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F2B705" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="3" width="20" height="14" rx="2"/>
+                      <path d="M8 21h8M12 17v4"/>
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Seller</p>
+                  <p className="text-sm font-bold text-gray-800 leading-tight">{product.vendor.name}</p>
+                  {product.vendor.designation && (
+                    <p className="text-[10px] text-[#F2B705] font-medium">{product.vendor.designation}</p>
+                  )}
+                </div>
+              </div>
+              {/* Card 2 — Verified Seller */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="w-9 h-9 rounded-lg bg-[#FFF8E1] flex items-center justify-center flex-shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#F2B705">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Status</p>
+                  <p className="text-sm font-bold text-gray-800 leading-tight">Verified Seller</p>
+                  <p className="text-[10px] text-green-600 font-semibold">✓ Trusted by KaashtKart</p>
+                </div>
+              </div>
+              {/* Card 3 — Address */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="w-9 h-9 rounded-lg bg-[#FFF8E1] flex items-center justify-center flex-shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F2B705" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Location</p>
+                  <p className="text-sm font-bold text-gray-800 leading-tight line-clamp-2">
+                    {product.vendor.address || "India"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* About This Product Section */}
-      <section className="max-w-6xl mx-auto px-4 md:px-6 mt-10 mb-16">
+      <section className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 mt-10 mb-16">
         <div className="bg-white rounded-[32px] p-6 md:p-10 border border-gray-100 shadow-[0_12px_40px_-15px_rgba(0,0,0,0.03)] relative overflow-hidden">
           {/* Top Accent Gradient Border */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#F2B705] via-[#FF8A00] to-[#F2B705]" />
           
           <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-2 pb-4 border-b border-gray-50">
             <span className="w-1.5 h-6 bg-[#FF8A00] rounded-full"></span>
-            About This Product
+            Product Description
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1025,7 +1067,7 @@ const ProductDetail = () => {
 
       {/* Related Products Section */}
       {product.relatedProducts && product.relatedProducts.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 md:px-6 mb-16">
+        <section className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 mb-16">
           <h2 className="text-xl md:text-2xl font-black text-gray-900 mb-6">
             Related Products
           </h2>
@@ -1035,8 +1077,7 @@ const ProductDetail = () => {
                 _id: rp._id || rp.id,
                 name: rp.name,
                 img: rp.mainImage?.url,
-                price: rp.price,
-                finalPrice: rp.finalPrice,
+                weightOptions: rp.weightOptions,
                 discountPercent: rp.discountPercent,
                 about: {
                   netWeight: rp.about?.netWeight || [],

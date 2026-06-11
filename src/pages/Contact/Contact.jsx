@@ -1,8 +1,34 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Phone, MapPin, Loader2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Loader2, Facebook, Instagram, Youtube, Linkedin } from 'lucide-react';
 import Footer from '../../components/layout/Footer';
 import { createEnquiryApi } from '../../api/enquiry';
 import { toast } from 'react-toastify';
+
+// Custom WhatsApp SVG Icon
+const Whatsapp = ({ size = 18, ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    {...props}
+  >
+    <path d="M12.012 2c-5.506 0-9.988 4.482-9.988 9.988 0 1.758.459 3.475 1.332 4.988l-1.354 4.95 5.062-1.328c1.45.79 3.082 1.206 4.948 1.206 5.506 0 9.988-4.482 9.988-9.988S17.518 2 12.012 2zm4.72 13.513c-.26.732-1.282 1.334-1.764 1.393-.482.06-1.082.096-1.745-.119-.663-.214-2.825-1.082-4.787-2.815-1.962-1.733-2.868-3.902-3.082-4.565-.214-.663-.096-1.282.164-2.014.26-.732.732-1.18 1.082-1.18.35 0 .47.06.663.45.193.39.81 1.962.885 2.112.075.15.124.325.025.525-.099.2-.214.325-.375.5-.16.175-.34.39-.485.525-.164.15-.337.315-.15.638.188.324.837 1.378 1.794 2.228 1.23 1.096 2.27 1.436 2.595 1.597.325.16.513.136.7-.075.188-.212.81-.944 1.025-1.27.214-.324.43-.275.725-.164.295.11 1.868.88 2.187 1.037.319.16.533.238.613.375.08.136.08.79-.18 1.522z" />
+  </svg>
+);
+
+// Custom X (Twitter) Logo
+const XLogo = ({ size = 18, ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    {...props}
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 
 const Contact = () => {
     const sectionRefs = useRef([]);
@@ -201,7 +227,7 @@ const Contact = () => {
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <h4 className="font-bold text-orange-800 text-sm md:text-base">Email Us</h4>
-                                    <a href="mailto:KaashtKart@gmail.com" className="text-orange-900/70 hover:text-orange-600 transition-colors text-xs md:text-sm break-all">KaashtKart@gmail.com</a>
+                                    <a href="mailto:kaashtkart@gmail.com" className="text-orange-900/70 hover:text-orange-600 transition-colors text-xs md:text-sm break-all">kaashtkart@gmail.com</a>
                                 </div>
                             </div>
 
@@ -212,7 +238,7 @@ const Contact = () => {
                                 <div className="min-w-0 flex-1">
                                     <h4 className="font-bold text-orange-800 text-sm md:text-base">Call Us</h4>
                                     <div className="text-xs md:text-sm">
-                                        <a href="tel:+916307736698" className="text-orange-900/70 hover:text-orange-600 transition-colors inline-block">+91 83188 99526</a>
+                                        <a href="tel:+918318899526" className="text-orange-900/70 hover:text-orange-600 transition-colors inline-block">+91 83188 99526</a>
                                         <span className="text-orange-900/30 mx-1">,</span>
                                         <a href="tel:+917860114786" className="text-orange-900/70 hover:text-orange-600 transition-colors inline-block">+91 78601 14786</a>
                                     </div>
@@ -231,8 +257,32 @@ const Contact = () => {
                                         rel="noopener noreferrer"
                                         className="text-orange-900/70 hover:text-orange-600 transition-colors underline decoration-dotted underline-offset-4 text-xs md:text-sm break-words"
                                     >
-                                        45A Dayal Enclave, Sec-9, Indira Nagar, Lucknow 226026
+                                        45A Dayal Enclave, Sec-9, Indira Nagar, Lucknow 226016
                                     </a>
+                                </div>
+                            </div>
+                            
+                            <div className="pt-4 flex flex-col gap-3">
+                                <h4 className="font-bold text-orange-800 text-sm md:text-base">Follow Us</h4>
+                                <div className="flex gap-4 items-center">
+                                    {[
+                                        { icon: Facebook, href: "https://www.facebook.com/kaashtkartmarketplacepvtltd/" },
+                                        { icon: Instagram, href: "https://www.instagram.com/kaashtkartmarketplacepvtltd/" },
+                                        { icon: Youtube, href: "https://www.youtube.com/@Kaashtkartmarketplacepvtltd" },
+                                        { icon: Whatsapp, href: "https://api.whatsapp.com/send?phone=918318899526" },
+                                        { icon: Linkedin, href: "https://www.linkedin.com/company/kaashtkart-marketplace-pvt-ltd/" },
+                                        { icon: XLogo, href: "https://x.com/kaashtkart" },
+                                    ].map(({ icon: Icon, href }, i) => (
+                                        <a
+                                            key={i}
+                                            href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="w-10 h-10 flex justify-center items-center rounded-full bg-orange-100 text-orange-600 hover:bg-orange-500 hover:text-white transition-all duration-300 hover:scale-110 shadow-sm border border-orange-200 hover:border-orange-500"
+                                        >
+                                            <Icon size={18} />
+                                        </a>
+                                    ))}
                                 </div>
                             </div>
                         </div>
