@@ -131,6 +131,7 @@ const Navbar = () => {
     { to: "/about", label: "Our Legacy" },
     { to: "/mangos", label: "Order Now" },
     { to: "/carporate-gifting", label: "Corporate Gifting" },
+    { to: "/bulk-order", label: "Bulk Order" },
     // { to: "/blogs", label: "Blogs" },
     { to: "/contact", label: "Reach Out Us" },
   ];

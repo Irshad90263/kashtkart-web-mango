@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy } from "react";
 import CarporateGifting from "../pages/CarporateGifting/CarporateGifting";
+import BulkOrder from "../pages/BulkOrder/BulkOrder";
 
 // Lazy load all components for better performance
 const Layout = lazy(() => import("../components/layout/Layout"));
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
       { path: "terms-of-service", element: <TermsOfService /> },
       { path: "cancellation-policy", element: <CancellationPolicy /> },
       { path: "carporate-gifting", element: <CarporateGifting /> },
+      { path: "bulk-order", element: <BulkOrder /> },
 
       { path: "orchard", element: <Orchard /> },
       { path: "support", element: <SupportCenter /> },
