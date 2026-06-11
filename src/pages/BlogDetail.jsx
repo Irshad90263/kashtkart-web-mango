@@ -119,8 +119,39 @@ const BlogDetail = () => {
       </div>
     );
 
+  const handleShare = (platform) => {
+    const url = window.location.href;
+    const text = blog?.title || '';
+    
+    let shareUrl = '';
+    switch (platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`;
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(url);
+        toast.success("Link copied to clipboard!");
+        return;
+      default:
+        return;
+    }
+    
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'width=600,height=400');
+    }
+  };
+
   return (
-    <div className="bg-[#FEF9EF] min-h-screen font-['Inter'] text-[#2C2418]">
+    <div className="bg-[#FEF9EF] min-h-screen text-[#2C2418]">
       {/* Hero Section - Plain image with corner orange overlays */}
       <div className="relative w-full h-[450px] md:h-[500px] lg:h-[500px] overflow-hidden">
         {/* Plain background image - NO color overlay on full image */}
@@ -137,7 +168,7 @@ const BlogDetail = () => {
         {/* Content overlay */}
         <div className="relative h-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 z-20">
           {/* Breadcrumb - Top left corner with subtle orange background */}
-          <div className="absolute top-6 left-6 md:left-12 lg:left-6 z-30 font-['Poppins']">
+          <div className="absolute top-6 left-6 md:left-12 lg:left-6 z-30">
             <div className="bg-[#C97E1A]/85 backdrop-blur-sm pl-5 pr-6 py-2.5 rounded-full shadow-lg border border-white/30 flex items-center gap-2">
               <div className="flex items-center gap-1 text-sm font-semibold">
                 <Link
@@ -185,9 +216,9 @@ const BlogDetail = () => {
                     year: "numeric",
                   })}
                 </span>
-                <span className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
+                {/* <span className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
                   <i className="far fa-clock text-xs"></i>8 min read
-                </span>
+                </span> */}
                 <span className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
                   <i className="fas fa-leaf text-xs"></i>
                   KaashtKart
@@ -219,17 +250,20 @@ const BlogDetail = () => {
 
               <div className="flex items-center gap-3">
                 <span className="text-sm text-[#7A6B50]">Share:</span>
-                <button className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
+                <button onClick={() => handleShare('facebook')} className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex cursor-pointer items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
                   <i className="fab fa-facebook-f text-sm"></i>
                 </button>
-                <button className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
+                <button onClick={() => handleShare('twitter')} className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex cursor-pointer items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
                   <i className="fab fa-twitter text-sm"></i>
                 </button>
-                <button className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
+                <button onClick={() => handleShare('linkedin')} className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex cursor-pointer items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
                   <i className="fab fa-linkedin-in text-sm"></i>
                 </button>
-                <button className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
-                  <i className="far fa-bookmark text-sm"></i>
+                <button onClick={() => handleShare('whatsapp')} className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex cursor-pointer items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all">
+                  <i className="fab fa-whatsapp text-sm"></i>
+                </button>
+                <button onClick={() => handleShare('copy')} className="w-9 h-9 rounded-full bg-white border border-[#E6D5B8] flex cursor-pointer items-center justify-center text-[#5C3D1A] hover:bg-[#C97E1A] hover:text-white hover:border-[#C97E1A] transition-all" title="Copy Link">
+                  <i className="fas fa-link text-sm"></i>
                 </button>
               </div>
             </div>
@@ -526,9 +560,9 @@ const BlogDetail = () => {
           color: #C97E1A;
         }
         .blog-body-content p {
-          margin-bottom: 1.25rem;
+          margin-bottom: 0.5rem;
           color: #3A3224;
-          line-height: 1.75;
+          line-height: 1.6;
         }
         .blog-body-content img {
           border-radius: 20px;
@@ -547,19 +581,15 @@ const BlogDetail = () => {
           color: #5C4B2E;
           font-size: 1.1rem;
         }
-        .blog-body-content ul, .blog-body-content ol {
-          margin-bottom: 1.5rem;
-          padding-left: 1.5rem;
-        }
-        .blog-body-content li {
-          margin-bottom: 0.5rem;
-          color: #3A3224;
-        }
-        .blog-body-content ul li::marker {
+        .blog-body-content ul { list-style-type: disc !important; padding-left: 1.75rem !important; margin-top: 0.75rem !important; margin-bottom: 0.75rem !important; }
+        .blog-body-content ol { list-style-type: decimal !important; padding-left: 1.75rem !important; margin-top: 0.75rem !important; margin-bottom: 0.75rem !important; }
+        .blog-body-content li { margin-bottom: 0.35rem !important; list-style: inherit !important; color: #3A3224; }
+        .blog-body-content li p { margin: 0 !important; display: inline !important; }
+        .blog-body-content ul li::marker, .blog-body-content ol li::marker {
           color: #C97E1A;
         }
         .blog-body-content strong {
-          color: #C97E1A;
+          color: inherit;
           font-weight: 700;
         }
         .blog-body-content a {
@@ -570,6 +600,9 @@ const BlogDetail = () => {
         .blog-body-content a:hover {
           color: #9A5E10;
         }
+        .blog-body-content table { width: 100% !important; border-collapse: collapse !important; margin: 1rem 0 !important; overflow: hidden !important; }
+        .blog-body-content table th, .blog-body-content table td { border: 1px solid #E6D5B8 !important; padding: 0.5rem 0.75rem !important; text-align: left !important; vertical-align: top !important; }
+        .blog-body-content table th { background-color: #FEF5E8 !important; font-weight: bold !important; color: #2C2418 !important; }
         @media (max-width: 768px) {
           .blog-body-content h1 { font-size: 1.8rem; }
           .blog-body-content h2 { font-size: 1.5rem; }

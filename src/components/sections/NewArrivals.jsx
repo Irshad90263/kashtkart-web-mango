@@ -98,6 +98,8 @@ const NewArrivals = ({ addToRefs }) => {
                   description: product.description,
                   category: product.category?.name,
                   about: product.about,
+                  ratingsAverage: product.ratingsAverage,
+                  ratingsQuantity: product.ratingsQuantity,
                 }}
               />
             </Suspense>

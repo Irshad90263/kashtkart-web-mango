@@ -136,6 +136,8 @@ const CategoryProducts = ({ addToRefs }) => {
                             description: item.description,
                             category: item.category?.name || cat.name,
                             about: item.about,
+                            ratingsAverage: item.ratingsAverage,
+                            ratingsQuantity: item.ratingsQuantity,
                           }}
                         />
                       </div>

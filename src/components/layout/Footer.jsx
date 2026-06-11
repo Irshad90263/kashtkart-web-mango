@@ -59,7 +59,7 @@ const Footer = () => {
   }, []);
 
   const handleCategoryClick = (categoryId) => {
-    navigate("/laddus", { state: { categoryId: categoryId } });
+    navigate("/mangos", { state: { categoryId: categoryId } });
     window.scrollTo(0, 0);
   };
 

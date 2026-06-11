@@ -159,7 +159,7 @@ const BrandAdvertisement = memo(({ addToRefs }) => {
             <span className="text-zinc-500">Experience the</span> <span className="text-zinc-200 drop-shadow-[0_0_20px_rgba(242,183,5,0.5)]">Legacy</span>
           </h2>
           <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed opacity-90">
-            Witness the journey of authentic Sandila laddus through cinematic storytelling
+            Witness the journey of authentic Sandila mangos through cinematic storytelling
           </p>
         </div>
 

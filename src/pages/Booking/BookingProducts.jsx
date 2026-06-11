@@ -431,6 +431,8 @@ const BookingProducts = () => {
                         description: laddu.description,
                         category: laddu.category?.name || "Special",
                         about: laddu.about,
+                        ratingsAverage: laddu.ratingsAverage,
+                        ratingsQuantity: laddu.ratingsQuantity,
                       }}
                     />
                   ))}
@@ -696,7 +698,7 @@ const BookingProducts = () => {
                   }
                 }
                 return p;
-              }()}
+              }}
               categoryId={selectedProductForBooking?.categoryId}
               varietyId={selectedProductForBooking?.varietyId}
               productId={selectedProductForBooking?.productId}

@@ -126,9 +126,9 @@ const Shop = () => {
         const data = await getProfileApi();
         if (data && data.user) {
           setUserId(data.user._id);
-          const name = data.user.firstName && data.user.lastName
-            ? `${data.user.firstName} ${data.user.lastName}`
-            : "";
+          const firstName = data.user.firstName || "";
+          const lastName = data.user.lastName || "";
+          const name = (firstName + " " + lastName).trim() || data.user.name || "";
           const phone = data.user.phone || "";
           const email = data.user.email || "";
           setProfileData({ name, phone, email });
@@ -710,9 +710,9 @@ const Shop = () => {
           <div className="bg-gray-50 p-12 md:p-20 rounded-3xl text-center border border-gray-200 shadow-sm">
             <div className="text-5xl mb-5">🛒</div>
             <h2 className="text-2xl font-bold text-gray-800 mb-3">Your tray is empty!</h2>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">Looks like you haven't added any laddus yet. Explore our collection.</p>
-            <a href="/laddus" className="inline-block px-8 py-3 bg-yellow-500 text-gray-900 rounded-xl font-semibold hover:bg-yellow-400 transition shadow-md">
-              Browse Laddus
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">Looks like you haven't added any mango yet. Explore our collection.</p>
+            <a href="/mangos" className="inline-block px-8 py-3 bg-yellow-500 text-gray-900 rounded-xl font-semibold hover:bg-yellow-400 transition shadow-md">
+              Browse Mango
             </a>
           </div>
         ) : (

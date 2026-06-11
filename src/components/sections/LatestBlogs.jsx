@@ -21,8 +21,10 @@ const LatestBlogs = memo(({ addToRefs }) => {
     fetchBlogs();
   }, []);
 
+  const shouldScroll = blogs.length >= 4;
+
   useEffect(() => {
-    if (blogs.length === 0) return;
+    if (blogs.length === 0 || !shouldScroll) return;
     const container = scrollRef.current;
     if (!container) return;
 
@@ -65,12 +67,12 @@ const LatestBlogs = memo(({ addToRefs }) => {
       container.removeEventListener("mouseenter", onEnter);
       container.removeEventListener("mouseleave", onLeave);
     };
-  }, [blogs]);
+  }, [blogs, shouldScroll]);
 
-  // Duplicate blogs for infinite scroll effect
-  const allBlogs = blogs.length > 0 ? [...blogs, ...blogs] : [];
+  // Duplicate blogs for infinite scroll effect only if there are enough blogs
+  const allBlogs = shouldScroll ? [...blogs, ...blogs] : blogs;
 
-  if (loading && blogs.length === 0) return null;
+  if (blogs.length === 0) return null;
 
   return (
     <section
@@ -105,7 +107,7 @@ const LatestBlogs = memo(({ addToRefs }) => {
               <img
                 src={blog.image}
                 alt={blog.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
               />
             </div>

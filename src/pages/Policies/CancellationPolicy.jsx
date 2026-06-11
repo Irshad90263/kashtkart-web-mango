@@ -16,7 +16,7 @@ const CancellationPolicy = () => {
     {
       id: 3,
       title: "Packaged Goods Return Policy",
-      content: "Non-perishable items like Mango Laddus or other processed products can be returned within 7 days of delivery if the packaging is unopened and the seal is intact. Items with broken seals or signs of use are not eligible for return."
+      content: "Non-perishable items like Mango or other processed products can be returned within 7 days of delivery if the packaging is unopened and the seal is intact. Items with broken seals or signs of use are not eligible for return."
     },
     {
       id: 4,

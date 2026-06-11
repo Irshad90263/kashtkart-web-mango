@@ -29,6 +29,8 @@ import html2canvas from 'html2canvas';
 import Footer from '../../components/layout/Footer';
 import Loader from '../../components/common/Loader';
 import logo from '../../assets/images/logo.png';
+import ReviewModal from '../../components/common/ReviewModal';
+import { checkReviewEligibility } from '../../api/reviews';
 
 const loadRazorpay = () => {
     return new Promise((resolve) => {
@@ -240,6 +242,9 @@ const Orders = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [invoiceOrder, setInvoiceOrder] = useState(null);
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [reviewProductId, setReviewProductId] = useState(null);
+    const [eligibilityMap, setEligibilityMap] = useState({});
     const navigate = useNavigate();
 
     const fetchOrders = async () => {
@@ -408,9 +413,27 @@ const Orders = () => {
         }
     };
 
-    const openOrderDetails = (order) => {
+    const openOrderDetails = async (order) => {
         setSelectedOrder(order);
         setIsModalOpen(true);
+        
+        // Check eligibility for all items
+        if (order.type !== 'booking' && order.items) {
+            const newMap = { ...eligibilityMap };
+            await Promise.all(
+                order.items.map(async (item) => {
+                    if (item.product?._id) {
+                        try {
+                            const res = await checkReviewEligibility(item.product._id);
+                            newMap[item.product._id] = res.eligible;
+                        } catch (err) {
+                            newMap[item.product._id] = false;
+                        }
+                    }
+                })
+            );
+            setEligibilityMap(newMap);
+        }
     };
 
     const openInvoice = (order) => {
@@ -473,10 +496,10 @@ const Orders = () => {
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 mb-2">No orders yet</h2>
                         <p className="text-gray-500 text-sm mb-8 max-w-md mx-auto">
-                            You haven't placed any orders yet. Start exploring our delicious laddus!
+                            You haven't placed any orders yet. Start exploring our delicious mango!
                         </p>
                         <button
-                            onClick={() => navigate('/laddus')}
+                            onClick={() => navigate('/mangos')}
                             className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 text-gray-900 font-semibold rounded-xl hover:bg-yellow-400 transition-all shadow-md"
                         >
                             Shop Now <ArrowRight size={16} />
@@ -692,15 +715,30 @@ const Orders = () => {
                                         </div>
                                     ) : (
                                         selectedOrder.items.map((item, idx) => (
-                                            <div key={idx} className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
-                                                <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-gray-100">
-                                                    <img src={item.product?.mainImage?.url} alt={item.productName} className="w-full h-full object-cover" />
+                                            <div key={idx} className="flex flex-col gap-2 p-3 bg-gray-50 rounded-xl">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-gray-100">
+                                                        <img src={item.product?.mainImage?.url} alt={item.productName} className="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="font-medium text-gray-900">{item.productName}</p>
+                                                        <p className="text-xs text-gray-500">Qty: {item.quantity} × ₹{item.productPrice}</p>
+                                                    </div>
+                                                    <div className="flex flex-col items-end gap-2">
+                                                        <p className="font-bold text-gray-900">₹{item.productPrice * item.quantity}</p>
+                                                        {item.product?._id && eligibilityMap[item.product._id] && (
+                                                            <button 
+                                                                onClick={() => {
+                                                                    setReviewProductId(item.product._id);
+                                                                    setIsReviewModalOpen(true);
+                                                                }}
+                                                                className="text-xs font-bold text-white bg-[#C97E1A] hover:bg-[#9A5E10] px-3 py-1.5 rounded-lg transition"
+                                                            >
+                                                                Add Review
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className="flex-1">
-                                                    <p className="font-medium text-gray-900">{item.productName}</p>
-                                                    <p className="text-xs text-gray-500">Qty: {item.quantity} × ₹{item.productPrice}</p>
-                                                </div>
-                                                <p className="font-bold text-gray-900">₹{item.productPrice * item.quantity}</p>
                                             </div>
                                         ))
                                     )}
@@ -818,11 +856,22 @@ const Orders = () => {
                 </div>
             )}
 
-            {/* Invoice Modal */}
             <InvoiceModal
                 order={invoiceOrder}
                 isOpen={isInvoiceModalOpen}
                 onClose={() => setIsInvoiceModalOpen(false)}
+            />
+
+            <ReviewModal 
+                isOpen={isReviewModalOpen} 
+                onClose={() => setIsReviewModalOpen(false)} 
+                productId={reviewProductId} 
+                onReviewAdded={() => {
+                    // Update eligibility map after review is added so button hides
+                    if (reviewProductId) {
+                        setEligibilityMap(prev => ({...prev, [reviewProductId]: false}));
+                    }
+                }}
             />
 
             <Footer />

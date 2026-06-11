@@ -10,15 +10,8 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
   const [added, setAdded] = useState(false);
   const [adding, setAdding] = useState(false);
 
-  // Random rating between 4.2 and 4.9
-  const rating = (Math.random() * (4.9 - 4.2) + 4.2).toFixed(1);
-
-  // Random review count between 1200 and 1500
-  const reviewCount = Math.floor(Math.random() * (1500 - 1200 + 1) + 1200);
-
-  // Random star rating display (4 or 5 stars)
-  const fullStars = Math.floor(Math.random() * 1) + 4; // 4 or 5 stars
-  const hasHalfStar = Math.random() > 0.7; // 30% chance of half star
+  const rating = product?.ratingsAverage ? parseFloat(product.ratingsAverage).toFixed(1) : 0;
+  const reviewCount = product?.ratingsQuantity || 0;
 
   const name = product?.name;
   const img = product?.img;
@@ -51,7 +44,7 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
     if (!token) {
       const result = await Swal.fire({
         title: 'Authentic Taste Awaits!',
-        text: 'Please login to add these delicious laddus to your cart.',
+        text: 'Please login to add these delicious Manfo to your cart.',
         icon: 'info',
         showCancelButton: true,
         confirmButtonColor: '#F2B705',
@@ -100,30 +93,7 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
     navigate(`/product/${slug}`);
   };
 
-  // Function to render stars based on rating
-  const renderStars = (ratingValue) => {
-    const stars = [];
-    const fullStarsCount = Math.floor(ratingValue);
-    const hasHalf = ratingValue % 1 >= 0.5;
 
-    for (let i = 1; i <= 1; i++) {
-      if (i <= fullStarsCount) {
-        stars.push(<Star key={i} size={14} className="text-yellow-400 fill-yellow-400" />);
-      } else if (i === fullStarsCount + 1 && hasHalf) {
-        stars.push(
-          <div key={i} className="relative">
-            <Star size={14} className="text-gray-300 fill-gray-300" />
-            <div className="absolute top-0 left-0 w-1/2 overflow-hidden">
-              <Star size={14} className="text-yellow-400 fill-yellow-400" />
-            </div>
-          </div>
-        );
-      } else {
-        stars.push(<Star key={i} size={14} className="text-gray-300 fill-gray-300" />);
-      }
-    }
-    return stars;
-  };
 
   return (
     <div
@@ -165,13 +135,20 @@ const LadduCard = memo(({ product, isBookingPage = false, onBookNow }) => {
         </h3>
 
         {/* Rating Section */}
-        <div className="flex items-center mt-1 mb-2 gap-1">
-          <div className="flex items-center gap-0.5">
-            {renderStars(parseFloat(rating))}
+        {reviewCount > 0 ? (
+          <div className="flex items-center mt-1 mb-2 gap-2">
+            <div className="flex items-center gap-0.5 bg-green-100 text-green-700 px-1 py-0.5 rounded text-[10px] font-bold">
+              {rating} <Star size={10} className="fill-green-700" />
+            </div>
+            <span className="text-gray-400 text-[10px] font-medium border-l border-gray-200 pl-2">
+              {reviewCount} {reviewCount === 1 ? 'Review' : 'Reviews'}
+            </span>
           </div>
-          <span className="text-xs font-semibold text-gray-700 ml-1">{rating}</span>
-          <span className="text-[10px] text-gray-400 ml-1">({reviewCount.toLocaleString()} reviews)</span>
-        </div>
+        ) : (
+          <div className="flex items-center mt-1 mb-2">
+            <span className="text-[10px] text-gray-400 italic font-medium bg-gray-50 px-2 py-0.5 rounded border border-gray-100">No reviews yet</span>
+          </div>
+        )}
 
         {/* Net Weight Badge */}
         <div className="mb-3 relative">

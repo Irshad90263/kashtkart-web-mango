@@ -285,6 +285,11 @@ import { addToCartApi } from "../../api/cart";
 import Footer from "../../components/layout/Footer";
 import Loader from "../../components/common/Loader";
 import LadduCard from "../../components/cards/LadduCard";
+import ReviewModal from "../../components/common/ReviewModal";
+import { getProductReviews, checkReviewEligibility } from "../../api/reviews";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -302,6 +307,11 @@ const ProductDetail = () => {
   const [adding, setAdding] = useState(false);
   const [selectedWeight, setSelectedWeight] = useState("");
   const [isWeightDropdownOpen, setIsWeightDropdownOpen] = useState(false);
+
+  // Review states
+  const [reviews, setReviews] = useState([]);
+  const [isEligibleToReview, setIsEligibleToReview] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const rawNetWeight = product?.netWeight;
   const netWeightArray = Array.isArray(rawNetWeight)
@@ -327,7 +337,6 @@ const ProductDetail = () => {
           id: p._id,
           name: p.name,
           img: p.mainImage?.url,
-
           discountPercent: p.discountPercent,
           description: p.description,
           category: p.category?.name || "Special",
@@ -338,6 +347,8 @@ const ProductDetail = () => {
           relatedProducts: p.relatedProducts || [],
           aboutHtml: p.about?.aboutHtml || "",
           weightOptions: p.weightOptions || [],
+          ratingsAverage: p.ratingsAverage || 0,
+          ratingsQuantity: p.ratingsQuantity || 0,
           vendor: p.vendor_id
             ? {
                 name: p.vendor_id.name,
@@ -358,6 +369,24 @@ const ProductDetail = () => {
         setSelectedWeight(netArr[0] || "N/A");
 
         setLoading(false);
+
+        // Fetch reviews
+        try {
+          const reviewsData = await getProductReviews(p._id);
+          if (reviewsData.success) {
+            setReviews(reviewsData.reviews);
+          }
+
+          // Check eligibility if user is logged in
+          const token = localStorage.getItem("userToken");
+          if (token) {
+            const eligibility = await checkReviewEligibility(p._id);
+            setIsEligibleToReview(eligibility.eligible);
+          }
+        } catch (err) {
+          console.error("Failed to fetch reviews or eligibility", err);
+        }
+
       } catch (err) {
         setError(true);
         setLoading(false);
@@ -368,6 +397,17 @@ const ProductDetail = () => {
       window.scrollTo(0, 0);
     }
   }, [slug]);
+
+  // Function to refresh reviews after adding a new one
+  const handleReviewAdded = async () => {
+    if (product?.id) {
+      const reviewsData = await getProductReviews(product.id);
+      if (reviewsData.success) {
+        setReviews(reviewsData.reviews);
+      }
+      setIsEligibleToReview(false); // User can only review once
+    }
+  };
 
   useEffect(() => {
     if (pincode.length === 6) {
@@ -496,14 +536,38 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-gray-800">
         <h2 className="text-xl font-bold mb-3">Product Not Found</h2>
-        <Link to="/laddus" className="text-yellow-600 font-medium text-sm">
+        <Link to="/mangos" className="text-yellow-600 font-medium text-sm">
           ← Back to Shop
         </Link>
       </div>
     );
 
+  const reviewSliderSettings = {
+    dots: true,
+    infinite: reviews.length > 3,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        }
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        }
+      }
+    ]
+  };
+
   return (
-    <div className="bg-white min-h-screen font-sans">
+    <div className="bg-white min-h-screen font-[var(--font-body)]">
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -535,6 +599,10 @@ const ProductDetail = () => {
                 .custom-product-about [style*="text-align: center"] { text-align: center !important; display: block !important; margin-left: auto !important; margin-right: auto !important; }
                 .custom-product-about [style*="text-align: right"] { text-align: right !important; display: block !important; margin-left: auto !important; margin-right: 0 !important; }
                 .custom-product-about [style*="text-align: left"] { text-align: left !important; }
+                .custom-product-about table { width: 100% !important; border-collapse: collapse !important; margin: 1rem 0 !important; overflow: hidden !important; }
+                .custom-product-about table th, .custom-product-about table td { border: 1px solid #e5e7eb !important; padding: 0.5rem 0.75rem !important; text-align: left !important; vertical-align: top !important; }
+                .custom-product-about table th { background-color: #f9fafb !important; font-weight: bold !important; color: #111827 !important; }
+                .slick-track { margin-left: 0; }
             `,
         }}
       />
@@ -653,10 +721,10 @@ const ProductDetail = () => {
 
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-0.5 bg-green-100 text-green-700 px-1 py-0.5 rounded text-[10px] font-bold">
-                    4.9 <Star size={10} className="fill-green-700" />
+                    {product.ratingsAverage} <Star size={10} className="fill-green-700" />
                   </div>
                   <span className="text-gray-400 text-[10px] font-medium border-l border-gray-200 pl-2">
-                    120 Reviews
+                    {product.ratingsQuantity} Reviews
                   </span>
                 </div>
               </div>
@@ -733,24 +801,42 @@ const ProductDetail = () => {
                   <span className="text-gray-500 text-xs font-medium italic">
                     Net Weight:
                   </span>
-                  <div className="flex flex-wrap gap-3">
-                    {netWeightArray.map((weight, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelectedWeight(weight)}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-                          selectedWeight === weight
-                            ? "bg-amber-100 border-amber-400 text-amber-700 shadow-sm"
-                            : "bg-white border-gray-200 text-gray-600 hover:border-amber-300 hover:bg-amber-50"
-                        }`}
-                      >
-                        {weight}
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-3 pt-1">
+                    {netWeightArray.map((weight, idx) => {
+                      let optionFinalPrice = null;
+                      if (product.weightOptions && product.weightOptions.length > 0) {
+                        const opt = product.weightOptions.find(wo => wo.weight === weight);
+                        if (opt) {
+                          optionFinalPrice = Math.round(opt.price * (1 - (product.discountPercent || 0) / 100));
+                        }
+                      }
+                      
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedWeight(weight)}
+                          className={`group relative flex flex-col items-center justify-center min-w-[80px] px-3 py-1.5 rounded-xl border-2 transition-all duration-300 ease-out cursor-pointer overflow-hidden ${
+                            selectedWeight === weight
+                              ? "bg-amber-50 border-amber-400 text-amber-800 shadow-md transform scale-105"
+                              : "bg-white border-gray-100 text-gray-600 hover:border-amber-300 hover:bg-amber-50/50 hover:-translate-y-1 hover:shadow-lg"
+                          }`}
+                        >
+                          {selectedWeight === weight && (
+                            <div className="absolute top-0 right-0 w-8 h-8 bg-amber-400 rounded-bl-full -z-0 opacity-20"></div>
+                          )}
+                          <span className="text-[13px] font-bold z-10">{weight}</span>
+                          {optionFinalPrice !== null && (
+                            <span className={`text-[11px] font-black z-10 transition-colors duration-300 ${selectedWeight === weight ? "text-amber-600" : "text-gray-400 group-hover:text-amber-500"}`}>
+                              ₹{optionFinalPrice}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 mb-4 w-full">
                 <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden h-9 bg-white">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -785,7 +871,7 @@ const ProductDetail = () => {
                 <button
                   onClick={handleBuyNow}
                   disabled={adding}
-                  className={`flex-1 h-9 border border-black text-black font-bold rounded-lg transition-all duration-300 uppercase tracking-widest text-[10px] ${adding ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                  className={`w-full sm:w-auto sm:flex-1 h-9 border border-black text-black font-bold rounded-lg transition-all duration-300 uppercase tracking-widest text-[10px] ${adding ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-black hover:text-white"}`}
                 >
                   Buy It Now
                 </button>
@@ -871,7 +957,7 @@ const ProductDetail = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#F2B705]/15 px-2 py-2">
               {/* Card 1 — Seller Name */}
               <div className="flex items-center gap-3 px-4 py-3">
-                <div className="w-9 h-9 rounded-lg bg-[#FFF8E1] flex items-center justify-center flex-shrink-0">
+                {/* <div className="w-9 h-9 rounded-lg bg-[#FFF8E1] flex items-center justify-center flex-shrink-0">
                   {product.vendor.photo ? (
                     <img src={product.vendor.photo} alt={product.vendor.name} className="w-9 h-9 rounded-lg object-cover" />
                   ) : (
@@ -880,7 +966,7 @@ const ProductDetail = () => {
                       <path d="M8 21h8M12 17v4"/>
                     </svg>
                   )}
-                </div>
+                </div> */}
                 <div>
                   <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Seller</p>
                   <p className="text-sm font-bold text-gray-800 leading-tight">{product.vendor.name}</p>
@@ -1065,6 +1151,73 @@ const ProductDetail = () => {
         </div>
       </section>
 
+      {/* Customer Reviews Section */}
+      <section className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 mb-0">
+        <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+          <h2 className="text-xl md:text-2xl font-black text-gray-900">
+            Customer Reviews
+          </h2>
+          {isEligibleToReview && (
+            <button
+              onClick={() => setIsReviewModalOpen(true)}
+              className="bg-[#C97E1A] hover:bg-[#9A5E10] text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-sm"
+            >
+              Write a Review
+            </button>
+          )}
+        </div>
+
+        {reviews.length === 0 ? (
+          <div className="text-center py-8 bg-gray-50 rounded-2xl border border-gray-100">
+            <p className="text-gray-500">No reviews yet. Be the first to review this product!</p>
+          </div>
+        ) : (
+          <div className="mx-4 mb-10">
+            <Slider {...reviewSliderSettings}>
+              {reviews.map((review) => (
+                <div key={review._id} className="px-2 mb-5">
+                  <div
+                    className="p-5 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#FEF5E8] flex items-center justify-center text-[#C97E1A] font-bold">
+                          {review.user?.firstName?.charAt(0) || review.user?.name?.charAt(0) || "U"}
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm text-gray-900">{review.user?.firstName ? `${review.user.firstName} ${review.user.lastName}` : (review.user?.name || "Anonymous User")}</p>
+                          <p className="text-[10px] text-gray-400">
+                            {new Date(review.createdAt).toLocaleDateString("en-IN", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            size={14}
+                            className={star <= review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      "{review.remark}"
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </Slider>
+          </div>
+        )}
+
+
+      </section>
+
       {/* Related Products Section */}
       {product.relatedProducts && product.relatedProducts.length > 0 && (
         <section className="max-w-[1440px] 3xl:max-w-[1900px] mx-auto px-4 md:px-12 mb-16">
@@ -1082,6 +1235,8 @@ const ProductDetail = () => {
                 about: {
                   netWeight: rp.about?.netWeight || [],
                 },
+                ratingsAverage: rp.ratingsAverage,
+                ratingsQuantity: rp.ratingsQuantity,
               };
               return (
                 <div key={mappedProduct._id} className="h-full">
@@ -1094,6 +1249,13 @@ const ProductDetail = () => {
       )}
 
       <Footer />
+
+      <ReviewModal 
+        isOpen={isReviewModalOpen} 
+        onClose={() => setIsReviewModalOpen(false)} 
+        productId={product.id} 
+        onReviewAdded={handleReviewAdded} 
+      />
     </div>
   );
 };

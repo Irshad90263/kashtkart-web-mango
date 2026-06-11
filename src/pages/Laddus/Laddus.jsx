@@ -437,6 +437,8 @@ const activeCategorydesc = categoriesList.find((c) => c.id === selectedCategory)
                         description: laddu.description,
                         category: laddu.category?.name || "Special",
                         about: laddu.about,
+                        ratingsAverage: laddu.ratingsAverage,
+                        ratingsQuantity: laddu.ratingsQuantity,
                       }}
                     />
                   ))}

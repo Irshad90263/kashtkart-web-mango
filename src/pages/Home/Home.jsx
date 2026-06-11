@@ -269,7 +269,7 @@ const Home = memo(() => {
               </span>
             ))}
           </div>
-          <Link to="/laddus" className="inline-block mt-2 px-8 py-3 bg-[var(--color-secondary)] text-[var(--color-primary)] font-bold text-sm md:text-base rounded-full hover:brightness-110 transition-all duration-200 shadow-lg">
+          <Link to="/mangos" className="inline-block mt-2 px-8 py-3 bg-[var(--color-secondary)] text-[var(--color-primary)] font-bold text-sm md:text-base rounded-full hover:brightness-110 transition-all duration-200 shadow-lg">
             Order Now
           </Link>
         </div>
